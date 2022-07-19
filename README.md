@@ -1,8 +1,8 @@
-# advanced_diploma
+# python advanced (skillbox)
 
 дипломный проект по курсу python advanced от skillbox
 
-## Getting started
+## быстрый старт
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
 
