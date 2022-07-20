@@ -12,3 +12,4 @@ deploy_to_server:
     - docker-compose up --build -d
   only:
     - main
+    
