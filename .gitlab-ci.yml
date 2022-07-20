@@ -7,8 +7,8 @@ deploy_to_server:
   stage: deploy
   script:
     - cd /projects/sites/advanced_diploma
-    - docker-compose down
-    - git pull origin master --recurse-submodules --rebase
+    - docker-compose stop
+    - git pull origin main --recurse-submodules --rebase
     - docker-compose up --build -d
   only:
     - main
