@@ -1,8 +1,17 @@
-# advanced_diploma
+# python advanced (skillbox)
 
 дипломный проект по курсу python advanced от skillbox
 
-## Getting started
+## что хочется:
+* ci/cd
+* метрики prometheus-grafana для постгрес, nginx, web
+* fast-api
+* сохранение сообщений при недоступности БД - в какой-то брокер. Или редис, или раббит или кафка
+* балансировка нагрузки через nginx
+* https протокол
+* архитектура service-based
+
+## быстрый старт
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
 
