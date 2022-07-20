@@ -5,3 +5,6 @@ temp*
 .idea
 *.sqlite
 *.json
+/db/
+web/logs/nginx/access.log
+web/logs/nginx/error.log
