@@ -7,6 +7,7 @@ deploy_to_server:
   stage: deploy
   script:
     - cd /projects/sites/advanced_diploma
+    - git config --global --add safe.directory /projects/sites/advanced_diploma
     - docker-compose stop
     - git pull origin main --recurse-submodules --rebase
     - docker-compose up --build -d
