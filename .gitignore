@@ -5,3 +5,4 @@ temp*
 .idea
 *.sqlite
 *.json
+/db/

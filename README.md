@@ -2,9 +2,27 @@
 
 дипломный проект по курсу python advanced от skillbox
 
-## что хочется:
 * ci/cd
-* метрики prometheus-grafana для постгрес, nginx, web
+  * установить gitlab-runner на сервер и зарегистрировать его. В настройках гитлаб отключить использование теневых раннеров
+  * подкинуть в папку /home/gitlab-runner/.ssh файлики:
+    * authorized-keys
+    * id_rsa
+    * id_rsa.pub
+    * know-hosts
+  * выполнить sudo chown gitlab-runner:gitlab-runner * 
+  * выполнить sudo usermod -aG docker gitlab-runner
+  * выполнить ещё какую-то команду, чтобы гит не сомневался, что в этой папке всё хорошо
+
+* метрики
+  * grafana
+  * prometheus
+    * nginx-exporter
+    * postgresql - присутствуют в pgAdmin
+    * web
+
+
+## что хочется:
+
 * fast-api
 * сохранение сообщений при недоступности БД - в какой-то брокер. Или редис, или раббит или кафка
 * балансировка нагрузки через nginx
