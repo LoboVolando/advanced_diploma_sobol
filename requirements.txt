@@ -1,3 +1,14 @@
 pip
 flask
 fabric
+mypy
+black
+isort
+flake8
+flake8-bugbear
+flake8-pie
+pytest
+fastapi
+pydantic
+uvicorn
+python-dotenv
