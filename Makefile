@@ -1,3 +1,10 @@
+run:
+	cd ./application/src
+	gunicorn application.src.app:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+up:
+	docker-compose up application
+down:
+	docker-compose dowm
 isort:
 	isort --check-only --profile black ./api
 black:

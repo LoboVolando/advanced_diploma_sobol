@@ -11,4 +11,8 @@ pytest
 fastapi
 pydantic
 uvicorn
+gunicorn
 python-dotenv
+sqlalchemy
+sqlalchemy-stubs
+jinja2

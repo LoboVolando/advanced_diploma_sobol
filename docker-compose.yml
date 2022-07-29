@@ -3,16 +3,31 @@ networks:
   skynet:
     driver: bridge
 services:
-
-  front:
-    container_name: skill-front
-    ports:
-      - "5001:80"
-    image: nginx:1.22.0
+  application:
+    container_name: application
+    build:
+      context: .
+      dockerfile: application/Dockerfile
+#    environment:
+#      web_db: ${WEB_DB}
+#      POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
+#      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+#      POSTGRES_HOST: ${POSTGRES_HOST}
+#      POSTGRES_PORT: ${POSTGRES_PORT}
     volumes:
-      - ./web/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./web/logs/nginx:/var/log/nginx
-      - ./web/front/:/front
+      - ./.env:/application/.env
+#      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./supervisord.ini:/etc/supervisor/conf.d/supervisord.ini:ro
+      - ./application:/application
+
+#    command: bash -c "python run_migrations.py && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.ini"
+    command: bash -c "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.ini"
+    expose:
+      - 5454
+    ports:
+      - "5454:8000"
+#    depends_on:
+#      - postgres
     networks:
       - skynet
 
@@ -88,7 +103,7 @@ services:
     networks:
       - skynet
     depends_on:
-      - front
+      - application
       - prometheus
       - grafana
 

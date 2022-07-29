@@ -3,7 +3,7 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     host: str = "127.0.0.1"
-    port: int = 5555
+    port: int = 8000
     # db_url = ""
     # async_db_url = ""
     # connect_args = {"check_same_thread": False}
