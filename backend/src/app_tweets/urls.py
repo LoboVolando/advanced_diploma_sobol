@@ -32,6 +32,7 @@ async def create_tweet(
     return await tweet.create_tweet(new_tweet)
 
 
+@router.get("/api/userinfo", response_model=MeAuthorOutSchema)
 @router.get("/api/users/me", response_model=MeAuthorOutSchema)
 async def me(
         user: AuthorService = Depends(AuthorTransportService),
@@ -44,9 +45,3 @@ async def me(
 async def echo():
     print('echo')
     return {"echo": "echo"}
-
-
-@router.get("/api/userinfo")
-async def user_info(permission: PermissionService = Depends()):
-    # await permission.get_api_key()
-    return {"result": "true", "user": {"id": 1, "name": "john doe"}}

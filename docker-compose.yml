@@ -3,31 +3,38 @@ networks:
   skynet:
     driver: bridge
 services:
-  application:
-    container_name: application
+  backend:
+    container_name: backend
     build:
       context: .
-      dockerfile: application/Dockerfile
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/backend
+      - ./.env:/backend/.env
+      - ./backend/supervisord.ini:/etc/supervisor/conf.d/supervisord.ini:ro
+    command: bash -c "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.ini"
+    ports:
+      - "5455:80"
+    networks:
+      - skynet
 #    environment:
 #      web_db: ${WEB_DB}
 #      POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
 #      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
 #      POSTGRES_HOST: ${POSTGRES_HOST}
 #      POSTGRES_PORT: ${POSTGRES_PORT}
-    volumes:
-      - ./.env:/application/.env
-#      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./supervisord.ini:/etc/supervisor/conf.d/supervisord.ini:ro
-      - ./application:/application
 
-#    command: bash -c "python run_migrations.py && /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.ini"
-    command: bash -c "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.ini"
+  frontend:
+    container_name: frontend
+    image: nginx
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend/src:/frontend
+      - ./frontend/logs:/frontend/logs
     expose:
       - 5454
     ports:
-      - "5454:8000"
-#    depends_on:
-#      - postgres
+      - "5454:80"
     networks:
       - skynet
 
@@ -103,7 +110,8 @@ services:
     networks:
       - skynet
     depends_on:
-      - application
+      - frontend
+      - backend
       - prometheus
       - grafana
 

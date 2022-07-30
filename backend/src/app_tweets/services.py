@@ -16,11 +16,14 @@ class PermissionService:
         self.response = response
         logger.info('headers patched')
         logger.info(self.request.headers.keys())
+        # self.response.headers['Access-Control-Allow-Origin'] = '*'
+        # self.response.headers['Access-Control-Allow-Headers'] = '*'
         if api_key := self.request.headers.get('api-key'):
             self.response.headers['api-key'] = api_key
             self.api_key = api_key
 
     async def get_api_key(self):
+        logger.warning(self.request.headers)
         if self.api_key:
             return self.api_key
 
