@@ -3,16 +3,38 @@ networks:
   skynet:
     driver: bridge
 services:
-
-  front:
-    container_name: skill-front
-    ports:
-      - "5001:80"
-    image: nginx:1.22.0
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     volumes:
-      - ./web/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./web/logs/nginx:/var/log/nginx
-      - ./web/front/:/front
+      - ./backend:/backend
+      - ./.env:/backend/.env
+      - ./backend/supervisord.ini:/etc/supervisor/conf.d/supervisord.ini:ro
+    command: bash -c "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.ini"
+    ports:
+      - "5455:80"
+    networks:
+      - skynet
+#    environment:
+#      web_db: ${WEB_DB}
+#      POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
+#      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+#      POSTGRES_HOST: ${POSTGRES_HOST}
+#      POSTGRES_PORT: ${POSTGRES_PORT}
+
+  frontend:
+    container_name: frontend
+    image: nginx
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend/src:/frontend
+      - ./frontend/logs:/frontend/logs
+    expose:
+      - 5454
+    ports:
+      - "5454:80"
     networks:
       - skynet
 
@@ -88,7 +110,8 @@ services:
     networks:
       - skynet
     depends_on:
-      - front
+      - frontend
+      - backend
       - prometheus
       - grafana
 
