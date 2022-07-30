@@ -38,6 +38,21 @@ services:
     networks:
       - skynet
 
+  redis:
+    container_name: redis
+    image: redis:7.0.0
+    restart: always
+    privileged: true
+    environment:
+      - save=60
+      - loglevel=debug
+    ports:
+      - '5479:6379'
+    volumes:
+      - ./redis/logs:/var/log
+    networks:
+      - skynet
+
   postgres:
     container_name: postgres
     image: postgres:14.3

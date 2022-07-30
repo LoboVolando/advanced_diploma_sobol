@@ -1,5 +1,4 @@
 pip
-flask
 fabric
 mypy
 black
@@ -15,4 +14,5 @@ gunicorn
 python-dotenv
 sqlalchemy
 sqlalchemy-stubs
-jinja2
+aioredis
+faker

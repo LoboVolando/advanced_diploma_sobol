@@ -16,16 +16,16 @@ class AuthorSchema(BaseModel):
     name: str
 
 
-class MeAuthorSchema(AuthorSchema):
+class ProfileAuthorSchema(AuthorSchema):
     followers: t.List[AuthorSchema]
     following: t.List[AuthorSchema]
 
 
-class MeAuthorOutSchema(BaseModel):
+class ProfileAuthorOutSchema(BaseModel):
     """выходная схема о юзере"""
 
     result: bool = True
-    user: MeAuthorSchema
+    user: ProfileAuthorSchema
 
 
 class TweetSchema(BaseModel):
@@ -50,3 +50,10 @@ class TweetOutSchema(BaseModel):
 
     result: bool
     tweet_id: int
+
+
+class TweetListOutSchema(BaseModel):
+    """схема нового твита"""
+
+    result: bool
+    tweets: t.Optional[t.List[TweetSchema]]
