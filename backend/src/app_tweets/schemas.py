@@ -5,11 +5,13 @@ from pydantic import BaseModel, Field
 
 class AttachmentSchema(BaseModel):
     """схема вложения к твитту"""
+
     link: str
 
 
 class AuthorSchema(BaseModel):
     """схема автора твита"""
+
     id: int
     name: str
 
@@ -21,12 +23,14 @@ class MeAuthorSchema(AuthorSchema):
 
 class MeAuthorOutSchema(BaseModel):
     """выходная схема о юзере"""
+
     result: bool = True
     user: MeAuthorSchema
 
 
 class TweetSchema(BaseModel):
     """схема вывода твита"""
+
     id: int
     content: str = Field(example="запомните этот твит")
     attachments: t.Optional[t.List[AttachmentSchema]]
@@ -36,11 +40,13 @@ class TweetSchema(BaseModel):
 
 class TweetInSchema(BaseModel):
     """схема нового твита"""
+
     tweet_data: str
     media_ids: t.Optional[t.List[int]]
 
 
 class TweetOutSchema(BaseModel):
     """схема нового твита"""
+
     result: bool
     tweet_id: int

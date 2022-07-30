@@ -1,25 +1,30 @@
 import logging
 import typing as t
 
-from fastapi import Response, Request
+from fastapi import Request, Response
 
-from .schemas import TweetSchema, TweetInSchema, TweetOutSchema, MeAuthorOutSchema
-from .transport_services import AbstractTweetService, AbstractAuthorService
+from .schemas import (
+    MeAuthorOutSchema,
+    TweetInSchema,
+    TweetOutSchema,
+    TweetSchema,
+)
+from .transport_services import AbstractAuthorService, AbstractTweetService
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level='INFO', handlers=[logging.StreamHandler()])
+logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])
 
 
 class PermissionService:
     def __init__(self, request: Request, response: Response):
         self.request = request
         self.response = response
-        logger.info('headers patched')
+        logger.info("headers patched")
         logger.info(self.request.headers.keys())
         # self.response.headers['Access-Control-Allow-Origin'] = '*'
         # self.response.headers['Access-Control-Allow-Headers'] = '*'
-        if api_key := self.request.headers.get('api-key'):
-            self.response.headers['api-key'] = api_key
+        if api_key := self.request.headers.get("api-key"):
+            self.response.headers["api-key"] = api_key
             self.api_key = api_key
 
     async def get_api_key(self):
@@ -50,5 +55,5 @@ class AuthorService:
         self.service = service
 
     async def me(self, api_key: str) -> MeAuthorOutSchema:
-        logger.info(f'exec business AuthorService.me {api_key} ')
+        logger.info("exec business AuthorService.me %s", api_key)
         return await self.service.me(api_key)
