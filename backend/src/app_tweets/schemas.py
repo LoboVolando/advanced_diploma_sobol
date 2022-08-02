@@ -2,30 +2,13 @@ import typing as t
 
 from pydantic import BaseModel, Field
 
+from ..app_users.schemas import AuthorSchema
+
 
 class AttachmentSchema(BaseModel):
     """схема вложения к твитту"""
 
     link: str
-
-
-class AuthorSchema(BaseModel):
-    """схема автора твита"""
-
-    id: int
-    name: str
-
-
-class MeAuthorSchema(AuthorSchema):
-    followers: t.List[AuthorSchema]
-    following: t.List[AuthorSchema]
-
-
-class MeAuthorOutSchema(BaseModel):
-    """выходная схема о юзере"""
-
-    result: bool = True
-    user: MeAuthorSchema
 
 
 class TweetSchema(BaseModel):
@@ -50,3 +33,16 @@ class TweetOutSchema(BaseModel):
 
     result: bool
     tweet_id: int
+
+
+class TweetListOutSchema(BaseModel):
+    """схема нового твита"""
+
+    result: bool
+    tweets: t.Optional[t.List[TweetSchema]]
+
+
+class SuccessSchema(BaseModel):
+    """схема успешного выполнения чего-либо"""
+
+    result: bool = True
