@@ -2,14 +2,14 @@ import logging
 
 from fastapi import APIRouter, Depends
 
-from ..app_tweets.schemas import (
+from app_tweets.schemas import (
     SuccessSchema,
     TweetInSchema,
     TweetListOutSchema,
     TweetOutSchema,
 )
-from ..app_tweets.services import TweetService
-from ..app_users.services import PermissionService
+from app_tweets.services import TweetService
+from app_users.services import PermissionService
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])

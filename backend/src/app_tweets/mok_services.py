@@ -4,15 +4,15 @@ import typing as t
 
 from faker import Faker
 
-from ..app_tweets.interfaces import AbstractTweetService
-from ..app_tweets.schemas import (
+from app_tweets.interfaces import AbstractTweetService
+from app_tweets.schemas import (
     AuthorSchema,
     SuccessSchema,
     TweetInSchema,
     TweetOutSchema,
     TweetSchema,
 )
-from ..app_users.mok_services import AuthorMockService
+from app_users.mok_services import AuthorMockService
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])

@@ -4,6 +4,13 @@ from pydantic import BaseSettings
 class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = 8000
+
+    postgres_root_user: str = "postgres"
+    postgres_root_password: str = "PostgresPassword"
+    postgres_host: str = "localhost"
+    postgres_port: int = 5002
+    web_db: str = "postgres"
+
     # db_url = ""
     # async_db_url = ""
     # connect_args = {"check_same_thread": False}

@@ -3,16 +3,16 @@ import logging
 from fastapi.requests import Request
 from fastapi.responses import Response
 
-from ..app_users.mok_services import (
-    AuthorMockService as AuthorTransportService,
-)
-from ..app_users.schemas import ProfileAuthorOutSchema
+from app_users.mok_services import AuthorMockService as AuthorTransportService
+from app_users.schemas import ProfileAuthorOutSchema
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])
 
 
 class PermissionService:
+    """сервис проверяет права и токен (ха, которых еще нет)"""
+
     def __init__(self, request: Request, response: Response):
         self.request = request
         self.response = response

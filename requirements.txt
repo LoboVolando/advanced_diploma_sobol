@@ -16,3 +16,6 @@ sqlalchemy
 sqlalchemy-stubs
 aioredis
 faker
+alembic
+aiopg
+asyncpg

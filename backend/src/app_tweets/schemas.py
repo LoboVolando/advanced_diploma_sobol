@@ -2,7 +2,7 @@ import typing as t
 
 from pydantic import BaseModel, Field
 
-from ..app_users.schemas import AuthorSchema
+from app_users.schemas import AuthorSchema
 
 
 class AttachmentSchema(BaseModel):

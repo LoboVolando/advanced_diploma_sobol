@@ -1,15 +1,15 @@
 import logging
 import typing as t
 
-from ..app_tweets.exceptions import BelongsTweetToAuthorException
-from ..app_tweets.mok_services import TweetMockService as TweetTransportService
-from ..app_tweets.schemas import (
+from app_tweets.exceptions import BelongsTweetToAuthorException
+from app_tweets.mok_services import TweetMockService as TweetTransportService
+from app_tweets.schemas import (
     TweetInSchema,
     TweetListOutSchema,
     TweetOutSchema,
     TweetSchema,
 )
-from ..app_users.services import AuthorService
+from app_users.services import AuthorService
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])

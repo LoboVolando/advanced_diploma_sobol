@@ -2,8 +2,8 @@ import logging
 
 from fastapi import APIRouter, Depends
 
-from ..app_users.schemas import ProfileAuthorOutSchema, SuccessSchema
-from ..app_users.services import AuthorService, PermissionService
+from app_users.schemas import ProfileAuthorOutSchema, SuccessSchema
+from app_users.services import AuthorService, PermissionService
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])

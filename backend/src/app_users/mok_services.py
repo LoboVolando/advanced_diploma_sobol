@@ -4,12 +4,8 @@ import typing as t
 
 from faker import Faker
 
-from ..app_users.interfaces import AbstractAuthorService
-from ..app_users.schemas import (
-    AuthorSchema,
-    ProfileAuthorSchema,
-    SuccessSchema,
-)
+from app_users.interfaces import AbstractAuthorService
+from app_users.schemas import AuthorSchema, ProfileAuthorSchema, SuccessSchema
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])
