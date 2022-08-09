@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     postgres_host: str = "localhost"
     postgres_port: int = 5002
     web_db: str = "postgres"
+    redis_host: str = "localhost"
+    redis_port: str = 5479
 
     # db_url = ""
     # async_db_url = ""

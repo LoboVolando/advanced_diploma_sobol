@@ -21,3 +21,8 @@ class AbstractAuthorService(ABC):
     async def remove_follow(self, author_id: int, follow_id: int):
         """абстрактный метод расфаллования автора по id"""
         ...
+
+    @abstractmethod
+    async def error_get_user(self):
+        """генерация ошибки получения юзера для фронта"""
+        ...

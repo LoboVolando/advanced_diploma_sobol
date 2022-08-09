@@ -9,7 +9,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     volumes:
-      - ./backend:/backend
+      - ./backend/src:/backend
       - ./.env:/backend/.env
       - ./backend/supervisord.ini:/etc/supervisor/conf.d/supervisord.ini:ro
     command: bash -c "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.ini"

@@ -5,7 +5,8 @@ import typing as t
 from faker import Faker
 
 from app_users.interfaces import AbstractAuthorService
-from app_users.schemas import AuthorSchema, ProfileAuthorSchema, SuccessSchema
+from app_users.schemas import AuthorOutSchema, ProfileAuthorSchema, SuccessSchema
+# from app_users.exceptions import AuthorNotExists
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])
@@ -18,6 +19,7 @@ class AuthorMockService(AbstractAuthorService):
     async def me(self, api_key: str) -> ProfileAuthorSchema:
         logger.info("run transport service %s", api_key)
         token = await self.get_token_from_redis_by_api_key(api_key)
+        # raise AuthorNotExists()
         return await self.get_author_by_id(token["author_id"])
 
     async def get_author_by_id(self, author_id: int) -> ProfileAuthorSchema:
@@ -31,7 +33,7 @@ class AuthorMockService(AbstractAuthorService):
     async def get_token_from_redis_by_api_key(self, api_key: str):
         """получить токен юзера из редиса"""
         logger.info("run transport service %s", api_key)
-        return dict(author_id=random.randint(1, 10000))
+        return dict(author_id=1)
 
     async def add_follow(self, author_id: int, follow_id: int):
         """сервис реального фалования автора"""
@@ -45,6 +47,10 @@ class AuthorMockService(AbstractAuthorService):
         """генерация фейкового автора"""
         return dict(id=random.randint(1, 300000), name=self.faker.name())
 
-    def _get_authors_list(self, count: int) -> t.List[AuthorSchema]:
+    async def error_get_user(self):
+        return dict(result=False, error_type='USER_NOT_FOUND',
+                    error_message="Ошибка. Пользователель не зарегистрирован")
+
+    def _get_authors_list(self, count: int) -> t.List[AuthorOutSchema]:
         """получить список авторов"""
-        return [AuthorSchema(**self.get_fake_author()) for i in range(count)]
+        return [AuthorOutSchema(**self.get_fake_author()) for i in range(count)]

@@ -6,13 +6,13 @@ from faker import Faker
 
 from app_tweets.interfaces import AbstractTweetService
 from app_tweets.schemas import (
-    AuthorSchema,
+    AuthorOutSchema,
     SuccessSchema,
     TweetInSchema,
     TweetOutSchema,
     TweetSchema,
 )
-from app_users.mok_services import AuthorMockService
+from app_users.db_services import AuthorDbService as AuthorService
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])
@@ -20,7 +20,7 @@ logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])
 
 class TweetMockService(AbstractTweetService):
     def __init__(self):
-        self.author = AuthorMockService()
+        self.author = AuthorService()
         self.faker = Faker("ru-RU")
 
     async def get_list(self, api_key: str) -> t.Optional[t.List[TweetSchema]]:
@@ -44,7 +44,7 @@ class TweetMockService(AbstractTweetService):
         return TweetSchema(
             id=random.randint(1, 100000),
             content=self.faker.text(),
-            author=AuthorSchema(**self.author.get_fake_author()),
+            author=AuthorOutSchema(**self.author.get_fake_author()),
         )
 
     async def get_tweet_by_id(self, tweet_id: int) -> TweetSchema:
@@ -52,7 +52,7 @@ class TweetMockService(AbstractTweetService):
         return TweetSchema(
             id=tweet_id,
             content="content",
-            author=AuthorSchema(id=1, name="John Doe"),
+            author=AuthorOutSchema(id=1, name="John Doe"),
         )
 
     async def add_like_to_tweet(

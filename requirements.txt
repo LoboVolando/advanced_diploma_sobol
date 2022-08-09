@@ -19,3 +19,4 @@ faker
 alembic
 aiopg
 asyncpg
+passlib[bcrypt]

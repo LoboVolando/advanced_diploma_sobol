@@ -18,15 +18,3 @@ class TweetNotExists(TweetBaseException):
 
 class BelongsTweetToAuthorException(TweetBaseException):
     """ошибка принадлежности твита автору"""
-
-
-class AuthorBaseException(ApiBaseException):
-    """базовое исключение для сервиса авторов"""
-
-    ...
-
-
-class AuthorNotExists(AuthorBaseException):
-    """Автор не существует"""
-
-    ...

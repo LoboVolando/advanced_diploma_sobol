@@ -2,7 +2,7 @@ import typing as t
 
 from pydantic import BaseModel, Field
 
-from app_users.schemas import AuthorSchema
+from app_users.schemas import AuthorOutSchema
 
 
 class AttachmentSchema(BaseModel):
@@ -17,8 +17,8 @@ class TweetSchema(BaseModel):
     id: int
     content: str = Field(example="запомните этот твит")
     attachments: t.Optional[t.List[AttachmentSchema]]
-    author: AuthorSchema
-    likes: t.Optional[t.List[AuthorSchema]]
+    author: AuthorOutSchema
+    likes: t.Optional[t.List[AuthorOutSchema]]
 
 
 class TweetInSchema(BaseModel):

@@ -3,26 +3,38 @@ import typing as t
 from pydantic import BaseModel
 
 
-class AuthorSchema(BaseModel):
-    """схема автора твита"""
-
-    id: int
+class AuthorBaseSchema(BaseModel):
     name: str
 
 
-class ProfileAuthorSchema(AuthorSchema):
-    followers: t.List[AuthorSchema]
-    following: t.List[AuthorSchema]
+class RegisterAuthorSchema(AuthorBaseSchema):
+    password: str
 
 
-class ProfileAuthorOutSchema(BaseModel):
-    """выходная схема о юзере"""
+class AuthorOutSchema(AuthorBaseSchema):
+    """схема автора твита"""
+    id: int
 
-    result: bool = True
-    user: ProfileAuthorSchema
+
+class ProfileAuthorSchema(AuthorOutSchema):
+    followers: t.Optional[t.List[AuthorOutSchema]]
+    following: t.Optional[t.List[AuthorOutSchema]]
 
 
 class SuccessSchema(BaseModel):
     """схема успешного выполнения чего-либо"""
 
     result: bool = True
+
+
+class ProfileAuthorOutSchema(SuccessSchema):
+    """выходная схема о юзере"""
+
+    user: ProfileAuthorSchema
+
+
+class ErrorSchema(BaseModel):
+    """схема ошибки"""
+    result: bool = False
+    error_type: str
+    error_message: str

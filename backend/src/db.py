@@ -1,3 +1,4 @@
+import aioredis
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -20,3 +21,5 @@ engine = create_async_engine(
 
 Base = declarative_base()
 session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+
+redis = aioredis.from_url(f"redis://{settings.redis_host}:{settings.redis_port}/1")
