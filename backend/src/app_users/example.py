@@ -1,11 +1,10 @@
 import typing
 
+from app_users.models import Author
+from settings import settings
 from sqlalchemy import create_engine, func, select, update
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import selectinload, sessionmaker
-
-from app_users.models import Author
-from settings import settings
 
 # engine = create_engine(
 #     settings.db_url, echo=True, connect_args=settings.connect_args
@@ -25,9 +24,7 @@ engine = create_engine(
 
 Base = declarative_base()
 
-SessionLocal = sessionmaker(
-    engine, expire_on_commit=False, autoflush=False, autocommit=False
-)
+SessionLocal = sessionmaker(engine, expire_on_commit=False, autoflush=False, autocommit=False)
 
 
 if __name__ == "__main__":

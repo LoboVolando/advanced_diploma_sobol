@@ -10,19 +10,19 @@ services:
       dockerfile: backend/Dockerfile
     volumes:
       - ./backend/src:/backend
-      - ./.env:/backend/.env
       - ./backend/supervisord.ini:/etc/supervisor/conf.d/supervisord.ini:ro
+      - ./media:/static
     command: bash -c "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.ini"
     ports:
       - "5455:80"
     networks:
       - skynet
-#    environment:
+    environment:
 #      web_db: ${WEB_DB}
-#      POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
-#      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
-#      POSTGRES_HOST: ${POSTGRES_HOST}
-#      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
+      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
 
   frontend:
     container_name: frontend
@@ -31,6 +31,9 @@ services:
       - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./frontend/src:/frontend
       - ./frontend/logs:/frontend/logs
+      - ./media:/static
+    depends_on:
+      - backend
     expose:
       - 5454
     ports:

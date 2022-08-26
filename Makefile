@@ -17,3 +17,7 @@ lint:
 	isort --check-only --profile black ./backend
 	black --check --diff -v ./backend
 	flake8 ./backend
+
+flint:
+	isort --profile black ./backend
+	black ./backend

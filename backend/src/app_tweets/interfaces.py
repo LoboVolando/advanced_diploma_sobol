@@ -1,3 +1,4 @@
+import typing as t
 from abc import ABC, abstractmethod
 
 from .schemas import SuccessSchema, TweetInSchema, TweetSchema
@@ -7,7 +8,7 @@ class AbstractTweetService(ABC):
     """адстрактный класс для работы с сервисом твиттов"""
 
     @abstractmethod
-    def get_list(self, api_key: str):
+    def get_list(self, author_id: int):
         """
         метод получения списка твитов
         :return: опциональный список твиттов
@@ -15,7 +16,12 @@ class AbstractTweetService(ABC):
         ...
 
     @abstractmethod
-    def create_tweet(self, new_tweet: TweetInSchema, author_id: int):
+    def create_tweet(
+        self,
+        new_tweet: TweetInSchema,
+        author_id: int,
+        attachments: t.List[str],
+    ):
         """абстрактный метод сохранения твита"""
         ...
 
@@ -28,13 +34,9 @@ class AbstractTweetService(ABC):
         ...
 
     @abstractmethod
-    async def add_like_to_tweet(
-        self, tweet_id: int, author_id: int
-    ) -> SuccessSchema:
+    async def add_like_to_tweet(self, tweet_id: int, author_id: int) -> SuccessSchema:
         ...
 
     @abstractmethod
-    async def remove_like_from_tweet(
-        self, tweet_id: int, author_id: int
-    ) -> SuccessSchema:
+    async def remove_like_from_tweet(self, tweet_id: int, author_id: int) -> SuccessSchema:
         ...

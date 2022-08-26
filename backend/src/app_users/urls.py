@@ -1,26 +1,18 @@
-import logging
-
-from fastapi import APIRouter, Depends
-
+import app_users.db_services as dbs
 from app_users.exceptions import PasswordIncorrect
 from app_users.schemas import ErrorSchema, RegisterAuthorSchema, SuccessSchema
 from app_users.services import AuthorService, PermissionService
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])
+from fastapi import APIRouter, Depends
+from loguru import logger
 
 router = APIRouter()
 
 
 @router.post("/api/register")
-async def register(
-    author: RegisterAuthorSchema, service: AuthorService = Depends()
-):
+async def register(author: RegisterAuthorSchema, service: AuthorService = Depends()):
     logger.warning("регистрируем нового пользователя...")
     try:
-        api_key, created = await service.get_or_create_user(
-            name=author.name, password=author.password
-        )
+        api_key, created = await service.get_or_create_user(name=author.name, password=author.password)
         logger.info(api_key)
         return {"result": "true", "api-key": api_key, "created": created}
     except PasswordIncorrect:
@@ -58,9 +50,7 @@ async def follow_author(
     author: AuthorService = Depends(),
 ) -> SuccessSchema | ErrorSchema:
     api_key = await permission.get_api_key()
-    return await author.add_follow(
-        writing_author_id=author_id, api_key=api_key
-    )
+    return await author.add_follow(writing_author_id=author_id, api_key=api_key)
 
 
 @router.delete("/api/users/{author_id}/follow", response_model=SuccessSchema)
@@ -70,6 +60,4 @@ async def unfollow_author(
     author: AuthorService = Depends(),
 ):
     api_key = await permission.get_api_key()
-    return await author.remove_follow(
-        writing_author_id=author_id, api_key=api_key
-    )
+    return await author.remove_follow(writing_author_id=author_id, api_key=api_key)

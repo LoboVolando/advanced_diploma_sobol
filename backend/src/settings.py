@@ -1,3 +1,4 @@
+from loguru import logger
 from pydantic import BaseSettings
 
 
@@ -12,6 +13,7 @@ class Settings(BaseSettings):
     web_db: str = "postgres"
     redis_host: str = "localhost"
     redis_port: str = 5479
+    media_root: str = "/home/svv/Изображения/diploma"
 
     # db_url = ""
     # async_db_url = ""
@@ -22,3 +24,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings(_env_file="./.env", _env_file_encoding="UTF-8")
+logger.info(settings.dict())

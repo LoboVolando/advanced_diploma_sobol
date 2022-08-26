@@ -1,8 +1,7 @@
 import aioredis
+from settings import settings
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
-
-from settings import settings
 
 credentials = dict(
     user=settings.postgres_root_user,
@@ -13,10 +12,8 @@ credentials = dict(
 )
 
 engine = create_async_engine(
-    "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}".format(
-        **credentials
-    ),
-    echo=True,
+    "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}".format(**credentials),
+    echo=False,
 )
 
 Base = declarative_base()

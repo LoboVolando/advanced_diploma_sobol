@@ -1,15 +1,10 @@
-import logging
 import random
 import typing as t
 
-from faker import Faker
-
 from app_users.interfaces import AbstractAuthorService
 from app_users.schemas import AuthorOutSchema, ProfileAuthorSchema, SuccessSchema
-# from app_users.exceptions import AuthorNotExists
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level="INFO", handlers=[logging.StreamHandler()])
+from faker import Faker
+from loguru import logger
 
 
 class AuthorMockService(AbstractAuthorService):
@@ -48,8 +43,11 @@ class AuthorMockService(AbstractAuthorService):
         return dict(id=random.randint(1, 300000), name=self.faker.name())
 
     async def error_get_user(self):
-        return dict(result=False, error_type='USER_NOT_FOUND',
-                    error_message="Ошибка. Пользователель не зарегистрирован")
+        return dict(
+            result=False,
+            error_type="USER_NOT_FOUND",
+            error_message="Ошибка. Пользователель не зарегистрирован",
+        )
 
     def _get_authors_list(self, count: int) -> t.List[AuthorOutSchema]:
         """получить список авторов"""

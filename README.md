@@ -2,6 +2,32 @@
 
 дипломный проект по курсу python advanced от skillbox
 
+## быстрый старт
+* рядом с docker-compose положить файл .env и переопределить переменные. Пример можно взять в default.env
+* запустить контейнер postgres:
+  ```shell
+  docker-compose up postgres -d
+  ```
+* собрать контейнер backend:
+  ```shell
+  sudo docker-compose build backend
+  ```
+* возможно прийдётся сделать:
+  ```shell
+  sudo chmod 777 -R ./db
+  ```
+но это неточно.
+* в папке backend/src выполнить:
+  ```shell
+    alembic revision --autogenerate -m "init"
+    alembic upgrade head
+  ```
+* запустить прочие контейнеры:
+  ```shell
+  docker-compose up backend frontend
+  ```
+# дальше можно не читать
+
 * ci/cd
   * установить gitlab-runner на сервер и зарегистрировать его. В настройках гитлаб отключить использование теневых раннеров
   * подкинуть в папку /home/gitlab-runner/.ssh файлики:
@@ -21,8 +47,6 @@
     * web
 
 
-* alembic init . - не забудь для миграций первый раз бахнуть
-
 ## что хочется:
 
 * fast-api
@@ -31,11 +55,6 @@
 * https протокол
 * архитектура service-based
 
-## быстрый старт
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
 ## Add your files
 

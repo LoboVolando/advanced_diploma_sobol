@@ -20,3 +20,5 @@ alembic
 aiopg
 asyncpg
 passlib[bcrypt]
+loguru
+python-multipart
