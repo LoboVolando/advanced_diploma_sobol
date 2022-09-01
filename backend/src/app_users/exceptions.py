@@ -1,30 +1,26 @@
+"""
+exceptions.py
+-------------
+
+Модуль содержит классы исключений приложения app_users.
+"""
+
+
 class AuthorBaseException(BaseException):
-    """базовое исключение для сервиса авторов"""
-
+    """Базовое исключение для сервиса авторов."""
     ...
 
 
-class AuthorNotExists(AuthorBaseException):
-    """Автор не существует"""
-
+class AuthorNotExistsException(AuthorBaseException):
+    """Исключение: автор не существует."""
     ...
 
 
-class PasswordIncorrect(AuthorBaseException):
-    """пароль неправильный"""
-
+class PasswordIncorrectException(AuthorBaseException):
+    """Исключение: неправильный пароль"""
     ...
 
 
-class FollowerIsNotUnique(AuthorBaseException):
-    """не уникальный фоловер"""
-
-
-class RecursiveFollower(AuthorBaseException):
-    """рекурсивное фоллование"""
-
+class RecursiveFollowerException(AuthorBaseException):
+    """Исключение: подписка автора самого на себя"""
     ...
-
-
-class FollowerIsNotExists(AuthorBaseException):
-    """указан несуществующий фоловер"""

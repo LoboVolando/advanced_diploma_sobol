@@ -1,0 +1,701 @@
+
+<!DOCTYPE html>
+
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Добро пожаловать в документацию дипломного проекта. &#8212; документация skillbox 1</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/translations.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             accesskey="I">указатель</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">документация skillbox 1</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Добро пожаловать в документацию дипломного проекта.</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>Добро пожаловать в документацию дипломного проекта.<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
+</section>
+<section id="module-app">
+<span id="id2"></span><h1>Посторонним вход воспрещён!<a class="headerlink" href="#module-app" title="Permalink to this heading">¶</a></h1>
+<section id="app-py">
+<h2>app.py<a class="headerlink" href="#app-py" title="Permalink to this heading">¶</a></h2>
+<p>Главный модуль приложения. разделён на 3 приложения: app_users app_tweets app_media. Точка входа для wsgi http сервера.</p>
+<p class="rubric">Примеры</p>
+<p>Пример запуска приложения через сервер <strong>gunicorn</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gunicorn app:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind backend:80
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Какое-то примечание</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.app">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">app</span></span><a class="headerlink" href="#app.app" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Экземпляр приложения FastApi, к которому подключаются middleware и роуты приложений</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FastAPI</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-db"></span><section id="db-py">
+<h2>db.py<a class="headerlink" href="#db-py" title="Permalink to this heading">¶</a></h2>
+<p>Модуль содержит экземпляры классов для работы с базами данных.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="db.credentials">
+<span class="sig-prename descclassname"><span class="pre">db.</span></span><span class="sig-name descname"><span class="pre">credentials</span></span><a class="headerlink" href="#db.credentials" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Словарь настроек, необходимых для подключения к СУБД Postgresql.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="db.engine">
+<span class="sig-prename descclassname"><span class="pre">db.</span></span><span class="sig-name descname"><span class="pre">engine</span></span><a class="headerlink" href="#db.engine" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Асинхронный движок для подключения к Postgresql.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AsyncEngine</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="db.Base">
+<span class="sig-prename descclassname"><span class="pre">db.</span></span><span class="sig-name descname"><span class="pre">Base</span></span><a class="headerlink" href="#db.Base" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Колдунство для декларативного конструирования моделей SqlAlchemy.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="db.session">
+<span class="sig-prename descclassname"><span class="pre">db.</span></span><span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#db.session" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Колдунство для выполнения запросов к СУБД.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="db.redis">
+<span class="sig-prename descclassname"><span class="pre">db.</span></span><span class="sig-name descname"><span class="pre">redis</span></span><a class="headerlink" href="#db.redis" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Асинхронное подключение к нереляционной СУБД.</p>
+</dd></dl>
+
+</section>
+<span class="target" id="module-schemas"></span><section id="schemas-py">
+<h2>schemas.py<a class="headerlink" href="#schemas-py" title="Permalink to this heading">¶</a></h2>
+<p>Модуль содержит классы для сообщений фронтенду о возникших ошибках</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.ErrorSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">ErrorSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schemas.ErrorSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс определяет базовую схему ошибки</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>bool</em>) – Результат. Для ошибок дефолтное значение False.</p></li>
+<li><p><strong>error_type</strong> (<em>str</em>) – Тип ошибки.</p></li>
+<li><p><strong>error_message</strong> (<em>str</em>) – Сообщение об ошибке.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.ErrorSchemasList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">ErrorSchemasList</span></span><a class="headerlink" href="#schemas.ErrorSchemasList" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс инкапсулирует сообщения об ошибках для фронтенда.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>author_not_exists</strong> (<a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><em>ErrorSchema</em></a>) – Pydantic-схема ошибки, автор не существует.</p></li>
+<li><p><strong>recursive_follow</strong> (<a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><em>ErrorSchema</em></a>) – Pydantic-схема ошибки, автор подписывается сам на себя.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_users.urls"></span><section id="urls-py">
+<h2>urls.py<a class="headerlink" href="#urls-py" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует эндпоинты приложения app_users.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app_users.urls.follow_author">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">follow_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.SuccessSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.follow_author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт добавляет пишущему автору читателей, а читателям - писателя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор пишущего автора.</p></li>
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость для работы с правами.</p></li>
+<li><p><strong>author</strong> (<a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><em>AuthorService</em></a>) – Зависимость, реализующая бизнес-логику работы с авторами.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешного выполнения.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Идентификатор читающего автора извлекается при помощи зависимости permission.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_users.urls.get_author_by_id">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">get_author_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.get_author_by_id" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт возвращает автора по идентификатору в базе данных.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора для запроса.</p></li>
+<li><p><strong>user</strong> (<a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><em>AuthorService</em></a>) – Зависимость реализующая бизнес-логику для работы с пользователями.</p></li>
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость, реализующая логику работы с правами.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ProfileAuthorOutSchema</em> – pydantic-схема профиля пользователя.</p></li>
+<li><p><em>ErrorSchema</em> – pydantic-схема сообщения об ошибке.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_users.urls.me">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.me" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт возвращает информацию о текущем пользователе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> (<a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><em>AuthorService</em></a>) – Зависимость реализует бизнес-логику работы с пользователями.</p></li>
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость реализует бизнес-логику работы с правами.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ProfileAuthorOutSchema</em> – pydantic-схема профиля пользователя.</p></li>
+<li><p><em>ErrorSchema</em> – pydantic-схема сообщения об ошибке.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_users.urls.register">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RegisterAuthorSchema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#app_users.urls.register" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт регистрации нового автора.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>author</strong> (<em>RegisterAuthorSchema</em>) – Pydantic-схема с данными автора, для регистрации.</p></li>
+<li><p><strong>service</strong> (<a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><em>AuthorService</em></a>) – Зависимость, реализующая бизнес-логику работы с авторами.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Возвращает словарь:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="s1">&#39;api-key&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s1">&#39;created&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Не предусмотрен документацией проекта.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_users.urls.unfollow_author">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">unfollow_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.SuccessSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.unfollow_author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт удаляет у пишущего автора читателя, а у  читателя - писателя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор пишущего автора.</p></li>
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость для работы с правами.</p></li>
+<li><p><strong>author</strong> (<a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><em>AuthorService</em></a>) – Зависимость, реализующая бизнес-логику работы с авторами.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешного выполнения.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Идентификатор читающего автора извлекается при помощи зависимости permission.</p>
+</div>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_users.services"></span><section id="services-py">
+<h2>services.py<a class="headerlink" href="#services-py" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует бизнес-логику приложения app_users.</p>
+<dl class="simple">
+<dt>pwd_context: CryptContext</dt><dd><p>Мощное колдунство по борьбе с паролями.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.services.AuthorService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.services.</span></span><span class="sig-name descname"><span class="pre">AuthorService</span></span><a class="headerlink" href="#app_users.services.AuthorService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс реализует бизнес-логику работы с авторами твитов.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.AuthorService.add_follow">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">writing_author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.SuccessSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.add_follow" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод добавляет читателя к пишущему автору, а писателя - в список авторов читателя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>writing_author_id</strong> (<em>int</em>) – Идентификатор пишущего автора в базе данных.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Фронтенд-идентификатор текущего пользователя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешной операции</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения метода.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.AuthorService.generate_api_key">
+<span class="sig-name descname"><span class="pre">generate_api_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#app_users.services.AuthorService.generate_api_key" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод генерирует строку заданной длины случайных символов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>length</strong> (<em>int</em>) – Длина искомой строки.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>api-key для фронтенда</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.AuthorService.get_author">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.get_author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает информацио о пользователе по одному из параметров.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор пользователя в базе.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный идентификатор от фронтенда.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Имя пользователя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ProfileAuthorOutSchema</em> – Pydantic-схема профиля пользователя.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения метода.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.AuthorService.get_or_create_user">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_or_create_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="headerlink" href="#app_users.services.AuthorService.get_or_create_user" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод получает или создаёт пользователя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Имя пользователя.</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – Пароль пользователя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>tuple</strong> – api-key для фронтенда и флаг created, означающий, был пользователь создан или запрошен из базы данных.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str, bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.AuthorService.me">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.me" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает информацио о текущем пользователе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api_key</strong> (<em>str</em>) – Уникальный идентификатор от фронтенда.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ProfileAuthorOutSchema</em> – Pydantic-схема профиля пользователя.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения метода.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.AuthorService.remove_follow">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">writing_author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.SuccessSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.remove_follow" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод удаляет читателя из списка читателей пишущего автора, а писателя из список авторов у читателя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>writing_author_id</strong> (<em>int</em>) – Идентификатор пишущего автора в базе данных.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Фронтенд-идентификатор текущего пользователя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешной операции</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения метода.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.services.PermissionService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.services.</span></span><span class="sig-name descname"><span class="pre">PermissionService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Response</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.services.PermissionService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс реализует бизнес-логику работы с правами доступа.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.PermissionService.get_api_key">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_api_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_users.services.PermissionService.get_api_key" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает api-key для фронтенда, если он существует.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Результат<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Уникальный api-key для фронтенда.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p>str, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.PermissionService.hash_password">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hash_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#app_users.services.PermissionService.hash_password" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод рассчитывает хеш для сырого пароля.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>raw_password</strong> (<em>str</em>) – Сырой пароль пользователя.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Хэш пароля.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.services.PermissionService.verify_password">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">verify_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hashed_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#app_users.services.PermissionService.verify_password" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод сравнивает хэш сырого пароля с сохраненным хэшем пользователя в базе данных.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raw_password</strong> (<em>str</em>) – Сырой пароль пользователя.</p></li>
+<li><p><strong>hashed_password</strong> (<em>str</em>) – Хэш пароля из базы данных.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>True если хэш совпал, иначе Else.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_users.db_services"></span><section id="db-services-py">
+<h2>db_services.py<a class="headerlink" href="#db-services-py" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует взаимодействие с базой данных приложения app_users.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.db_services.AuthorDbService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.db_services.</span></span><span class="sig-name descname"><span class="pre">AuthorDbService</span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс инкапсулирует cruid для модели авторов</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.db_services.AuthorDbService.create_author">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.db_services.AuthorDbService.create_author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод сохраняет нового автора в базе данных</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Имя нового автора.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный ключ для фронтенда.</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – Зашифрованный пароль нового автора.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>SqlAlchemy-модель автора.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Author</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.db_services.AuthorDbService.get_author">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ProfileAuthorSchema</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.get_author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод ищет автора по одному из параметров.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>author_id</strong> (<em>int</em><em>, </em><em>optional</em>) – Идентификатор пользователя.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em><em>, </em><em>optional</em>) – Ключ, отправляемый бэкендом.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Имя пользователя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема профиля автора.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ProfileAuthorSchema</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.db_services.AuthorDbService.me">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ProfileAuthorSchema</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.me" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает информацию о пользователе по ключу api_key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api_key</strong> (<em>str</em>) – Ключ, передаваемый фронтендом, по которому ищем пользователя.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема профиля пользователя, валидная для эндпоинта.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ProfileOutSchema</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.db_services.AuthorDbService.update_follow">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reading_author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ProfileAuthorSchema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writing_author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ProfileAuthorSchema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">followers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">following</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SuccessSchema</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.update_follow" title="Ссылка на это определение">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reading_author</strong> (<em>ProfileAuthorSchema</em>) – Профиль читающего автора.</p></li>
+<li><p><strong>writing_author</strong> (<em>ProfileAuthorSchema</em>) – Профиль пишущего автора.</p></li>
+<li><p><strong>followers</strong> (<em>dict</em>) – Словарь всех писателей пользователя.</p></li>
+<li><p><strong>following</strong> (<em>dict</em>) – Сроварь всех читателей пользователя.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема успешной операции</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SuccessSchema</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.db_services.AuthorRedisService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.db_services.</span></span><span class="sig-name descname"><span class="pre">AuthorRedisService</span></span><a class="headerlink" href="#app_users.db_services.AuthorRedisService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс инкапсулирует методы по кэшированию авторов в redis.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.db_services.AuthorRedisService.get_author_model">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Author</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_users.db_services.AuthorRedisService.get_author_model" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает модель автора из redis по api-key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api_key</strong> (<em>str</em>) – Уникальный ключ для фронтенда.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Модель автора</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Author</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.db_services.AuthorRedisService.save_author_model">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_author_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Author</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorRedisService.save_author_model" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод сохраняет SqlAlchemy-model в redis.</p>
+<dl class="simple">
+<dt>api_key: str</dt><dd><p>Уникальный ключ для фронтенда.</p>
+</dd>
+<dt>model: Author</dt><dd><p>SqlAlchemy-model автора.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_users.exceptions"></span><section id="exceptions-py">
+<h2>exceptions.py<a class="headerlink" href="#exceptions-py" title="Permalink to this heading">¶</a></h2>
+<p>Модуль содержит классы исключений приложения app_users.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="app_users.exceptions.AuthorBaseException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.exceptions.</span></span><span class="sig-name descname"><span class="pre">AuthorBaseException</span></span><a class="headerlink" href="#app_users.exceptions.AuthorBaseException" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовое исключение для сервиса авторов.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="app_users.exceptions.AuthorNotExistsException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.exceptions.</span></span><span class="sig-name descname"><span class="pre">AuthorNotExistsException</span></span><a class="headerlink" href="#app_users.exceptions.AuthorNotExistsException" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Исключение: автор не существует.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="app_users.exceptions.PasswordIncorrectException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.exceptions.</span></span><span class="sig-name descname"><span class="pre">PasswordIncorrectException</span></span><a class="headerlink" href="#app_users.exceptions.PasswordIncorrectException" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Исключение: неправильный пароль</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="app_users.exceptions.RecursiveFollowerException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.exceptions.</span></span><span class="sig-name descname"><span class="pre">RecursiveFollowerException</span></span><a class="headerlink" href="#app_users.exceptions.RecursiveFollowerException" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Исключение: подписка автора самого на себя</p>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_tweets"></span><section id="app-tweets-py">
+<h2>app_tweets.py<a class="headerlink" href="#app-tweets-py" title="Permalink to this heading">¶</a></h2>
+<p>приложение для обмена сообщениями</p>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Алфавитный указатель</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Состав модуля</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Поиск</span></a></p></li>
+</ul>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="#">Оглавление</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Добро пожаловать в документацию дипломного проекта.</a></li>
+<li><a class="reference internal" href="#module-app">Посторонним вход воспрещён!</a><ul>
+<li><a class="reference internal" href="#app-py">app.py</a></li>
+<li><a class="reference internal" href="#db-py">db.py</a></li>
+<li><a class="reference internal" href="#schemas-py">schemas.py</a></li>
+<li><a class="reference internal" href="#urls-py">urls.py</a></li>
+<li><a class="reference internal" href="#services-py">services.py</a></li>
+<li><a class="reference internal" href="#db-services-py">db_services.py</a></li>
+<li><a class="reference internal" href="#exceptions-py">exceptions.py</a></li>
+<li><a class="reference internal" href="#app-tweets-py">app_tweets.py</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Эта страница</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Исходный текст</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Быстрый поиск</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Навигация</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Алфавитный указатель"
+             >указатель</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Содержание модулей Python"
+             >модули</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">документация skillbox 1</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Добро пожаловать в документацию дипломного проекта.</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Skripnik.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.1.1.
+    </div>
+  </body>
+</html>

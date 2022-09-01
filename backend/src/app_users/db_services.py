@@ -1,12 +1,17 @@
+"""
+db_services.py
+===============
+Модуль реализует взаимодействие с базой данных приложения app_users.
+"""
+
 import pickle
 import typing as t
 
-from app_users.exceptions import FollowerIsNotUnique
-from app_users.models import Author
-from app_users.mok_services import AuthorMockService
 from loguru import logger
 from sqlalchemy import select, update
 
+from app_users.models import Author
+from app_users.mok_services import AuthorMockService
 from db import redis, session
 
 from .schemas import ProfileAuthorSchema, SuccessSchema
@@ -15,7 +20,22 @@ TTL = 60
 
 
 class AuthorDbService(AuthorMockService):
-    async def me(self, api_key: str):
+    """Класс инкапсулирует cruid для модели авторов"""
+
+    async def me(self, api_key: str) -> ProfileAuthorSchema:
+        """
+        Метод возвращает информацию о пользователе по ключу api_key.
+
+        Parameters
+        ----------
+            api_key: str
+                Ключ, передаваемый фронтендом, по которому ищем пользователя.
+
+        Returns
+        -------
+        ProfileOutSchema
+            Pydantic-схема профиля пользователя, валидная для эндпоинта.
+        """
         logger.info("make postgres query...")
         # token = self.get_token_from_redis_by_api_key(api_key)
         if author := await self.get_author(api_key=api_key):
@@ -23,7 +43,23 @@ class AuthorDbService(AuthorMockService):
             return author
 
     async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> ProfileAuthorSchema:
-        """запрос в БД по апи-ключу"""
+        """
+        Метод ищет автора по одному из параметров.
+
+        Parameters
+        ----------
+        author_id: int, optional
+            Идентификатор пользователя.
+        api_key: str, optional
+            Ключ, отправляемый бэкендом.
+        name: str, optional
+            Имя пользователя.
+
+        Returns
+        -------
+         ProfileAuthorSchema
+            Pydantic-схема профиля автора.
+        """
         logger.info("запрос автора по ИД, ключу или имени")
         if author_id:
             query = select(Author).filter_by(id=author_id)
@@ -43,7 +79,22 @@ class AuthorDbService(AuthorMockService):
                     return ProfileAuthorSchema.from_orm(user)
 
     async def create_author(self, name: str, api_key: str, password: str):
+        """Метод сохраняет нового автора в базе данных
 
+        Parameters
+        ----------
+        name: str
+            Имя нового автора.
+        api_key: str
+            Уникальный ключ для фронтенда.
+        password: str
+            Зашифрованный пароль нового автора.
+
+        Returns
+        -------
+        Author
+            SqlAlchemy-модель автора.
+        """
         author = Author(name=name, api_key=api_key, password=password)
         async with session() as async_session:
             async with async_session.begin():
@@ -53,13 +104,31 @@ class AuthorDbService(AuthorMockService):
                 return author
 
     async def update_follow(
-        self,
-        reading_author: ProfileAuthorSchema,
-        writing_author: ProfileAuthorSchema,
-        followers: dict,
-        following: dict,
-    ):
-        """сервис фалования автора"""
+            self,
+            reading_author: ProfileAuthorSchema,
+            writing_author: ProfileAuthorSchema,
+            followers: dict,
+            following: dict,
+    ) -> SuccessSchema:
+        """
+
+        Parameters
+        ----------
+        reading_author: ProfileAuthorSchema
+            Профиль читающего автора.
+        writing_author: ProfileAuthorSchema
+            Профиль пишущего автора.
+        followers: dict
+            Словарь всех писателей пользователя.
+        following: dict
+            Сроварь всех читателей пользователя.
+
+        Returns
+        -------
+        SuccessSchema
+            Pydantic-схема успешной операции
+        """
+
         logger.info(f"reading: {reading_author.id} :: {reading_author.name}")
         logger.info(f"writing: {writing_author.id} :: {writing_author.name}")
         query_r = update(Author).where(Author.id == reading_author.id).values(followers=followers)
@@ -73,17 +142,39 @@ class AuthorDbService(AuthorMockService):
 
 
 class AuthorRedisService:
+    """Класс инкапсулирует методы по кэшированию авторов в redis."""
+
     @classmethod
-    async def save_author_model(cls, api_key: str, model: Author):
+    async def save_author_model(cls, api_key: str, model: Author) -> None:
+        """Метод сохраняет SqlAlchemy-model в redis.
+
+        api_key: str
+            Уникальный ключ для фронтенда.
+        model: Author
+            SqlAlchemy-model автора.
+        """
         try:
             model = pickle.dumps(model)
             await redis.set(api_key, model, ex=TTL)
             logger.info("юзер сохранён в редис успешно")
         except Exception as e:
-            logger.exception(exc_info=e, msg="ошибка сохранения в редис")
+            logger.exception(e)
+            logger.error("ошибка сохранения в редис")
+
 
     @classmethod
-    async def get_author_model(cls, api_key: str):
+    async def get_author_model(cls, api_key: str) -> t.Optional[Author]:
+        """Метод возвращает модель автора из redis по api-key.
+
+        Parameters
+        ----------
+        api_key: str
+            Уникальный ключ для фронтенда.
+        Returns
+        -------
+        Author
+            Модель автора
+        """
         try:
             if author := await redis.get(api_key):
                 author = pickle.loads(author)

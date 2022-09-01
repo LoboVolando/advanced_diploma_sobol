@@ -1,7 +1,27 @@
+"""
+db.py
+-----
+
+Модуль содержит экземпляры классов для работы с базами данных.
+
+Attributes
+----------
+credentials : dict
+    Словарь настроек, необходимых для подключения к СУБД Postgresql.
+engine: AsyncEngine
+    Асинхронный движок для подключения к Postgresql.
+Base
+    Колдунство для декларативного конструирования моделей SqlAlchemy.
+session
+    Колдунство для выполнения запросов к СУБД.
+redis
+    Асинхронное подключение к нереляционной СУБД.
+"""
 import aioredis
-from settings import settings
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
+
+from settings import settings
 
 credentials = dict(
     user=settings.postgres_root_user,

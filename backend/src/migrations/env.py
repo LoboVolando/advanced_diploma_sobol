@@ -19,7 +19,6 @@ from app_tweets.models import Base as TweetBase
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from app_users.models import Base as UserBase
-
 from db import Base
 
 target_metadata = Base.metadata

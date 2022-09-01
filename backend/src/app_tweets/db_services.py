@@ -1,18 +1,13 @@
 import typing as t
 
-from app_tweets.mok_services import TweetMockService
 from loguru import logger
 from sqlalchemy import select, update
 
+from app_tweets.mok_services import TweetMockService
 from db import redis, session
 
 from .models import Media, Tweet
-from .schemas import (
-    MediaOrmSchema,
-    SuccessSchema,
-    TweetInSchema,
-    TweetSchema,
-)
+from .schemas import MediaOrmSchema, SuccessSchema, TweetInSchema, TweetSchema
 
 
 class TweetDbService(TweetMockService):

@@ -59,14 +59,3 @@ class ProfileAuthorOutSchema(SuccessSchema):
 
     class Config:
         orm_mode = True
-
-
-class ErrorSchema(BaseModel):
-    """схема ошибки"""
-
-    result: bool = False
-    error_type: str
-    error_message: str
-
-    class Config:
-        orm_mode = True

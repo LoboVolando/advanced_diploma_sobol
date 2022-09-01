@@ -3,6 +3,9 @@ import shutil
 import typing as t
 from pathlib import Path
 
+from fastapi import UploadFile
+from loguru import logger
+
 from app_tweets.db_services import MediaDbService as MediaTransportService
 from app_tweets.db_services import TweetDbService as TweetTransportService
 from app_tweets.exceptions import BelongsTweetToAuthorException
@@ -13,11 +16,11 @@ from app_tweets.schemas import (
     TweetOutSchema,
     TweetSchema,
 )
-from app_users.schemas import ErrorSchema, LikeAuthorSchema
+from app_users.schemas import LikeAuthorSchema
 from app_users.services import AuthorService
-from fastapi import UploadFile
-from loguru import logger
 from settings import settings
+
+from schemas import ErrorSchemasList, ErrorSchema
 
 
 class TweetService:
@@ -49,21 +52,19 @@ class TweetService:
             attachments = await MediaService.get_many_media(new_tweet.tweet_media_ids)
             created_tweet = await self.service.create_tweet(new_tweet, author.user.id, attachments)
             return TweetOutSchema(result=True, tweet_id=created_tweet.id)
-        return self.author_service.make_no_author_exists_response(api_key)
+        return ErrorSchemasList.author_not_exists
 
     async def delete_tweet(self, tweet_id: int, api_key: str):
         """сервис удаления твита по id"""
         logger.info("удалим твит, id: %s", tweet_id)
         author = await self.author_service.get_author(api_key=api_key)
         if not author:
-            return self.author_service.make_no_author_exists_response(api_key)
+            return ErrorSchemasList.author_not_exists
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
         if not tweet:
             return self.make_no_tweet_response(tweet_id=tweet_id)
         logger.debug(
-            "сравнение идентификаторов автора запроса и автора твитта %s <?> %s",
-            author.user.id,
-            tweet.author.id
+            "сравнение идентификаторов автора запроса и автора твитта %s <?> %s", author.user.id, tweet.author.id
         )
         if not tweet.author.id == author.user.id:
             return self.make_not_self_tweet_remove_response(tweet, author)

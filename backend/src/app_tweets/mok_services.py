@@ -1,6 +1,9 @@
 import random
 import typing as t
 
+from faker import Faker
+from loguru import logger
+
 from app_tweets.interfaces import AbstractTweetService
 from app_tweets.schemas import (
     AuthorOutSchema,
@@ -10,8 +13,6 @@ from app_tweets.schemas import (
     TweetSchema,
 )
 from app_users.db_services import AuthorDbService as AuthorService
-from faker import Faker
-from loguru import logger
 
 
 class TweetMockService(AbstractTweetService):
