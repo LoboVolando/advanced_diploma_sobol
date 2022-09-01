@@ -9,9 +9,8 @@ import typing as t
 
 from loguru import logger
 from sqlalchemy import select, update
-
+from interfaces import AbstractAuthorService
 from app_users.models import Author
-from app_users.mok_services import AuthorMockService
 from db import redis, session
 
 from .schemas import ProfileAuthorSchema, SuccessSchema
@@ -19,7 +18,7 @@ from .schemas import ProfileAuthorSchema, SuccessSchema
 TTL = 60
 
 
-class AuthorDbService(AuthorMockService):
+class AuthorDbService(AbstractAuthorService):
     """Класс инкапсулирует cruid для модели авторов"""
 
     async def me(self, api_key: str) -> ProfileAuthorSchema:
@@ -78,7 +77,7 @@ class AuthorDbService(AuthorMockService):
                 if user:
                     return ProfileAuthorSchema.from_orm(user)
 
-    async def create_author(self, name: str, api_key: str, password: str):
+    async def create_author(self, name: str, api_key: str, password: str) -> t.Optional[Author]:
         """Метод сохраняет нового автора в базе данных
 
         Parameters
