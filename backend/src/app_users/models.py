@@ -1,3 +1,9 @@
+"""
+models.py
+=========
+
+Модуль описывает ОРМ-модели авторов для SQLAlchemy.
+"""
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
@@ -6,7 +12,27 @@ from db import Base
 
 
 class Author(Base):
-    """модель автора твита"""
+    """Модель автора твита.
+
+    Arguments
+    ---------
+    id: int
+        Идентификатор автора в СУБД
+    name: str
+        Имя автора.
+    password: str
+        Хэш пароля автора.
+    api_key: str
+        Идентификатор автора для фронтенда.
+    followers: dict
+        Кто читает автора.
+    following: dict
+        Кого читает автор.
+    soft_delete: bool
+        Флаг мягкого удаления автора.
+    tweets: int
+        Связь с ОРМ моделью твитов.
+    """
 
     __tablename__ = "authors"
     id = Column(Integer, primary_key=True)

@@ -1,3 +1,14 @@
+"""
+schemas.py
+----------
+
+Модуль реализует pydantic-схемы для валидации данных и обмена данных между сервисами.
+
+Note
+-----
+    Большинство схем поддерживают загрузку из орм-моделей.
+"""
+
 import typing as t
 
 from pydantic import BaseModel, Field
@@ -6,13 +17,33 @@ from app_users.schemas import AuthorOutSchema, LikeAuthorSchema
 
 
 class AttachmentSchema(BaseModel):
-    """схема вложения к твитту"""
+    """Схема вложения к твитту.
+
+    Parameters
+    ----------
+    link: str
+        адрес картинки, которую должен обработать фронт.
+    """
 
     link: str
 
 
 class TweetSchema(BaseModel):
-    """схема вывода твита"""
+    """Схема твита.
+
+    Arguments
+    ---------
+    id: int
+        Идентификатор твита в СУБД.
+    content: str
+        Умная мысль. Не обязательно умная. Не обязательно мысль.
+    attachments: [t.List[str], optional
+        Список ссылок на картинки.
+    author: AuthorOutSchema
+        Автор твита.
+    likes: List[LikeAuthorSchema], optional
+        Список авторов, отлайкавших этот твит.
+    """
 
     id: int
     content: str = Field(example="запомните этот твит")
@@ -25,11 +56,28 @@ class TweetSchema(BaseModel):
 
 
 class TweetListSchema(BaseModel):
+    """Простой список твитов.
+
+    Parameters
+    ----------
+    tweets: t.List[TweetSchema]
+        Список твитов.
+    """
+
     tweets: t.List[TweetSchema]
 
 
 class TweetListOutSchema(BaseModel):
-    """схема нового твита"""
+    """Схема списка твитов для фронтенда.
+
+    Parameters
+    ----------
+    result: bool
+        Флаг успешного выполнения.
+    tweets: t.List[TweetSchema], optional
+        Список твитов автора.
+
+    """
 
     result: bool = True
     tweets: t.Optional[t.List[TweetSchema]]
@@ -39,7 +87,17 @@ class TweetListOutSchema(BaseModel):
 
 
 class TweetInSchema(BaseModel):
-    """схема нового твита"""
+    """Схема нового твита из фронтенда.
+
+    Parameters
+    ----------
+    tweet_data: str
+        Умные мысли.
+    tweet_media_ids: List[int], optional
+        Идентификаторы картинок из соответствующей модели.
+    attachments: List[str], optional
+        Адреса картинок для фронтенда.
+    """
 
     tweet_data: str
     tweet_media_ids: t.Optional[t.List[int]]
@@ -50,37 +108,18 @@ class TweetInSchema(BaseModel):
 
 
 class TweetOutSchema(BaseModel):
-    """схема нового твита"""
+    """Схема нового твита для фронтенда.
+
+    Parameters
+    ----------
+    result: bool
+        Флаг успешного выполнения.
+    tweet_id: int
+        Идентификатор нового твита в СУБД.
+    """
 
     result: bool
     tweet_id: int
 
     class Config:
         orm_mode = True
-
-
-class SuccessSchema(BaseModel):
-    """схема успешного выполнения чего-либо"""
-
-    result: bool = True
-
-    class Config:
-        orm_mode = True
-
-
-class MediaOrmSchema(BaseModel):
-    """схема вывода картинок из базы"""
-
-    id: int
-    link: str
-    hash: str
-
-    class Config:
-        orm_mode = True
-
-
-class MediaOutSchema(BaseModel):
-    """схема вывода картинок из базы"""
-
-    result: bool = True
-    media_id: int

@@ -18,10 +18,13 @@ from passlib.context import CryptContext
 
 from app_users.db_services import AuthorDbService as AuthorTransportService
 from app_users.db_services import AuthorRedisService
-from app_users.exceptions import AuthorNotExistsException, PasswordIncorrectException, RecursiveFollowerException
-from app_users.schemas import ProfileAuthorOutSchema, ProfileAuthorSchema, SuccessSchema
-
-from schemas import ErrorSchemasList, ErrorSchema
+from app_users.exceptions import (
+    AuthorNotExistsException,
+    PasswordIncorrectException,
+    RecursiveFollowerException,
+)
+from app_users.schemas import ProfileAuthorOutSchema, ProfileAuthorSchema
+from schemas import ErrorSchema, ErrorSchemasList, SuccessSchema
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -170,10 +173,11 @@ class AuthorService:
                 user=user,
             )
         logger.error("не нашли юзера по api-key: %s", api_key)
-        return await self.service.error_get_user()
+        return ErrorSchemasList.author_not_exists
 
-    async def get_author(self, author_id: int = None, api_key: str = None,
-                         name: str = None) -> ProfileAuthorOutSchema | ErrorSchema:
+    async def get_author(
+        self, author_id: int = None, api_key: str = None, name: str = None
+    ) -> ProfileAuthorOutSchema | ErrorSchema:
         """Метод возвращает информацио о пользователе по одному из параметров.
 
         Parameters
@@ -197,7 +201,7 @@ class AuthorService:
             logger.info(user)
             return ProfileAuthorOutSchema(result=True, user=user)
         logger.error("пользователь не найден")
-        return await self.service.error_get_user()
+        return ErrorSchemasList.author_not_exists
 
     async def add_follow(self, writing_author_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
         """Метод добавляет читателя к пишущему автору, а писателя - в список авторов читателя.
@@ -302,9 +306,9 @@ class AuthorService:
         return "".join(random.sample(char_set, length))
 
     def _check_follower_authors(
-            self,
-            reading_author: t.Optional[ProfileAuthorSchema],
-            writing_author: t.Optional[ProfileAuthorSchema],
+        self,
+        reading_author: t.Optional[ProfileAuthorSchema],
+        writing_author: t.Optional[ProfileAuthorSchema],
     ):
         """
         Внутренний метод проверки авторов перед установлением связей.

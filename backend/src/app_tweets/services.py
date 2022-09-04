@@ -1,16 +1,17 @@
-import hashlib
-import shutil
-import typing as t
-from pathlib import Path
+"""
+services.py
+-----------
 
-from fastapi import UploadFile
+Модуль определяет бизнес-логику приложения app_tweets.
+"""
+import typing as t
+
 from loguru import logger
 
-from app_tweets.db_services import MediaDbService as MediaTransportService
+from app_media.services import MediaService
 from app_tweets.db_services import TweetDbService as TweetTransportService
 from app_tweets.exceptions import BelongsTweetToAuthorException
 from app_tweets.schemas import (
-    MediaOutSchema,
     TweetInSchema,
     TweetListOutSchema,
     TweetOutSchema,
@@ -18,21 +19,44 @@ from app_tweets.schemas import (
 )
 from app_users.schemas import LikeAuthorSchema
 from app_users.services import AuthorService
-from settings import settings
-
-from schemas import ErrorSchemasList, ErrorSchema
+from schemas import ErrorSchema, ErrorSchemasList, SuccessSchema
 
 
 class TweetService:
     """
-    бизнес-логика работы с твиттами
+    Класс реализует бизнес-логику работы с твиттами.
     """
 
     def __init__(self):
+        """
+        Конструктор класса.
+
+        Parameters:
+        -----------
+        self.service: TweetTransportService
+            Связь с сервисом по работе с СУБД.
+        self.author_service: AuthorService
+            Связь с бизнес-логикой приложения app_users
+        """
         self.service = TweetTransportService()
         self.author_service = AuthorService()
 
-    async def get_list(self, api_key: str) -> TweetListOutSchema:
+    async def get_list(self, api_key: str) -> TweetListOutSchema | ErrorSchema:
+        """
+        Метод возвращает список твитов пользователя.
+
+        Parameters
+        ----------
+        api_key: str
+            Уникальный идентификатор фронтенда.
+
+        Returns
+        -------
+        TweetListOutSchema
+            Pydantic-схема списка твитов для фронтенда.
+        ErrorSchema
+            Pydantic-схема ошибки выполнения.
+        """
         logger.info("запрос твитов для автора...")
         author = await self.author_service.get_author(api_key=api_key)
         tweets = await self.service.get_list(author_id=author.user.id)
@@ -41,12 +65,43 @@ class TweetService:
         return TweetListOutSchema(result=True, tweets=tweets)
 
     async def get_tweet(self, tweet_id: int) -> TweetSchema | ErrorSchema:
+        """
+        Метод возвращает твит пользователя по идентификатору в СУБД.
+
+        Parameters
+        ----------
+        tweet_id: int
+            Идентификатор твита в СУБД.
+
+        Returns
+        -------
+        TweetSchema
+            Pydantic-схема твита для фронтенда.
+        ErrorSchema
+            Pydantic-схема ошибки выполнения.
+        """
         if tweet := await self.service.get_tweet_by_id(tweet_id):
             return tweet
-        return self.make_no_tweet_response(tweet_id)
+        return ErrorSchemasList.tweet_not_exists
 
-    async def create_tweet(self, new_tweet: TweetInSchema, api_key: str) -> TweetOutSchema:
-        """Логика добавления твита"""
+    async def create_tweet(self, new_tweet: TweetInSchema, api_key: str) -> TweetOutSchema | ErrorSchema:
+        """
+        Метод добавляет твит автора в СУБД.
+
+        Parameters
+        ----------
+        new_tweet: TweetInSchema
+            Pydantic-схема Входящего от фронтенда твита.
+        api_key: str
+            Уникальный идентификатор автора от фронтенда.
+
+        Returns
+        -------
+        TweetOutSchema
+            Pydantic-схема вновь созданного твита для фронтенда.
+        ErrorSchema
+            Pydantic-схема ошибки выполнения.
+        """
         logger.info("создаём твит: %s", new_tweet.dict())
         if author := await self.author_service.get_author(api_key=api_key):
             attachments = await MediaService.get_many_media(new_tweet.tweet_media_ids)
@@ -54,23 +109,39 @@ class TweetService:
             return TweetOutSchema(result=True, tweet_id=created_tweet.id)
         return ErrorSchemasList.author_not_exists
 
-    async def delete_tweet(self, tweet_id: int, api_key: str):
-        """сервис удаления твита по id"""
+    async def delete_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
+        """
+        Метод удаляет твит автора из СУБД.
+
+        Parameters
+        ----------
+        tweet_id: int
+            Идентификатор твита в СУБД.
+        api_key: str
+            Уникальный идентификатор автора от фронтенда.
+
+        Returns
+        -------
+        SuccessSchema
+            Pydantic-схема успешной операции.
+        ErrorSchema
+            Pydantic-схема ошибки выполнения.
+        """
         logger.info("удалим твит, id: %s", tweet_id)
         author = await self.author_service.get_author(api_key=api_key)
         if not author:
             return ErrorSchemasList.author_not_exists
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
         if not tweet:
-            return self.make_no_tweet_response(tweet_id=tweet_id)
+            return ErrorSchemasList.tweet_not_exists
         logger.debug(
             "сравнение идентификаторов автора запроса и автора твитта %s <?> %s", author.user.id, tweet.author.id
         )
         if not tweet.author.id == author.user.id:
-            return self.make_not_self_tweet_remove_response(tweet, author)
+            return ErrorSchemasList.not_self_tweet_remove
         try:
             return await self.service.delete_tweet(tweet_id=tweet_id, author_id=author.user.id)
-        except Exception as e:
+        except BaseException as e:
             logger.error("неизвестная ошибка при удалении твита")
             logger.trace(e)
             return ErrorSchema(
@@ -78,102 +149,80 @@ class TweetService:
                 error_message="непредвиденная ошибка удаления твита",
             )
 
-    async def add_like_to_tweet(self, tweet_id: int, api_key: str):
-        """бизнес-логика добавления лайка"""
+    async def add_like_to_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
+        """
+        Метод добавляет лайку к твиту.
+
+        Parameters
+        ----------
+        tweet_id: int
+            Идентификатор твита в СУБД.
+        api_key: str
+            Уникальный идентификатор автора от фронтенда.
+
+        Returns
+        -------
+        SuccessSchema
+            Pydantic-схема успешной операции.
+        ErrorSchema
+            Pydantic-схема ошибки выполнения.
+        """
         logger.info("поставим лайк на твит...")
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
         like = LikeAuthorSchema(user_id=author.user.id, name=author.user.name)
         if like in tweet.likes:
-            response = self.make_double_like_response(author_id=author.user.id, tweet_id=tweet_id)
-            logger.info(response)
+            response = ErrorSchemasList.double_like
+            logger.warning(response)
             return response
         tweet.likes.append(like)
-        return await self.service.add_like_to_tweet(tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"])
+        return await self.service.update_like_in_tweet(tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"])
 
-    async def remove_like_from_tweet(self, tweet_id: int, api_key: str):
-        """бизнес-логика добавления лайка"""
+    async def remove_like_from_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
+        """
+        Метод удаляет лайку из твита.
+
+        Parameters
+        ----------
+        tweet_id: int
+            Идентификатор твита в СУБД.
+        api_key: str
+            Уникальный идентификатор автора от фронтенда.
+
+        Returns
+        -------
+        SuccessSchema
+            Pydantic-схема успешной операции.
+        ErrorSchema
+            Pydantic-схема ошибки выполнения.
+        """
         logger.info("удалим лайк на твит...")
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
         like = LikeAuthorSchema(user_id=author.user.id, name=author.user.name)
         if like not in tweet.likes:
-            return self.make_remove_not_exist_like(author_id=author.user.id, tweet_id=tweet_id)
+            return ErrorSchemasList.remove_not_exist_like
         tweet.likes.remove(like)
-        return await self.service.add_like_to_tweet(tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"])
+        return await self.service.update_like_in_tweet(tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"])
 
     async def check_belongs_tweet_to_author(self, tweet_id: int, author_id: int) -> t.Optional[bool]:
-        """логика проверки принадлежности твита конкретному автору"""
+        """
+        Метод проверяет принадлежность твита конкретному автору.
+
+        Parameters
+        ----------
+        tweet_id: int
+            Идентификатор твита в СУБД.
+        author_id: int
+            Идентификатор автора в СУБД.
+
+        Returns
+        -------
+        bool
+            True если этот твит принадлежит автору
+        """
         tweet: TweetSchema = await self.service.get_tweet_by_id(tweet_id)
         if not tweet.author.id == author_id:
             raise BelongsTweetToAuthorException("Твит не принадлежит автору")
         return True
 
-    def make_no_tweet_response(self, tweet_id):
-        logger.error(f"твит не существует {tweet_id}")
-        return ErrorSchema(
-            error_type="TWEET_NOT_EXIST",
-            error_message=f"операции над несуществующим твитом {tweet_id} невозможны",
-        )
-
-    def make_not_self_tweet_remove_response(self, tweet, author):
-        logger.error(f"попытка удаления не своего твита")
-        return ErrorSchema(
-            error_type="TWEET_NOT_BELONGS_TO_AUTHOR",
-            error_message=f"{author.user.name}, нельзя удалять чужие ({tweet.author.name}) твиты, редиска",
-        )
-
-    def make_double_like_response(self, author_id: int, tweet_id: int):
-        logger.error(f"попытка лайкнуться дважды")
-        return ErrorSchema(
-            error_type="DOUBLE_LIKE_ERROR",
-            error_message=f"автор: {author_id} пытался закинуть несколько лайков на твит {tweet_id}",
-        )
-
-    def make_remove_not_exist_like(self, author_id: int, tweet_id: int):
-        logger.error(f"попытка удалить несуществующий лайк")
-        return ErrorSchema(
-            error_type="REMOVE_NOT_EXITS_LIKE",
-            error_message=f"автор: {author_id} пытался удалить несуществующий лайк на твит {tweet_id}",
-        )
-
-
-class MediaService:
-    @staticmethod
-    async def get_or_create_media(file: UploadFile):
-
-        bytez = await file.read()
-        hash = hashlib.sha256(bytez).hexdigest()
-        logger.warning(hash)
-        if media := await MediaTransportService.get_media(hash=hash):
-            return MediaOutSchema(media_id=media.id)
-        MediaService.write_media_to_static_folder(file)
-        if media := await MediaTransportService.create_media(hash=hash, file_name=file.filename):
-            return MediaOutSchema(media_id=media.id)
-        return MediaService.make_error_response()
-
-    @staticmethod
-    def write_media_to_static_folder(file: UploadFile):
-        path = Path(settings.media_root) / file.filename
-        with open(path, "wb") as fl:
-            file.file.seek(0)
-            logger.info(f"запишем картинку в файл: {str(path)}")
-            shutil.copyfileobj(file.file, fl)
-            file.file.close()
-        for file in Path(settings.media_root).glob("*.*"):
-            logger.info(f"{file.absolute()}")
-
-    @staticmethod
-    async def get_many_media(ids: t.List[int]) -> t.Optional[t.List[str]]:
-        """получим список картинок по id"""
-        logger.info(f"запросим медиа по идентификаторам: {ids}")
-        if attachments := await MediaTransportService.get_many_media(ids):
-            return attachments
-        return list()
-
-    @staticmethod
-    def make_error_response():
-        return ErrorSchema(
-            error_type="MEDIA_IMPORT_ERROR",
-            error_message="непредвиденная ошибка сохранения картинки ",
-        )

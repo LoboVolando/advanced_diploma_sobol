@@ -1,6 +1,7 @@
 """
 db_services.py
-===============
+--------------
+
 Модуль реализует взаимодействие с базой данных приложения app_users.
 """
 
@@ -9,11 +10,12 @@ import typing as t
 
 from loguru import logger
 from sqlalchemy import select, update
-from interfaces import AbstractAuthorService
-from app_users.models import Author
-from db import redis, session
 
-from .schemas import ProfileAuthorSchema, SuccessSchema
+from app_users.interfaces import AbstractAuthorService
+from app_users.models import Author
+from app_users.schemas import ProfileAuthorSchema
+from db import redis, session
+from schemas import SuccessSchema
 
 TTL = 60
 
@@ -69,7 +71,7 @@ class AuthorDbService(AbstractAuthorService):
             query = select(Author).filter_by(name=name)
         else:
             raise ValueError("не передано ничего для работы с БД")
-        logger.info(f"подготовлен запрос...")
+        logger.info("подготовлен запрос...")
         async with session() as async_session:
             async with async_session.begin():
                 qs = await async_session.execute(query)
@@ -103,11 +105,11 @@ class AuthorDbService(AbstractAuthorService):
                 return author
 
     async def update_follow(
-            self,
-            reading_author: ProfileAuthorSchema,
-            writing_author: ProfileAuthorSchema,
-            followers: dict,
-            following: dict,
+        self,
+        reading_author: ProfileAuthorSchema,
+        writing_author: ProfileAuthorSchema,
+        followers: dict,
+        following: dict,
     ) -> SuccessSchema:
         """
 
@@ -159,7 +161,6 @@ class AuthorRedisService:
         except Exception as e:
             logger.exception(e)
             logger.error("ошибка сохранения в редис")
-
 
     @classmethod
     async def get_author_model(cls, api_key: str) -> t.Optional[Author]:

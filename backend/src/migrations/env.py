@@ -12,12 +12,8 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+from app_media.models import Base as UserBase
 from app_tweets.models import Base as TweetBase
-
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
 from app_users.models import Base as UserBase
 from db import Base
 

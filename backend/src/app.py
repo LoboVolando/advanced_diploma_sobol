@@ -1,6 +1,6 @@
 """
 app.py
-======
+------
 
 Главный модуль приложения. разделён на 3 приложения: app_users app_tweets app_media. Точка входа для wsgi http сервера.
 
@@ -12,7 +12,20 @@ Examples
 
 Note
 ----
-    Какое-то примечание
+    Каждое приложение имеет единую структуру модулей:
+
+    urls.py
+        модуль эндпоинтов
+    schemas.py
+        модуль pydantic-схем для обмена и валидации данных
+    models.py
+        модуль с моделями ORM SqlAlchemy
+    services.py
+        модуль с бизнес-логикой
+    interfaces.py
+        модуль с абстрактными классами для реализации взаимодействия с СУБД
+    db_services.py
+        конкретная реализация работы с СУБД
 
 Attributes
 ----------
@@ -22,6 +35,7 @@ app : FastAPI
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app_media import router as app_media_router
 from app_tweets import router as app_tweets_router
 from app_users import router as app_users_router
 
@@ -37,3 +51,4 @@ app.add_middleware(
 
 app.include_router(app_tweets_router)
 app.include_router(app_users_router)
+app.include_router(app_media_router)

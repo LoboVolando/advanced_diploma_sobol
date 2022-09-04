@@ -22,3 +22,4 @@ asyncpg
 passlib[bcrypt]
 loguru
 python-multipart
+sphinx

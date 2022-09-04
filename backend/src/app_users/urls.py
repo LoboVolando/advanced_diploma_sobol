@@ -6,11 +6,10 @@ urls.py
 from fastapi import APIRouter, Depends
 from loguru import logger
 
-import app_users.db_services as dbs
 from app_users.exceptions import PasswordIncorrectException
-from app_users.schemas import RegisterAuthorSchema, SuccessSchema, ProfileAuthorOutSchema
+from app_users.schemas import ProfileAuthorOutSchema, RegisterAuthorSchema
 from app_users.services import AuthorService, PermissionService
-from schemas import ErrorSchema
+from schemas import ErrorSchema, SuccessSchema
 
 router = APIRouter()
 
@@ -56,8 +55,8 @@ async def register(author: RegisterAuthorSchema, service: AuthorService = Depend
 @router.get("/api/userinfo")
 @router.get("/api/users/me")
 async def me(
-        user: AuthorService = Depends(),
-        permission: PermissionService = Depends(),
+    user: AuthorService = Depends(),
+    permission: PermissionService = Depends(),
 ) -> ProfileAuthorOutSchema | ErrorSchema:
     """Эндпоинт возвращает информацию о текущем пользователе.
 
@@ -81,9 +80,9 @@ async def me(
 
 @router.get("/api/users/{author_id}")
 async def get_author_by_id(
-        author_id: int,
-        user: AuthorService = Depends(),
-        permission: PermissionService = Depends(),
+    author_id: int,
+    user: AuthorService = Depends(),
+    permission: PermissionService = Depends(),
 ) -> ProfileAuthorOutSchema | ErrorSchema:
     """Эндпоинт возвращает автора по идентификатору в базе данных.
 
@@ -111,9 +110,9 @@ async def get_author_by_id(
 
 @router.post("/api/users/{author_id}/follow")
 async def follow_author(
-        author_id: int,
-        permission: PermissionService = Depends(),
-        author: AuthorService = Depends(),
+    author_id: int,
+    permission: PermissionService = Depends(),
+    author: AuthorService = Depends(),
 ) -> SuccessSchema | ErrorSchema:
     """Эндпоинт добавляет пишущему автору читателей, а читателям - писателя.
 
@@ -143,9 +142,9 @@ async def follow_author(
 
 @router.delete("/api/users/{author_id}/follow")
 async def unfollow_author(
-        author_id: int,
-        permission: PermissionService = Depends(),
-        author: AuthorService = Depends(),
+    author_id: int,
+    permission: PermissionService = Depends(),
+    author: AuthorService = Depends(),
 ) -> SuccessSchema | ErrorSchema:
     """Эндпоинт удаляет у пишущего автора читателя, а у  читателя - писателя.
 

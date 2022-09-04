@@ -1,9 +1,28 @@
+"""
+schemas.py
+----------
+
+Модуль реализует pydantic-схемы для валидации данных и обмена данных между сервисами.
+
+Note
+-----
+    Большинство схем поддерживают загрузку из орм-моделей
+"""
 import typing as t
 
 from pydantic import BaseModel
 
 
 class AuthorBaseSchema(BaseModel):
+    """
+    Базовая схема автора твитта.
+
+    Arguments
+    ---------
+    name: str
+        Имя автора.
+    """
+
     name: str
 
     class Config:
@@ -11,6 +30,14 @@ class AuthorBaseSchema(BaseModel):
 
 
 class RegisterAuthorSchema(AuthorBaseSchema):
+    """Схема автора твита, фронтенд->бэкенд для регистрации автора.
+
+    Arguments
+    ---------
+    password: str
+        Сырой пароль для регистрации автора.
+    """
+
     password: str
 
     class Config:
@@ -18,16 +45,34 @@ class RegisterAuthorSchema(AuthorBaseSchema):
 
 
 class AuthorOutSchema(AuthorBaseSchema):
-    """схема автора твита"""
+    """Схема автора твита на вывод модели sqlalchemy
+
+    Arguments
+    ---------
+    id: int
+        Идентификатор записи в СУБД.
+    password: str
+        Хэш пароля.
+    api_key: str
+        Уникальный идентификатор для фронтенда.
+    """
 
     id: int
+    password: str
+    api_key: str
 
     class Config:
         orm_mode = True
 
 
 class LikeAuthorSchema(AuthorBaseSchema):
-    """схема автора твита"""
+    """Схема автора, которая пойдёт в поля followers и following модели автора.
+
+    Arguments
+    ---------
+    user_id: int
+        Идентификатор автора в СУБД.
+    """
 
     user_id: int
 
@@ -36,6 +81,16 @@ class LikeAuthorSchema(AuthorBaseSchema):
 
 
 class ProfileAuthorSchema(AuthorOutSchema):
+    """Схема профиля автора для бэкенда.
+
+    Arguments
+    ---------
+    followers: list, optional
+        Кого читает автор.
+    following: list, optional
+        Кто читает автора.
+    """
+
     followers: t.Optional[t.List[AuthorOutSchema]]
     following: t.Optional[t.List[AuthorOutSchema]]
 
@@ -43,18 +98,18 @@ class ProfileAuthorSchema(AuthorOutSchema):
         orm_mode = True
 
 
-class SuccessSchema(BaseModel):
-    """схема успешного выполнения чего-либо"""
+class ProfileAuthorOutSchema(BaseModel):
+    """Схема профиля автора backend->frontend.
+
+    Arguments
+    ---------
+    result: bool
+        Результат выполнения.
+    user: ProfileAuthorSchema
+        Собственно профиль автора.
+    """
 
     result: bool = True
-
-    class Config:
-        orm_mode = True
-
-
-class ProfileAuthorOutSchema(SuccessSchema):
-    """выходная схема о юзере"""
-
     user: ProfileAuthorSchema
 
     class Config:

@@ -37,11 +37,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="id1">
-<h1>Добро пожаловать в документацию дипломного проекта.<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
-</section>
-<section id="module-app">
-<span id="id2"></span><h1>Посторонним вход воспрещён!<a class="headerlink" href="#module-app" title="Permalink to this heading">¶</a></h1>
+  <section id="module-app">
+<span id="id1"></span><h1>Добро пожаловать в документацию дипломного проекта.<a class="headerlink" href="#module-app" title="Permalink to this heading">¶</a></h1>
 <section id="app-py">
 <h2>app.py<a class="headerlink" href="#app-py" title="Permalink to this heading">¶</a></h2>
 <p>Главный модуль приложения. разделён на 3 приложения: app_users app_tweets app_media. Точка входа для wsgi http сервера.</p>
@@ -52,7 +49,21 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Примечание</p>
-<p>Какое-то примечание</p>
+<p>Каждое приложение имеет единую структуру модулей:</p>
+<dl class="simple">
+<dt>urls.py</dt><dd><p>модуль эндпоинтов</p>
+</dd>
+<dt>schemas.py</dt><dd><p>модуль pydantic-схем для обмена и валидации данных</p>
+</dd>
+<dt>models.py</dt><dd><p>модуль с моделями ORM SqlAlchemy</p>
+</dd>
+<dt>services.py</dt><dd><p>модуль с бизнес-логикой</p>
+</dd>
+<dt>interfaces.py</dt><dd><p>модуль с абстрактными классами для реализации взаимодействия с СУБД</p>
+</dd>
+<dt>db_services.py</dt><dd><p>конкретная реализация работы с СУБД</p>
+</dd>
+</dl>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="app.app">
@@ -142,13 +153,23 @@
 </dl>
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="schemas.SuccessSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schemas.</span></span><span class="sig-name descname"><span class="pre">SuccessSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schemas.SuccessSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема успешного выполнения какого-либо действия бэкендом</p>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_users"></span><section id="app-users">
+<h2>app_users<a class="headerlink" href="#app-users" title="Permalink to this heading">¶</a></h2>
+<p>Приложение для работы с пользователями системы</p>
 </section>
 <span class="target" id="module-app_users.urls"></span><section id="urls-py">
 <h2>urls.py<a class="headerlink" href="#urls-py" title="Permalink to this heading">¶</a></h2>
 <p>Модуль реализует эндпоинты приложения app_users.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app_users.urls.follow_author">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">follow_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.SuccessSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.follow_author" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">follow_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.follow_author" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Эндпоинт добавляет пишущему автору читателей, а читателям - писателя.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -174,7 +195,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app_users.urls.get_author_by_id">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">get_author_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.get_author_by_id" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">get_author_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_users.schemas.ProfileAuthorOutSchema" title="app_users.schemas.ProfileAuthorOutSchema"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.get_author_by_id" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Эндпоинт возвращает автора по идентификатору в базе данных.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -196,7 +217,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app_users.urls.me">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.me" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_users.schemas.ProfileAuthorOutSchema" title="app_users.schemas.ProfileAuthorOutSchema"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.me" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Эндпоинт возвращает информацию о текущем пользователе.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -217,12 +238,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app_users.urls.register">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RegisterAuthorSchema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#app_users.urls.register" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.schemas.RegisterAuthorSchema" title="app_users.schemas.RegisterAuthorSchema"><span class="pre">RegisterAuthorSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">service</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#app_users.urls.register" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Эндпоинт регистрации нового автора.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>author</strong> (<em>RegisterAuthorSchema</em>) – Pydantic-схема с данными автора, для регистрации.</p></li>
+<li><p><strong>author</strong> (<a class="reference internal" href="#app_users.schemas.RegisterAuthorSchema" title="app_users.schemas.RegisterAuthorSchema"><em>RegisterAuthorSchema</em></a>) – Pydantic-схема с данными автора, для регистрации.</p></li>
 <li><p><strong>service</strong> (<a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><em>AuthorService</em></a>) – Зависимость, реализующая бизнес-логику работы с авторами.</p></li>
 </ul>
 </dd>
@@ -249,7 +270,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app_users.urls.unfollow_author">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">unfollow_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.SuccessSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.unfollow_author" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.urls.</span></span><span class="sig-name descname"><span class="pre">unfollow_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.AuthorService" title="app_users.services.AuthorService"><span class="pre">AuthorService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.urls.unfollow_author" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Эндпоинт удаляет у пишущего автора читателя, а у  читателя - писателя.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -274,6 +295,114 @@
 </dd></dl>
 
 </section>
+<span class="target" id="module-app_users.models"></span><section id="models-py">
+<h2>models.py<a class="headerlink" href="#models-py" title="Permalink to this heading">¶</a></h2>
+<p>Модуль описывает ОРМ-модели авторов для SQLAlchemy.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.models.Author">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.models.</span></span><span class="sig-name descname"><span class="pre">Author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.models.Author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Модель автора твита.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Идентификатор автора в СУБД</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Имя автора.</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – Хэш пароля автора.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Идентификатор автора для фронтенда.</p></li>
+<li><p><strong>followers</strong> (<em>dict</em>) – Кто читает автора.</p></li>
+<li><p><strong>following</strong> (<em>dict</em>) – Кого читает автор.</p></li>
+<li><p><strong>soft_delete</strong> (<em>bool</em>) – Флаг мягкого удаления автора.</p></li>
+<li><p><strong>tweets</strong> (<em>int</em>) – Связь с ОРМ моделью твитов.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_users.schemas"></span><section id="id2">
+<h2>schemas.py<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует pydantic-схемы для валидации данных и обмена данных между сервисами.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Большинство схем поддерживают загрузку из орм-моделей</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.schemas.AuthorBaseSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.schemas.</span></span><span class="sig-name descname"><span class="pre">AuthorBaseSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.schemas.AuthorBaseSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовая схема автора твитта.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – Имя автора.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.schemas.AuthorOutSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.schemas.</span></span><span class="sig-name descname"><span class="pre">AuthorOutSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.schemas.AuthorOutSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема автора твита на вывод модели sqlalchemy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Идентификатор записи в СУБД.</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – Хэш пароля.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный идентификатор для фронтенда.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.schemas.LikeAuthorSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.schemas.</span></span><span class="sig-name descname"><span class="pre">LikeAuthorSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.schemas.LikeAuthorSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема автора, которая пойдёт в поля followers и following модели автора.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>user_id</strong> (<em>int</em>) – Идентификатор автора в СУБД.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.schemas.ProfileAuthorOutSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.schemas.</span></span><span class="sig-name descname"><span class="pre">ProfileAuthorOutSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.schemas.ProfileAuthorOutSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема профиля автора backend-&gt;frontend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>bool</em>) – Результат выполнения.</p></li>
+<li><p><strong>user</strong> (<a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><em>ProfileAuthorSchema</em></a>) – Собственно профиль автора.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.schemas.ProfileAuthorSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.schemas.</span></span><span class="sig-name descname"><span class="pre">ProfileAuthorSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">followers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_users.schemas.AuthorOutSchema" title="app_users.schemas.AuthorOutSchema"><span class="pre">AuthorOutSchema</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">following</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_users.schemas.AuthorOutSchema" title="app_users.schemas.AuthorOutSchema"><span class="pre">AuthorOutSchema</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.schemas.ProfileAuthorSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема профиля автора для бэкенда.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>followers</strong> (<em>list</em><em>, </em><em>optional</em>) – Кого читает автор.</p></li>
+<li><p><strong>following</strong> (<em>list</em><em>, </em><em>optional</em>) – Кто читает автора.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.schemas.RegisterAuthorSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.schemas.</span></span><span class="sig-name descname"><span class="pre">RegisterAuthorSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.schemas.RegisterAuthorSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема автора твита, фронтенд-&gt;бэкенд для регистрации автора.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>password</strong> (<em>str</em>) – Сырой пароль для регистрации автора.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <span class="target" id="module-app_users.services"></span><section id="services-py">
 <h2>services.py<a class="headerlink" href="#services-py" title="Permalink to this heading">¶</a></h2>
 <p>Модуль реализует бизнес-логику приложения app_users.</p>
@@ -287,7 +416,7 @@
 <dd><p>Класс реализует бизнес-логику работы с авторами твитов.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.services.AuthorService.add_follow">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">writing_author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.SuccessSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.add_follow" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">writing_author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.add_follow" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод добавляет читателя к пишущему автору, а писателя - в список авторов читателя.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -325,7 +454,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.services.AuthorService.get_author">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.get_author" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_users.schemas.ProfileAuthorOutSchema" title="app_users.schemas.ProfileAuthorOutSchema"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.get_author" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод возвращает информацио о пользователе по одному из параметров.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -367,7 +496,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.services.AuthorService.me">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.me" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_users.schemas.ProfileAuthorOutSchema" title="app_users.schemas.ProfileAuthorOutSchema"><span class="pre">app_users.schemas.ProfileAuthorOutSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.me" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод возвращает информацио о текущем пользователе.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -385,7 +514,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.services.AuthorService.remove_follow">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">writing_author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">app_users.schemas.SuccessSchema</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.remove_follow" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">writing_author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_users.services.AuthorService.remove_follow" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод удаляет читателя из списка читателей пишущего автора, а писателя из список авторов у читателя.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -464,6 +593,74 @@
 </dd></dl>
 
 </section>
+<span class="target" id="module-app_users.interfaces"></span><section id="interfaces-py">
+<h2>interfaces.py<a class="headerlink" href="#interfaces-py" title="Permalink to this heading">¶</a></h2>
+<p>Модуль определяет абстрактные классы для реализации сервисов уровня базы данных.
+Это позволяет реализовать механизмы взаимодействия с разными СУБД, не меняя саму бизнес-логику приложения.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_users.interfaces.AbstractAuthorService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_users.interfaces.</span></span><span class="sig-name descname"><span class="pre">AbstractAuthorService</span></span><a class="headerlink" href="#app_users.interfaces.AbstractAuthorService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс инкапсулирует методы для работы с авторами твитов.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.interfaces.AbstractAuthorService.create_author">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_users.models.Author" title="app_users.models.Author"><span class="pre">Author</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_users.interfaces.AbstractAuthorService.create_author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод создания автора</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Имя нового автора.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный ключ для фронтенда.</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – Зашифрованный пароль нового автора.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.interfaces.AbstractAuthorService.get_author">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></span><a class="headerlink" href="#app_users.interfaces.AbstractAuthorService.get_author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод получения автора по одному из параметров.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный ключ фронтенда.</p></li>
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора в СУБД.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Имя автора.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.interfaces.AbstractAuthorService.me">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></span><a class="headerlink" href="#app_users.interfaces.AbstractAuthorService.me" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод получения собственного профиля автора по ключу фронтэнда.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api_key</strong> (<em>str</em>) – Уникальный ключ от фронтенда.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_users.interfaces.AbstractAuthorService.update_follow">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reading_author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">writing_author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">followers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">following</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">SuccessSchema</span></a></span></span><a class="headerlink" href="#app_users.interfaces.AbstractAuthorService.update_follow" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Адстрактный метод создаёт связи между читающим и пишущим авторами.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reading_author</strong> (<a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><em>ProfileAuthorSchema</em></a>) – Профиль читающего автора.</p></li>
+<li><p><strong>writing_author</strong> (<a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><em>ProfileAuthorSchema</em></a>) – Профиль пишущего автора.</p></li>
+<li><p><strong>followers</strong> (<em>dict</em>) – Словарь всех писателей пользователя.</p></li>
+<li><p><strong>following</strong> (<em>dict</em>) – Сроварь всех читателей пользователя.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <span class="target" id="module-app_users.db_services"></span><section id="db-services-py">
 <h2>db_services.py<a class="headerlink" href="#db-services-py" title="Permalink to this heading">¶</a></h2>
 <p>Модуль реализует взаимодействие с базой данных приложения app_users.</p>
@@ -473,7 +670,7 @@
 <dd><p>Класс инкапсулирует cruid для модели авторов</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.db_services.AuthorDbService.create_author">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_users.db_services.AuthorDbService.create_author" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_users.models.Author" title="app_users.models.Author"><span class="pre">Author</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.create_author" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод сохраняет нового автора в базе данных</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -487,14 +684,14 @@
 <dd class="field-even"><p>SqlAlchemy-модель автора.</p>
 </dd>
 <dt class="field-odd">Тип результата<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Author</p>
+<dd class="field-odd"><p><a class="reference internal" href="#app_users.models.Author" title="app_users.models.Author">Author</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.db_services.AuthorDbService.get_author">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ProfileAuthorSchema</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.get_author" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.get_author" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод ищет автора по одному из параметров.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -508,14 +705,14 @@
 <dd class="field-even"><p>Pydantic-схема профиля автора.</p>
 </dd>
 <dt class="field-odd">Тип результата<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ProfileAuthorSchema</p>
+<dd class="field-odd"><p><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema">ProfileAuthorSchema</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.db_services.AuthorDbService.me">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ProfileAuthorSchema</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.me" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">me</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.me" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод возвращает информацию о пользователе по ключу api_key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -532,12 +729,12 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.db_services.AuthorDbService.update_follow">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reading_author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ProfileAuthorSchema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writing_author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ProfileAuthorSchema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">followers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">following</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SuccessSchema</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.update_follow" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reading_author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">writing_author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><span class="pre">ProfileAuthorSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">followers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">following</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">SuccessSchema</span></a></span></span><a class="headerlink" href="#app_users.db_services.AuthorDbService.update_follow" title="Ссылка на это определение">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reading_author</strong> (<em>ProfileAuthorSchema</em>) – Профиль читающего автора.</p></li>
-<li><p><strong>writing_author</strong> (<em>ProfileAuthorSchema</em>) – Профиль пишущего автора.</p></li>
+<li><p><strong>reading_author</strong> (<a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><em>ProfileAuthorSchema</em></a>) – Профиль читающего автора.</p></li>
+<li><p><strong>writing_author</strong> (<a class="reference internal" href="#app_users.schemas.ProfileAuthorSchema" title="app_users.schemas.ProfileAuthorSchema"><em>ProfileAuthorSchema</em></a>) – Профиль пишущего автора.</p></li>
 <li><p><strong>followers</strong> (<em>dict</em>) – Словарь всех писателей пользователя.</p></li>
 <li><p><strong>following</strong> (<em>dict</em>) – Сроварь всех читателей пользователя.</p></li>
 </ul>
@@ -546,7 +743,7 @@
 <dd class="field-even"><p>Pydantic-схема успешной операции</p>
 </dd>
 <dt class="field-odd">Тип результата<span class="colon">:</span></dt>
-<dd class="field-odd"><p>SuccessSchema</p>
+<dd class="field-odd"><p><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema">SuccessSchema</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -559,7 +756,7 @@
 <dd><p>Класс инкапсулирует методы по кэшированию авторов в redis.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.db_services.AuthorRedisService.get_author_model">
-<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Author</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_users.db_services.AuthorRedisService.get_author_model" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_author_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_users.models.Author" title="app_users.models.Author"><span class="pre">Author</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_users.db_services.AuthorRedisService.get_author_model" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод возвращает модель автора из redis по api-key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Параметры<span class="colon">:</span></dt>
@@ -569,14 +766,14 @@
 <dd class="field-even"><p>Модель автора</p>
 </dd>
 <dt class="field-odd">Тип результата<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Author</p>
+<dd class="field-odd"><p><a class="reference internal" href="#app_users.models.Author" title="app_users.models.Author">Author</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="app_users.db_services.AuthorRedisService.save_author_model">
-<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_author_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Author</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorRedisService.save_author_model" title="Ссылка на это определение">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_author_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.models.Author" title="app_users.models.Author"><span class="pre">Author</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#app_users.db_services.AuthorRedisService.save_author_model" title="Ссылка на это определение">¶</a></dt>
 <dd><p>Метод сохраняет SqlAlchemy-model в redis.</p>
 <dl class="simple">
 <dt>api_key: str</dt><dd><p>Уникальный ключ для фронтенда.</p>
@@ -617,12 +814,832 @@
 </dd></dl>
 
 </section>
-<span class="target" id="module-app_tweets"></span><section id="app-tweets-py">
-<h2>app_tweets.py<a class="headerlink" href="#app-tweets-py" title="Permalink to this heading">¶</a></h2>
-<p>приложение для обмена сообщениями</p>
+<span class="target" id="module-app_tweets"></span><section id="app-tweets">
+<h2>app_tweets<a class="headerlink" href="#app-tweets" title="Permalink to this heading">¶</a></h2>
+<p>Приложение для обмена сообщениями.</p>
+</section>
+<span class="target" id="module-app_tweets.urls"></span><section id="id3">
+<h2>urls.py<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
+<p>Реализует эндпоинты для работы с твитами населения.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app_tweets.urls.add_like_to_tweet">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.urls.</span></span><span class="sig-name descname"><span class="pre">add_like_to_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><span class="pre">TweetService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.urls.add_like_to_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт добавляет лайку к твиту.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость для работы с правами.</p></li>
+<li><p><strong>tweet</strong> (<a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><em>TweetService</em></a>) – Зависимость для работы с бизнес-логикой твитов</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешного выполнения.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_tweets.urls.create_tweet">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.urls.</span></span><span class="sig-name descname"><span class="pre">create_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.schemas.TweetInSchema" title="app_tweets.schemas.TweetInSchema"><span class="pre">TweetInSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><span class="pre">TweetService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_tweets.schemas.TweetOutSchema" title="app_tweets.schemas.TweetOutSchema"><span class="pre">TweetOutSchema</span></a></span></span><a class="headerlink" href="#app_tweets.urls.create_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт сохранения нового твита в системе.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_tweet</strong> (<a class="reference internal" href="#app_tweets.schemas.TweetInSchema" title="app_tweets.schemas.TweetInSchema"><em>TweetInSchema</em></a>) – Pydantic-схема нового твита от фронтенда.</p></li>
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость для работы с правами.</p></li>
+<li><p><strong>tweet</strong> (<a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><em>TweetService</em></a>) – Зависимость для работы с бизнес-логикой твитов.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема для фронтенда вновь созданного твита</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app_tweets.schemas.TweetOutSchema" title="app_tweets.schemas.TweetOutSchema">TweetOutSchema</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_tweets.urls.delete_tweet">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.urls.</span></span><span class="sig-name descname"><span class="pre">delete_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><span class="pre">TweetService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.urls.delete_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт удаления твита.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость для работы с правами.</p></li>
+<li><p><strong>tweet</strong> (<a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><em>TweetService</em></a>) – Зависимость для работы с бизнес-логикой твитов</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешного выполнения.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_tweets.urls.get_tweet">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.urls.</span></span><span class="sig-name descname"><span class="pre">get_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><span class="pre">TweetService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><span class="pre">app_tweets.schemas.TweetSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.urls.get_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт достаёт твит по идентификатору СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>tweet</strong> (<a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><em>TweetService</em></a>) – Зависимость для работы с бизнес-логикой твитов.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>TweetSchema</em> – Pydantic-схема для фронтенда твита.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_tweets.urls.get_tweets_list">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.urls.</span></span><span class="sig-name descname"><span class="pre">get_tweets_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><span class="pre">TweetService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_tweets.schemas.TweetListOutSchema" title="app_tweets.schemas.TweetListOutSchema"><span class="pre">TweetListOutSchema</span></a></span></span><a class="headerlink" href="#app_tweets.urls.get_tweets_list" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт реализует получение всех твитов текущего автора.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость для работы с правами.</p></li>
+<li><p><strong>tweet</strong> (<a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><em>TweetService</em></a>) – Зависимость для работы с бизнес-логикой твитов.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема списка твитов.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app_tweets.schemas.TweetListOutSchema" title="app_tweets.schemas.TweetListOutSchema">TweetListOutSchema</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app_tweets.urls.remove_like_from_tweet">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.urls.</span></span><span class="sig-name descname"><span class="pre">remove_like_from_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><span class="pre">PermissionService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><span class="pre">TweetService</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(NoneType)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.urls.remove_like_from_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт удаляет лайку с твита.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>permission</strong> (<a class="reference internal" href="#app_users.services.PermissionService" title="app_users.services.PermissionService"><em>PermissionService</em></a>) – Зависимость для работы с правами.</p></li>
+<li><p><strong>tweet</strong> (<a class="reference internal" href="#app_tweets.services.TweetService" title="app_tweets.services.TweetService"><em>TweetService</em></a>) – Зависимость для работы с бизнес-логикой твитов</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешного выполнения.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_tweets.models"></span><section id="id4">
+<h2>models.py<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h2>
+<p>Модуль определяет ORM-модель твитов для SqlAlchemy.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.models.Tweet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.models.</span></span><span class="sig-name descname"><span class="pre">Tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.models.Tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Модель твита</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>content</strong> (<em>str</em>) – Текст твита. То, ради чего мы здесь не смотря ни на что.</p></li>
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора. Обеспечивает связь один-ко-многим между моделями автора и твита.</p></li>
+<li><p><strong>author</strong> – Обратная связь с моделью автора. Позволяет ОРМ-модели твита добраться до автора.</p></li>
+<li><p><strong>likes</strong> (<em>dict</em>) – Информация о лайках к этому твиту.</p></li>
+<li><p><strong>attachments</strong> (<em>dict</em>) – Вложения к твиту. Обычно картинки.</p></li>
+<li><p><strong>soft_delete</strong> (<em>bool</em>) – Флаг мягкого удаления твита из СУБД.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_tweets.schemas"></span><section id="id5">
+<h2>schemas.py<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует pydantic-схемы для валидации данных и обмена данных между сервисами.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Большинство схем поддерживают загрузку из орм-моделей.</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.schemas.AttachmentSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.schemas.</span></span><span class="sig-name descname"><span class="pre">AttachmentSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.schemas.AttachmentSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема вложения к твитту.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>link</strong> (<em>str</em>) – адрес картинки, которую должен обработать фронт.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.schemas.TweetInSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.schemas.</span></span><span class="sig-name descname"><span class="pre">TweetInSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet_media_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.schemas.TweetInSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема нового твита из фронтенда.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_data</strong> (<em>str</em>) – Умные мысли.</p></li>
+<li><p><strong>tweet_media_ids</strong> (<em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – Идентификаторы картинок из соответствующей модели.</p></li>
+<li><p><strong>attachments</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Адреса картинок для фронтенда.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.schemas.TweetListOutSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.schemas.</span></span><span class="sig-name descname"><span class="pre">TweetListOutSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><span class="pre">TweetSchema</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.schemas.TweetListOutSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема списка твитов для фронтенда.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>bool</em>) – Флаг успешного выполнения.</p></li>
+<li><p><strong>tweets</strong> (<em>t.List</em><em>[</em><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><em>TweetSchema</em></a><em>]</em><em>, </em><em>optional</em>) – Список твитов автора.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.schemas.TweetListSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.schemas.</span></span><span class="sig-name descname"><span class="pre">TweetListSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><span class="pre">TweetSchema</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.schemas.TweetListSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Простой список твитов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tweets</strong> (<em>t.List</em><em>[</em><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><em>TweetSchema</em></a><em>]</em>) – Список твитов.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.schemas.TweetOutSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.schemas.</span></span><span class="sig-name descname"><span class="pre">TweetOutSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.schemas.TweetOutSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема нового твита для фронтенда.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>bool</em>) – Флаг успешного выполнения.</p></li>
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор нового твита в СУБД.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.schemas.TweetSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.schemas.</span></span><span class="sig-name descname"><span class="pre">TweetSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_users.schemas.AuthorOutSchema" title="app_users.schemas.AuthorOutSchema"><span class="pre">AuthorOutSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">likes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_users.schemas.LikeAuthorSchema" title="app_users.schemas.LikeAuthorSchema"><span class="pre">LikeAuthorSchema</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.schemas.TweetSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Схема твита.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>content</strong> (<em>str</em>) – Умная мысль. Не обязательно умная. Не обязательно мысль.</p></li>
+<li><p><strong>attachments</strong> (<em>[</em><em>t.List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Список ссылок на картинки.</p></li>
+<li><p><strong>author</strong> (<a class="reference internal" href="#app_users.schemas.AuthorOutSchema" title="app_users.schemas.AuthorOutSchema"><em>AuthorOutSchema</em></a>) – Автор твита.</p></li>
+<li><p><strong>likes</strong> (<em>List</em><em>[</em><a class="reference internal" href="#app_users.schemas.LikeAuthorSchema" title="app_users.schemas.LikeAuthorSchema"><em>LikeAuthorSchema</em></a><em>]</em><em>, </em><em>optional</em>) – Список авторов, отлайкавших этот твит.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_tweets.services"></span><section id="id6">
+<h2>services.py<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h2>
+<p>Модуль определяет бизнес-логику приложения app_tweets.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.services.TweetService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.services.</span></span><span class="sig-name descname"><span class="pre">TweetService</span></span><a class="headerlink" href="#app_tweets.services.TweetService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс реализует бизнес-логику работы с твиттами.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.services.TweetService.add_like_to_tweet">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_like_to_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.services.TweetService.add_like_to_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод добавляет лайку к твиту.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный идентификатор автора от фронтенда.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешной операции.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.services.TweetService.check_belongs_tweet_to_author">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_belongs_tweet_to_author</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_tweets.services.TweetService.check_belongs_tweet_to_author" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод проверяет принадлежность твита конкретному автору.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора в СУБД.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>True если этот твит принадлежит автору</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.services.TweetService.create_tweet">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.schemas.TweetInSchema" title="app_tweets.schemas.TweetInSchema"><span class="pre">TweetInSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_tweets.schemas.TweetOutSchema" title="app_tweets.schemas.TweetOutSchema"><span class="pre">app_tweets.schemas.TweetOutSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.services.TweetService.create_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод добавляет твит автора в СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_tweet</strong> (<a class="reference internal" href="#app_tweets.schemas.TweetInSchema" title="app_tweets.schemas.TweetInSchema"><em>TweetInSchema</em></a>) – Pydantic-схема Входящего от фронтенда твита.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный идентификатор автора от фронтенда.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>TweetOutSchema</em> – Pydantic-схема вновь созданного твита для фронтенда.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.services.TweetService.delete_tweet">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.services.TweetService.delete_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод удаляет твит автора из СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный идентификатор автора от фронтенда.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешной операции.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.services.TweetService.get_list">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_tweets.schemas.TweetListOutSchema" title="app_tweets.schemas.TweetListOutSchema"><span class="pre">app_tweets.schemas.TweetListOutSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.services.TweetService.get_list" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает список твитов пользователя.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api_key</strong> (<em>str</em>) – Уникальный идентификатор фронтенда.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>TweetListOutSchema</em> – Pydantic-схема списка твитов для фронтенда.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.services.TweetService.get_tweet">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><span class="pre">app_tweets.schemas.TweetSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.services.TweetService.get_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает твит пользователя по идентификатору в СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>TweetSchema</em> – Pydantic-схема твита для фронтенда.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.services.TweetService.remove_like_from_tweet">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_like_from_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">schemas.SuccessSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_tweets.services.TweetService.remove_like_from_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод удаляет лайку из твита.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Уникальный идентификатор автора от фронтенда.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>SuccessSchema</em> – Pydantic-схема успешной операции.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема ошибки выполнения.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_tweets.interfaces"></span><section id="id7">
+<h2>interfaces.py<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h2>
+<p>Модуль определяет абстрактные классы для реализации сервисов уровня базы данных.
+Это позволяет реализовать механизмы взаимодействия с разными СУБД, не меняя саму бизнес-логику приложения.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.interfaces.AbstractTweetService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.interfaces.</span></span><span class="sig-name descname"><span class="pre">AbstractTweetService</span></span><a class="headerlink" href="#app_tweets.interfaces.AbstractTweetService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный класс инкапсулирует cruid-методы для твитов в СУБД.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.interfaces.AbstractTweetService.create_tweet">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.schemas.TweetInSchema" title="app_tweets.schemas.TweetInSchema"><span class="pre">TweetInSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.interfaces.AbstractTweetService.create_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод сохранения твита.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_tweet</strong> (<a class="reference internal" href="#app_tweets.schemas.TweetInSchema" title="app_tweets.schemas.TweetInSchema"><em>TweetInSchema</em></a>) – Входящая pydantic-схема с новым твитом от фронтенда.</p></li>
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора в СУБД.</p></li>
+<li><p><strong>attachments</strong> (<em>t.List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Список ссылок на картинки.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.interfaces.AbstractTweetService.delete_tweet">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.interfaces.AbstractTweetService.delete_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод удаляет твит по идентификатору СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора в СУБД.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Имеется в виду мягкое удаление через флаг удаления. На самом деле твит остаётся для принятия решения о
+возбуждении уголовного дела по 288 статье УК РФ.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.interfaces.AbstractTweetService.get_list">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.interfaces.AbstractTweetService.get_list" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод получения списка твитов для конкретного автора.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.interfaces.AbstractTweetService.get_tweet_by_id">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_tweet_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><span class="pre">TweetSchema</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_tweets.interfaces.AbstractTweetService.get_tweet_by_id" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод возвращает твит по идентификатору СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема твита.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema">TweetSchema</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.interfaces.AbstractTweetService.update_like_in_tweet">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_like_in_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">SuccessSchema</span></a></span></span><a class="headerlink" href="#app_tweets.interfaces.AbstractTweetService.update_like_in_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод перезаписывает лайки в СУБД у конкретного твита.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>likes</strong> (<em>dict</em>) – Обновлённый набор лайков.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_tweets.db_services"></span><section id="id8">
+<h2>db_services.py<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует классы для взаимодействия между бизнес-логикой и СУБД.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_tweets.db_services.TweetDbService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.db_services.</span></span><span class="sig-name descname"><span class="pre">TweetDbService</span></span><a class="headerlink" href="#app_tweets.db_services.TweetDbService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс инкапсулирует cruid-методы для твитов в СУБД.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.db_services.TweetDbService.create_tweet">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_tweet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app_tweets.schemas.TweetInSchema" title="app_tweets.schemas.TweetInSchema"><span class="pre">TweetInSchema</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attachments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_tweets.models.Tweet" title="app_tweets.models.Tweet"><span class="pre">Tweet</span></a></span></span><a class="headerlink" href="#app_tweets.db_services.TweetDbService.create_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод создаёт новый твит автора.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_tweet</strong> (<a class="reference internal" href="#app_tweets.schemas.TweetInSchema" title="app_tweets.schemas.TweetInSchema"><em>TweetInSchema</em></a><em>,</em>) – Входящая от фронтенда pydantic-схема нового твита.</p></li>
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора в базе.</p></li>
+<li><p><strong>attachments</strong> (<em>t.List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Ссылки на картинки.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>SqlAlchemy модель нового твита.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app_tweets.models.Tweet" title="app_tweets.models.Tweet">Tweet</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.db_services.TweetDbService.delete_tweet">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_tweets.db_services.TweetDbService.delete_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод удаляет твит по идентификатору СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора в СУБД.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема твита.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema">TweetSchema</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Имеется в виду мягкое удаление через флаг удаления. На самом деле твит остаётся для принятия решения о
+возбуждении уголовного дела по 288 статье УК РФ.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.db_services.TweetDbService.get_list">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">author_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><span class="pre">TweetSchema</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_tweets.db_services.TweetDbService.get_list" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод получает список твитов из СУБД конкретного автора.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>author_id</strong> (<em>int</em>) – Идентификатор автора в СУБД.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Список pydantic-схем твитов автора.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema">TweetSchema</a>], optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.db_services.TweetDbService.get_tweet_by_id">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_tweet_by_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema"><span class="pre">TweetSchema</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_tweets.db_services.TweetDbService.get_tweet_by_id" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает твит по идентификатору СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема твита.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app_tweets.schemas.TweetSchema" title="app_tweets.schemas.TweetSchema">TweetSchema</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_tweets.db_services.TweetDbService.update_like_in_tweet">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_like_in_tweet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tweet_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema"><span class="pre">SuccessSchema</span></a></span></span><a class="headerlink" href="#app_tweets.db_services.TweetDbService.update_like_in_tweet" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод перезаписывает лайки в СУБД у конкретного твита.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tweet_id</strong> (<em>int</em>) – Идентификатор твита в СУБД.</p></li>
+<li><p><strong>likes</strong> (<em>dict</em>) – Обновлённый набор лайков.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема успешного выполнения операции.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#schemas.SuccessSchema" title="schemas.SuccessSchema">SuccessSchema</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_tweets.exceptions"></span><section id="id9">
+<h2>exceptions.py<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h2>
+<p>Модуль определяет классы исключений для приложения app_tweets.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="app_tweets.exceptions.BelongsTweetToAuthorException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.exceptions.</span></span><span class="sig-name descname"><span class="pre">BelongsTweetToAuthorException</span></span><a class="headerlink" href="#app_tweets.exceptions.BelongsTweetToAuthorException" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Исключение: твит не принадлежит автору.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="app_tweets.exceptions.TweetBaseException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.exceptions.</span></span><span class="sig-name descname"><span class="pre">TweetBaseException</span></span><a class="headerlink" href="#app_tweets.exceptions.TweetBaseException" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Базовое исключение для сервиса твиттов.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="app_tweets.exceptions.TweetNotExistsException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_tweets.exceptions.</span></span><span class="sig-name descname"><span class="pre">TweetNotExistsException</span></span><a class="headerlink" href="#app_tweets.exceptions.TweetNotExistsException" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Исключение: твит не существует.</p>
+</dd></dl>
+
 </section>
 <div class="toctree-wrapper compound">
 </div>
+<span class="target" id="module-app_media"></span><section id="app-media-py">
+<h2>app_media.py<a class="headerlink" href="#app-media-py" title="Permalink to this heading">¶</a></h2>
+<p>приложение для работы с media ресурсами</p>
+</section>
+<span class="target" id="module-app_media.urls"></span><section id="id10">
+<h2>urls.py<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h2>
+<p>Модуль определяет эндпоинты для работы с изображениями.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="app_media.urls.medias">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_media.urls.</span></span><span class="sig-name descname"><span class="pre">medias</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UploadFile</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#app_media.schemas.MediaOutSchema" title="app_media.schemas.MediaOutSchema"><span class="pre">app_media.schemas.MediaOutSchema</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#schemas.ErrorSchema" title="schemas.ErrorSchema"><span class="pre">schemas.ErrorSchema</span></a></span></span><a class="headerlink" href="#app_media.urls.medias" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Эндпоинт загружает файл с картинкой на сервер.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>UploadFile</em>) – Загружаемый файл.</p>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>MediaOutSchema</em> – Pydantic-схема медиа ресурса.</p></li>
+<li><p><em>ErrorSchema</em> – Pydantic-схема сообщения об ошибке.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_media.models"></span><section id="id11">
+<h2>models.py<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h2>
+<p>Модуль определяет ORM-модель медиа-ресурсов для SqlAlchemy.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_media.models.Media">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_media.models.</span></span><span class="sig-name descname"><span class="pre">Media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_media.models.Media" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Модель медиа-ресурса.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Уникальный идентификатор ресурса в СУБД.</p></li>
+<li><p><strong>link</strong> (<em>str</em>) – Ссылка для загрузки ресурса.</p></li>
+<li><p><strong>hash</strong> (<em>str</em>) – Хэш от файла для предотвращения повторной загрузки файла.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_media.schemas"></span><section id="id12">
+<h2>schemas.py<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует pydantic-схемы для валидации данных и обмена данных между сервисами.</p>
+<div class="admonition note">
+<p class="admonition-title">Примечание</p>
+<p>Большинство схем поддерживают загрузку из орм-моделей.</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_media.schemas.MediaOrmSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_media.schemas.</span></span><span class="sig-name descname"><span class="pre">MediaOrmSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_media.schemas.MediaOrmSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Pydantic-схема вывода модели orm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Идентификатор ресурса в СУБД.</p></li>
+<li><p><strong>link</strong> (<em>str</em>) – Ссылка для загрузки.</p></li>
+<li><p><strong>hash</strong> (<em>str</em>) – Хэш, обеспечивающий уникальность файла в СУБД.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app_media.schemas.MediaOutSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_media.schemas.</span></span><span class="sig-name descname"><span class="pre">MediaOutSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_media.schemas.MediaOutSchema" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Pydantic-схема вывода ресурса для фронтенда.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> (<em>bool</em>) – Флаг успешного выполнения операции.</p></li>
+<li><p><strong>media_id</strong> (<em>int</em>) – Идентификатор ресурса в СУБД.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_media.services"></span><section id="id13">
+<h2>services.py<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует бизнес-логику приложения app_media</p>
+</section>
+<span class="target" id="module-app_media.interfaces"></span><section id="id14">
+<h2>interfaces.py<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h2>
+<p>Модуль определяет абстрактные классы для реализации сервисов уровня базы данных.
+Это позволяет реализовать механизмы взаимодействия с разными СУБД, не меняя саму бизнес-логику приложения.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_media.interfaces.AbstractMediaService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_media.interfaces.</span></span><span class="sig-name descname"><span class="pre">AbstractMediaService</span></span><a class="headerlink" href="#app_media.interfaces.AbstractMediaService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный класс инкапсулирует cruid-методы для медиа ресурсов в СУБД.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_media.interfaces.AbstractMediaService.create_media">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_media.schemas.MediaOrmSchema" title="app_media.schemas.MediaOrmSchema"><span class="pre">MediaOrmSchema</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_media.interfaces.AbstractMediaService.create_media" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод сохраняет данные о файле в СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hash</strong> (<em>str</em>) – Хэш от файла.</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – Имя файла.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_media.interfaces.AbstractMediaService.get_many_media">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_many_media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_media.interfaces.AbstractMediaService.get_many_media" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод возвращает множество медиа-ресурсов по списку идентификаторов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – Список идентификаторов ресурсов в СУБД.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>???</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_media.interfaces.AbstractMediaService.get_media">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">media_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_media.schemas.MediaOrmSchema" title="app_media.schemas.MediaOrmSchema"><span class="pre">MediaOrmSchema</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_media.interfaces.AbstractMediaService.get_media" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Абстрактный метод возвращает pydantic-схему записи СУБД
+по идентификатору в СУБД или по хэшу файла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>media_id</strong> (<em>int</em>) – Идентификатор ресурса в СУБД.</p></li>
+<li><p><strong>hash</strong> (<em>str</em>) – Хэш от файла.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<span class="target" id="module-app_media.db_services"></span><section id="id15">
+<h2>db_services.py<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h2>
+<p>Модуль реализует классы для взаимодействия между бизнес-логикой и СУБД.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app_media.db_services.MediaDbService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app_media.db_services.</span></span><span class="sig-name descname"><span class="pre">MediaDbService</span></span><a class="headerlink" href="#app_media.db_services.MediaDbService" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Класс реализует CRUID для медиа объектов в СУБД PostgreSql</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app_media.db_services.MediaDbService.create_media">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_media.schemas.MediaOrmSchema" title="app_media.schemas.MediaOrmSchema"><span class="pre">MediaOrmSchema</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_media.db_services.MediaDbService.create_media" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод сохраняет данные о файле в СУБД.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hash</strong> (<em>str</em>) – Хэш от файла.</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – Имя файла.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема ОРМ модели медиа ресурса.</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app_media.schemas.MediaOrmSchema" title="app_media.schemas.MediaOrmSchema">MediaOrmSchema</a>, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_media.db_services.MediaDbService.get_many_media">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_many_media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app_media.db_services.MediaDbService.get_many_media" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает множество медиа-ресурсов по списку идентификаторов.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ids</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – Список идентификаторов ресурсов в СУБД.</p>
+</dd>
+<dt class="field-even">Тип результата<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>???</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app_media.db_services.MediaDbService.get_media">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_media</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">media_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hash</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#app_media.schemas.MediaOrmSchema" title="app_media.schemas.MediaOrmSchema"><span class="pre">MediaOrmSchema</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app_media.db_services.MediaDbService.get_media" title="Ссылка на это определение">¶</a></dt>
+<dd><p>Метод возвращает pydantic-схему записи СУБД по идентификатору в СУБД или по хэшу файла.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>media_id</strong> (<em>int</em>) – Идентификатор ресурса в СУБД.</p></li>
+<li><p><strong>hash</strong> (<em>str</em>) – Хэш от файла.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Результат<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pydantic-схема ОРМ модели</p>
+</dd>
+<dt class="field-odd">Тип результата<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#app_media.schemas.MediaOrmSchema" title="app_media.schemas.MediaOrmSchema">MediaOrmSchema</a>, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 </section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
@@ -643,16 +1660,33 @@
   <div>
     <h3><a href="#">Оглавление</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Добро пожаловать в документацию дипломного проекта.</a></li>
-<li><a class="reference internal" href="#module-app">Посторонним вход воспрещён!</a><ul>
+<li><a class="reference internal" href="#">Добро пожаловать в документацию дипломного проекта.</a><ul>
 <li><a class="reference internal" href="#app-py">app.py</a></li>
 <li><a class="reference internal" href="#db-py">db.py</a></li>
 <li><a class="reference internal" href="#schemas-py">schemas.py</a></li>
+<li><a class="reference internal" href="#app-users">app_users</a></li>
 <li><a class="reference internal" href="#urls-py">urls.py</a></li>
+<li><a class="reference internal" href="#models-py">models.py</a></li>
+<li><a class="reference internal" href="#id2">schemas.py</a></li>
 <li><a class="reference internal" href="#services-py">services.py</a></li>
+<li><a class="reference internal" href="#interfaces-py">interfaces.py</a></li>
 <li><a class="reference internal" href="#db-services-py">db_services.py</a></li>
 <li><a class="reference internal" href="#exceptions-py">exceptions.py</a></li>
-<li><a class="reference internal" href="#app-tweets-py">app_tweets.py</a></li>
+<li><a class="reference internal" href="#app-tweets">app_tweets</a></li>
+<li><a class="reference internal" href="#id3">urls.py</a></li>
+<li><a class="reference internal" href="#id4">models.py</a></li>
+<li><a class="reference internal" href="#id5">schemas.py</a></li>
+<li><a class="reference internal" href="#id6">services.py</a></li>
+<li><a class="reference internal" href="#id7">interfaces.py</a></li>
+<li><a class="reference internal" href="#id8">db_services.py</a></li>
+<li><a class="reference internal" href="#id9">exceptions.py</a></li>
+<li><a class="reference internal" href="#app-media-py">app_media.py</a></li>
+<li><a class="reference internal" href="#id10">urls.py</a></li>
+<li><a class="reference internal" href="#id11">models.py</a></li>
+<li><a class="reference internal" href="#id12">schemas.py</a></li>
+<li><a class="reference internal" href="#id13">services.py</a></li>
+<li><a class="reference internal" href="#id14">interfaces.py</a></li>
+<li><a class="reference internal" href="#id15">db_services.py</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>

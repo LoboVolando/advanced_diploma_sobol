@@ -1,17 +1,37 @@
+"""
+db_services.py
+--------------
+Модуль реализует классы для взаимодействия между бизнес-логикой и СУБД.
+"""
 import typing as t
 
 from loguru import logger
 from sqlalchemy import select, update
 
-from app_tweets.mok_services import TweetMockService
-from db import redis, session
+from db import session
 
-from .models import Media, Tweet
-from .schemas import MediaOrmSchema, SuccessSchema, TweetInSchema, TweetSchema
+from app_tweets.models import Tweet
+from app_tweets.schemas import TweetInSchema, TweetSchema
+from schemas import SuccessSchema
+from app_tweets.interfaces import AbstractTweetService
 
 
-class TweetDbService(TweetMockService):
+class TweetDbService(AbstractTweetService):
+    """Класс инкапсулирует cruid-методы для твитов в СУБД."""
+
     async def get_list(self, author_id: int) -> t.Optional[t.List[TweetSchema]]:
+        """Метод получает список твитов из СУБД конкретного автора.
+
+        Parameters
+        ----------
+        author_id: int
+            Идентификатор автора в СУБД.
+
+        Returns
+        -------
+        List[TweetSchema], optional
+            Список pydantic-схем твитов автора.
+        """
         query = select(Tweet).filter_by(author_id=author_id, soft_delete=False)
         async with session() as async_session:
             async with async_session.begin():
@@ -19,13 +39,28 @@ class TweetDbService(TweetMockService):
                     return [TweetSchema.from_orm(item) for item in query_set.scalars()]
 
     async def create_tweet(
-        self,
-        new_tweet: TweetInSchema,
-        author_id: int,
-        attachments: t.List[str],
+            self,
+            new_tweet: TweetInSchema,
+            author_id: int,
+            attachments: t.Optional[t.List[str]],
     ) -> Tweet:
-        """создаём твит"""
+        """
+        Метод создаёт новый твит автора.
 
+        Parameters
+        ----------
+        new_tweet: TweetInSchema,
+            Входящая от фронтенда pydantic-схема нового твита.
+        author_id: int
+            Идентификатор автора в базе.
+        attachments: t.List[str], optional
+            Ссылки на картинки.
+
+        Returns
+        -------
+        Tweet
+            SqlAlchemy модель нового твита.
+        """
         tweet = Tweet(
             content=new_tweet.tweet_data,
             author_id=author_id,
@@ -43,9 +78,20 @@ class TweetDbService(TweetMockService):
                 # todo не распаковывается модель в схему
                 return tweet
 
-    async def get_tweet_by_id(self, tweet_id: int) -> TweetSchema:
-        """запрос в БД по ID"""
-        logger.info("запрос твитта по ИД, ключу или имени")
+    async def get_tweet_by_id(self, tweet_id: int) -> t.Optional[TweetSchema]:
+        """Метод возвращает твит по идентификатору СУБД.
+
+        Parameters
+        ----------
+        tweet_id: int
+            Идентификатор твита в СУБД.
+
+        Returns
+        -------
+        TweetSchema
+            Pydantic-схема твита.
+        """
+        logger.info("запрос твитта по идентификатору СУБД.")
         query = select(Tweet).filter_by(id=tweet_id, soft_delete=False)
         async with session() as async_session:
             async with async_session.begin():
@@ -55,7 +101,25 @@ class TweetDbService(TweetMockService):
                     return TweetSchema.from_orm(result)
 
     async def delete_tweet(self, tweet_id: int, author_id: int):
-        """реализация удаления твита"""
+        """Метод удаляет твит по идентификатору СУБД.
+
+        Parameters
+        ----------
+        tweet_id: int
+            Идентификатор твита в СУБД.
+        author_id: int
+            Идентификатор автора в СУБД.
+
+        Returns
+        -------
+        TweetSchema
+            Pydantic-схема твита.
+
+        Note
+        ----
+        Имеется в виду мягкое удаление через флаг удаления. На самом деле твит остаётся для принятия решения о
+        возбуждении уголовного дела по 288 статье УК РФ.
+        """
         logger.info("удаляем твит из постгрес")
         query = update(Tweet).filter_by(id=tweet_id, author_id=author_id).values(soft_delete=True)
         async with session() as async_session:
@@ -64,46 +128,24 @@ class TweetDbService(TweetMockService):
                 await async_session.commit()
                 return SuccessSchema()
 
-    async def add_like_to_tweet(self, tweet_id: int, likes: dict) -> SuccessSchema:
-        """сервис добавления лайка к твиту"""
+    async def update_like_in_tweet(self, tweet_id: int, likes: dict) -> SuccessSchema:
+        """Метод перезаписывает лайки в СУБД у конкретного твита.
+
+        Parameters
+        ----------
+        tweet_id: int
+            Идентификатор твита в СУБД.
+        likes: dict
+            Обновлённый набор лайков.
+
+        Returns
+        -------
+        SuccessSchema
+            Pydantic-схема успешного выполнения операции.
+        """
         query = update(Tweet).where(Tweet.id == tweet_id).values(likes=likes)
         async with session() as async_session:
             async with async_session.begin():
                 await async_session.execute(query)
                 await async_session.commit()
         return SuccessSchema()
-
-
-class MediaDbService:
-    @staticmethod
-    async def get_media(media_id: int = None, hash: str = None):
-        logger.info("запрос медиа ресурса...")
-        if hash:
-            query = select(Media).filter_by(hash=hash)
-        elif media_id:
-            query = select(Media).filter_by(id=media_id)
-        else:
-            return
-        async with session() as async_session:
-            async with async_session.begin():
-                qs = await async_session.execute(query)
-                if result := qs.scalars().first():
-                    return MediaOrmSchema.from_orm(result)
-
-    @staticmethod
-    async def create_media(hash: str, file_name: str) -> t.Optional[MediaOrmSchema]:
-        media = Media(hash=hash, link="static/" + file_name)
-        async with session() as async_session:
-            async with async_session.begin():
-                async_session.add(media)
-                await async_session.commit()
-                return MediaOrmSchema.from_orm(media)
-
-    @staticmethod
-    async def get_many_media(ids: t.List[int]):
-        query = select(Media.link).filter(Media.id.in_(ids))
-        async with session() as async_session:
-            async with async_session.begin():
-                qs = await async_session.execute(query)
-                if result := qs.scalars().all():
-                    return result
