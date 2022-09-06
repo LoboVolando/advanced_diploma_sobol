@@ -15,6 +15,9 @@
 .. automodule:: schemas
     :members:
 
+.. automodule:: exceptions
+    :members:
+
 .. automodule:: app_users
     :members:
 
@@ -35,10 +38,6 @@
 
 .. automodule:: app_users.db_services
     :members:
-
-.. automodule:: app_users.exceptions
-    :members:
-
 
 .. automodule:: app_tweets
     :members:

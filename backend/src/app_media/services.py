@@ -13,7 +13,8 @@ from loguru import logger
 
 from app_media.db_services import MediaDbService as MediaTransportService
 from app_media.schemas import MediaOutSchema
-from schemas import ErrorSchema, ErrorSchemasList
+from exceptions import BackendException, ErrorsList
+from schemas import ErrorSchema
 from settings import settings
 
 
@@ -32,8 +33,6 @@ class MediaService:
         -------
         MediaOutSchema
             Pydantic-схема медиа-объекта для фронтенда.
-        ErrorSchema
-            Pydantic-схема сообщения об ошибке для фронтенда.
         """
         bytez = await file.read()
         hash = hashlib.sha256(bytez).hexdigest()
@@ -43,7 +42,7 @@ class MediaService:
         MediaService.write_media_to_static_folder(file)
         if media := await MediaTransportService.create_media(hash=hash, file_name=file.filename):
             return MediaOutSchema(media_id=media.id)
-        return ErrorSchemasList.media_import_error
+        raise BackendException(**ErrorsList.media_import_error)
 
     @staticmethod
     def write_media_to_static_folder(file: UploadFile) -> None:
@@ -86,4 +85,6 @@ class MediaService:
             return attachments
         return list()
 
-
+    @staticmethod
+    async def raise_exception():
+        raise BackendException("test_exc", "мелкий зехер")

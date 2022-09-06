@@ -17,14 +17,9 @@ from loguru import logger
 from passlib.context import CryptContext
 
 from app_users.db_services import AuthorDbService as AuthorTransportService
-from app_users.db_services import AuthorRedisService
-from app_users.exceptions import (
-    AuthorNotExistsException,
-    PasswordIncorrectException,
-    RecursiveFollowerException,
-)
+from exceptions import BackendException, AuthException, ErrorsList
 from app_users.schemas import ProfileAuthorOutSchema, ProfileAuthorSchema
-from schemas import ErrorSchema, ErrorSchemasList, SuccessSchema
+from schemas import ErrorSchema, SuccessSchema
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -63,6 +58,7 @@ class PermissionService:
         if self.api_key:
             logger.warning(self.api_key)
             return self.api_key
+        raise AuthException(**ErrorsList.not_authorized)
 
     @staticmethod
     def hash_password(raw_password: str) -> str:
@@ -129,20 +125,17 @@ class AuthorService:
             api-key для фронтенда и флаг created, означающий, был пользователь создан или запрошен из базы данных.
         """
         # todo декомпозировать на 2 функции, метод сломан
-        logger.info("регистрация нового автора: {}")
+        logger.info("регистрация нового автора")
         author = await self.service.get_author(name=name)
         if author:
             logger.info("автор найден!")
             if PermissionService.verify_password(password, author.password):
                 logger.info("пароль совпал")
-                await AuthorRedisService.save_author_model(author.api_key, author)
                 return author.api_key, False
-            logger.info("пароль некорректен")
-            raise PasswordIncorrectException
+            raise AuthException(**ErrorsList.not_authorized)
         else:
             api_key = self.generate_api_key(64)
             author = await self.service.create_author(name, api_key, PermissionService.hash_password(password))
-            await AuthorRedisService.save_author_model(api_key, author)
             return api_key, True
 
     async def me(self, api_key: str) -> ProfileAuthorOutSchema | ErrorSchema:
@@ -162,18 +155,13 @@ class AuthorService:
             Pydantic-схема ошибки выполнения метода.
         """
         logger.info("exec business AuthorService.me %s", api_key)
-        # if user := await AuthorRedisService.get_author_model(api_key):
-        #     return ProfileAuthorOutSchema(
-        #         result=True,
-        #         user=ProfileAuthorSchema(id=user.id, name=user.name),
-        #     )
         if user := await self.service.get_author(api_key=api_key):
             return ProfileAuthorOutSchema(
                 result=True,
                 user=user,
             )
         logger.error("не нашли юзера по api-key: %s", api_key)
-        return ErrorSchemasList.author_not_exists
+        raise BackendException(**ErrorsList.author_not_exists)
 
     async def get_author(
         self, author_id: int = None, api_key: str = None, name: str = None
@@ -201,9 +189,9 @@ class AuthorService:
             logger.info(user)
             return ProfileAuthorOutSchema(result=True, user=user)
         logger.error("пользователь не найден")
-        return ErrorSchemasList.author_not_exists
+        raise BackendException(**ErrorsList.author_not_exists)
 
-    async def add_follow(self, writing_author_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
+    async def add_follow(self, writing_author_id: int, api_key: str) -> SuccessSchema:
         """Метод добавляет читателя к пишущему автору, а писателя - в список авторов читателя.
 
         Parameters
@@ -223,17 +211,12 @@ class AuthorService:
         logger.info("добавим follower")
         reading_author = await self.service.get_author(api_key=api_key)
         writing_author = await self.service.get_author(author_id=writing_author_id)
-        try:
-            self._check_follower_authors(reading_author, writing_author)
-        except RecursiveFollowerException:
-            logger.error("автор фолловит сам себя: %s", api_key)
-            return ErrorSchemasList.recursive_follow
+        self._check_follower_authors(reading_author, writing_author)
 
         followers = reading_author.dict(include={"followers"})["followers"]
         new_follower = {"id": writing_author.id, "name": writing_author.name}
         if new_follower not in followers:
             followers.append(new_follower)
-
         following = writing_author.dict(include={"following"})["following"]
         new_following = {"id": reading_author.id, "name": reading_author.name}
         if new_following not in following:
@@ -266,11 +249,7 @@ class AuthorService:
         logger.info("удалим follower")
         reading_author = await self.service.get_author(api_key=api_key)
         writing_author = await self.service.get_author(author_id=writing_author_id)
-        try:
-            self._check_follower_authors(reading_author, writing_author)
-        except RecursiveFollowerException:
-            logger.error("автор фолловит сам себя: %s", api_key)
-            return ErrorSchemasList.recursive_follow
+        self._check_follower_authors(reading_author, writing_author)
 
         followers = reading_author.dict(include={"followers"}).get("followers", [])
         new_follower = {"id": writing_author.id, "name": writing_author.name}
@@ -322,7 +301,8 @@ class AuthorService:
             Операции с несуществующими авторами
         """
         if reading_author is None or writing_author is None:
-            raise AuthorNotExistsException("кого-то из авторов не существует")
+            raise BackendException(**ErrorsList.recursive_follow)
         if reading_author.id == writing_author.id:
             logger.error("автор (%s) follow-ит сам себя ", {reading_author.id})
-            raise RecursiveFollowerException("попытка зафоловить/расфоловить самого себя")
+            raise BackendException(**ErrorsList.recursive_follow)
+

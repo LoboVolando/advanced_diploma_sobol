@@ -8,12 +8,12 @@ import typing as t
 from loguru import logger
 from sqlalchemy import select, update
 
-from db import session
-
+from app_tweets.interfaces import AbstractTweetService
 from app_tweets.models import Tweet
 from app_tweets.schemas import TweetInSchema, TweetSchema
+from db import session
 from schemas import SuccessSchema
-from app_tweets.interfaces import AbstractTweetService
+from exceptions import BackendException, ErrorsList
 
 
 class TweetDbService(AbstractTweetService):
@@ -99,8 +99,9 @@ class TweetDbService(AbstractTweetService):
                 result = qs.scalars().first()
                 if result:
                     return TweetSchema.from_orm(result)
+        raise BackendException(**ErrorsList.tweet_not_exists)
 
-    async def delete_tweet(self, tweet_id: int, author_id: int):
+    async def delete_tweet(self, tweet_id: int, author_id: int) -> SuccessSchema:
         """Метод удаляет твит по идентификатору СУБД.
 
         Parameters

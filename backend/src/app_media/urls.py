@@ -3,17 +3,16 @@ urls.py
 -------
 Модуль определяет эндпоинты для работы с изображениями.
 """
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, UploadFile, status
 
-from app_media.services import MediaService
 from app_media.schemas import MediaOutSchema
-from schemas import ErrorSchema
+from app_media.services import MediaService
 
 router = APIRouter()
 
 
-@router.post("/api/medias")
-async def medias(file: UploadFile) -> MediaOutSchema | ErrorSchema:
+@router.post("/api/medias", response_model=MediaOutSchema, status_code=status.HTTP_201_CREATED)
+async def medias(file: UploadFile) -> MediaOutSchema:
     """
     Эндпоинт загружает файл с картинкой на сервер.
 
@@ -27,8 +26,12 @@ async def medias(file: UploadFile) -> MediaOutSchema | ErrorSchema:
     -------
     MediaOutSchema
         Pydantic-схема медиа ресурса.
-    ErrorSchema
-        Pydantic-схема сообщения об ошибке.
     """
     if result := await MediaService.get_or_create_media(file):
         return result
+
+@router.get("/api/exception")
+async def raise_exception():
+    """Недокументированный эндпоинт. Выдаёт исключение при обращении."""
+
+    await MediaService.raise_exception()

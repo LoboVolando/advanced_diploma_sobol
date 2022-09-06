@@ -3,10 +3,9 @@ urls.py
 -------
 Модуль реализует эндпоинты приложения app_users.
 """
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from loguru import logger
 
-from app_users.exceptions import PasswordIncorrectException
 from app_users.schemas import ProfileAuthorOutSchema, RegisterAuthorSchema
 from app_users.services import AuthorService, PermissionService
 from schemas import ErrorSchema, SuccessSchema
@@ -14,7 +13,7 @@ from schemas import ErrorSchema, SuccessSchema
 router = APIRouter()
 
 
-@router.post("/api/register")
+@router.post("/api/register", status_code=status.HTTP_201_CREATED)
 async def register(author: RegisterAuthorSchema, service: AuthorService = Depends()) -> dict:
     """Эндпоинт регистрации нового автора.
 
@@ -41,23 +40,17 @@ async def register(author: RegisterAuthorSchema, service: AuthorService = Depend
     Не предусмотрен документацией проекта.
     """
     logger.warning("регистрируем нового пользователя...")
-    try:
-        api_key, created = await service.get_or_create_user(name=author.name, password=author.password)
-        logger.info(api_key)
-        return {"result": "true", "api-key": api_key, "created": created}
-    except PasswordIncorrectException:
-        ErrorSchema(
-            error_type="INCORRECT_PASSWROR",
-            error_message=f"неверный пароль для: {author.name}",
-        ).dict()
+    api_key, created = await service.get_or_create_user(name=author.name, password=author.password)
+    logger.info(api_key)
+    return {"result": "true", "api-key": api_key, "created": created}
 
 
-@router.get("/api/userinfo")
-@router.get("/api/users/me")
+@router.get("/api/userinfo", response_model=ProfileAuthorOutSchema, status_code=status.HTTP_200_OK)
+@router.get("/api/users/me", response_model=ProfileAuthorOutSchema, status_code=status.HTTP_200_OK)
 async def me(
-    user: AuthorService = Depends(),
-    permission: PermissionService = Depends(),
-) -> ProfileAuthorOutSchema | ErrorSchema:
+        user: AuthorService = Depends(),
+        permission: PermissionService = Depends(),
+) -> ProfileAuthorOutSchema:
     """Эндпоинт возвращает информацию о текущем пользователе.
 
     Parameters
@@ -78,12 +71,12 @@ async def me(
     return await user.me(api_key)
 
 
-@router.get("/api/users/{author_id}")
+@router.get("/api/users/{author_id}", status_code=status.HTTP_200_OK, response_model=ProfileAuthorOutSchema)
 async def get_author_by_id(
-    author_id: int,
-    user: AuthorService = Depends(),
-    permission: PermissionService = Depends(),
-) -> ProfileAuthorOutSchema | ErrorSchema:
+        author_id: int,
+        user: AuthorService = Depends(),
+        permission: PermissionService = Depends(),
+) -> ProfileAuthorOutSchema:
     """Эндпоинт возвращает автора по идентификатору в базе данных.
 
     Parameters
@@ -108,12 +101,12 @@ async def get_author_by_id(
     return await user.get_author(author_id=author_id)
 
 
-@router.post("/api/users/{author_id}/follow")
+@router.post("/api/users/{author_id}/follow", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def follow_author(
-    author_id: int,
-    permission: PermissionService = Depends(),
-    author: AuthorService = Depends(),
-) -> SuccessSchema | ErrorSchema:
+        author_id: int,
+        permission: PermissionService = Depends(),
+        author: AuthorService = Depends(),
+) -> SuccessSchema:
     """Эндпоинт добавляет пишущему автору читателей, а читателям - писателя.
 
     Parameters
@@ -140,12 +133,12 @@ async def follow_author(
     return await author.add_follow(writing_author_id=author_id, api_key=api_key)
 
 
-@router.delete("/api/users/{author_id}/follow")
+@router.delete("/api/users/{author_id}/follow", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def unfollow_author(
-    author_id: int,
-    permission: PermissionService = Depends(),
-    author: AuthorService = Depends(),
-) -> SuccessSchema | ErrorSchema:
+        author_id: int,
+        permission: PermissionService = Depends(),
+        author: AuthorService = Depends(),
+) -> SuccessSchema:
     """Эндпоинт удаляет у пишущего автора читателя, а у  читателя - писателя.
 
     Parameters
@@ -161,8 +154,6 @@ async def unfollow_author(
     -------
     SuccessSchema
         Pydantic-схема успешного выполнения.
-    ErrorSchema
-        Pydantic-схема ошибки выполнения.
 
     Note
     ----

@@ -16,6 +16,7 @@ from app_users.models import Author
 from app_users.schemas import ProfileAuthorSchema
 from db import redis, session
 from schemas import SuccessSchema
+from exceptions import BackendException, ErrorsList
 
 TTL = 60
 
@@ -70,7 +71,7 @@ class AuthorDbService(AbstractAuthorService):
         elif name:
             query = select(Author).filter_by(name=name)
         else:
-            raise ValueError("не передано ничего для работы с БД")
+            raise BackendException(**ErrorsList.incorrect_parameters)
         logger.info("подготовлен запрос...")
         async with session() as async_session:
             async with async_session.begin():

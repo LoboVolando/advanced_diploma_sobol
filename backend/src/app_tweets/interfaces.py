@@ -27,10 +27,10 @@ class AbstractTweetService(ABC):
 
     @abstractmethod
     def create_tweet(
-            self,
-            new_tweet: TweetInSchema,
-            author_id: int,
-            attachments: t.Optional[t.List[str]],
+        self,
+        new_tweet: TweetInSchema,
+        author_id: int,
+        attachments: t.Optional[t.List[str]],
     ):
         """
         Абстрактный метод сохранения твита.

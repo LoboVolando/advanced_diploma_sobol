@@ -7,11 +7,13 @@ import typing as t
 
 from loguru import logger
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError, DatabaseError, DisconnectionError
 
+from app_media.interfaces import AbstractMediaService
 from app_media.models import Media
 from app_media.schemas import MediaOrmSchema
-from app_media.interfaces import AbstractMediaService
 from db import session
+from exceptions import InternalServerException, BackendException, ErrorsList
 
 
 class MediaDbService(AbstractMediaService):
@@ -19,8 +21,7 @@ class MediaDbService(AbstractMediaService):
     Класс реализует CRUID для медиа объектов в СУБД PostgreSql
     """
 
-    @staticmethod
-    async def get_media(media_id: int = None, hash: str = None) -> t.Optional[MediaOrmSchema]:
+    async def get_media(self, media_id: int = None, hash: str = None) -> t.Optional[MediaOrmSchema]:
         """Метод возвращает pydantic-схему записи СУБД по идентификатору в СУБД или по хэшу файла.
 
         Parameters
@@ -43,15 +44,18 @@ class MediaDbService(AbstractMediaService):
         elif media_id:
             query = select(Media).filter_by(id=media_id)
         else:
-            return
-        async with session() as async_session:
-            async with async_session.begin():
-                qs = await async_session.execute(query)
-                if result := qs.scalars().first():
-                    return MediaOrmSchema.from_orm(result)
+            raise BackendException(**ErrorsList.incorrect_parameters)
+        try:
+            async with session() as async_session:
+                async with async_session.begin():
+                    qs = await async_session.execute(query)
+                    if result := qs.scalars().first():
+                        return MediaOrmSchema.from_orm(result)
+        except DisconnectionError as e:
+            logger.exception(e)
+            raise InternalServerException(**ErrorsList.db_error)
 
-    @staticmethod
-    async def create_media(hash: str, file_name: str) -> t.Optional[MediaOrmSchema]:
+    async def create_media(self, hash: str, file_name: str) -> t.Optional[MediaOrmSchema]:
         """
         Метод сохраняет данные о файле в СУБД.
 
@@ -74,8 +78,7 @@ class MediaDbService(AbstractMediaService):
                 await async_session.commit()
                 return MediaOrmSchema.from_orm(media)
 
-    @staticmethod
-    async def get_many_media(ids: t.List[int]):
+    async def get_many_media(self, ids: t.List[int]):
         """
         Метод возвращает множество медиа-ресурсов по списку идентификаторов.
 

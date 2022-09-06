@@ -20,6 +20,7 @@ class Media(Base):
     hash: str
         Хэш от файла для предотвращения повторной загрузки файла.
     """
+
     __tablename__ = "medias"
     id = Column(Integer, primary_key=True)
     link = Column(String(100))

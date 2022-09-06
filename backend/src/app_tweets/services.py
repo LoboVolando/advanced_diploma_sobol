@@ -10,7 +10,7 @@ from loguru import logger
 
 from app_media.services import MediaService
 from app_tweets.db_services import TweetDbService as TweetTransportService
-from app_tweets.exceptions import BelongsTweetToAuthorException
+from exceptions import BackendException, ErrorsList
 from app_tweets.schemas import (
     TweetInSchema,
     TweetListOutSchema,
@@ -19,7 +19,7 @@ from app_tweets.schemas import (
 )
 from app_users.schemas import LikeAuthorSchema
 from app_users.services import AuthorService
-from schemas import ErrorSchema, ErrorSchemasList, SuccessSchema
+from schemas import SuccessSchema
 
 
 class TweetService:
@@ -41,7 +41,7 @@ class TweetService:
         self.service = TweetTransportService()
         self.author_service = AuthorService()
 
-    async def get_list(self, api_key: str) -> TweetListOutSchema | ErrorSchema:
+    async def get_list(self, api_key: str) -> TweetListOutSchema:
         """
         Метод возвращает список твитов пользователя.
 
@@ -64,7 +64,7 @@ class TweetService:
             logger.info(tweet)
         return TweetListOutSchema(result=True, tweets=tweets)
 
-    async def get_tweet(self, tweet_id: int) -> TweetSchema | ErrorSchema:
+    async def get_tweet(self, tweet_id: int) -> TweetSchema:
         """
         Метод возвращает твит пользователя по идентификатору в СУБД.
 
@@ -82,9 +82,9 @@ class TweetService:
         """
         if tweet := await self.service.get_tweet_by_id(tweet_id):
             return tweet
-        return ErrorSchemasList.tweet_not_exists
+        raise BackendException(**ErrorsList.tweet_not_exists)
 
-    async def create_tweet(self, new_tweet: TweetInSchema, api_key: str) -> TweetOutSchema | ErrorSchema:
+    async def create_tweet(self, new_tweet: TweetInSchema, api_key: str) -> TweetOutSchema:
         """
         Метод добавляет твит автора в СУБД.
 
@@ -107,9 +107,8 @@ class TweetService:
             attachments = await MediaService.get_many_media(new_tweet.tweet_media_ids)
             created_tweet = await self.service.create_tweet(new_tweet, author.user.id, attachments)
             return TweetOutSchema(result=True, tweet_id=created_tweet.id)
-        return ErrorSchemasList.author_not_exists
 
-    async def delete_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
+    async def delete_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema:
         """
         Метод удаляет твит автора из СУБД.
 
@@ -129,27 +128,15 @@ class TweetService:
         """
         logger.info("удалим твит, id: %s", tweet_id)
         author = await self.author_service.get_author(api_key=api_key)
-        if not author:
-            return ErrorSchemasList.author_not_exists
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
-        if not tweet:
-            return ErrorSchemasList.tweet_not_exists
         logger.debug(
             "сравнение идентификаторов автора запроса и автора твитта %s <?> %s", author.user.id, tweet.author.id
         )
         if not tweet.author.id == author.user.id:
-            return ErrorSchemasList.not_self_tweet_remove
-        try:
-            return await self.service.delete_tweet(tweet_id=tweet_id, author_id=author.user.id)
-        except BaseException as e:
-            logger.error("неизвестная ошибка при удалении твита")
-            logger.trace(e)
-            return ErrorSchema(
-                error_type="ERR_TWEET_DELETE",
-                error_message="непредвиденная ошибка удаления твита",
-            )
+            raise BackendException(**ErrorsList.not_self_tweet_remove)
+        return await self.service.delete_tweet(tweet_id=tweet_id, author_id=author.user.id)
 
-    async def add_like_to_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
+    async def add_like_to_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema:
         """
         Метод добавляет лайку к твиту.
 
@@ -164,21 +151,17 @@ class TweetService:
         -------
         SuccessSchema
             Pydantic-схема успешной операции.
-        ErrorSchema
-            Pydantic-схема ошибки выполнения.
         """
         logger.info("поставим лайк на твит...")
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
         like = LikeAuthorSchema(user_id=author.user.id, name=author.user.name)
         if like in tweet.likes:
-            response = ErrorSchemasList.double_like
-            logger.warning(response)
-            return response
+            raise BackendException(**ErrorsList.double_like)
         tweet.likes.append(like)
         return await self.service.update_like_in_tweet(tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"])
 
-    async def remove_like_from_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
+    async def remove_like_from_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema:
         """
         Метод удаляет лайку из твита.
 
@@ -193,15 +176,13 @@ class TweetService:
         -------
         SuccessSchema
             Pydantic-схема успешной операции.
-        ErrorSchema
-            Pydantic-схема ошибки выполнения.
         """
         logger.info("удалим лайк на твит...")
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
         like = LikeAuthorSchema(user_id=author.user.id, name=author.user.name)
         if like not in tweet.likes:
-            return ErrorSchemasList.remove_not_exist_like
+            raise BackendException(**ErrorsList.remove_not_exist_like)
         tweet.likes.remove(like)
         return await self.service.update_like_in_tweet(tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"])
 
@@ -223,6 +204,5 @@ class TweetService:
         """
         tweet: TweetSchema = await self.service.get_tweet_by_id(tweet_id)
         if not tweet.author.id == author_id:
-            raise BelongsTweetToAuthorException("Твит не принадлежит автору")
+            raise BackendException(**ErrorsList.not_self_tweet_remove)
         return True
-

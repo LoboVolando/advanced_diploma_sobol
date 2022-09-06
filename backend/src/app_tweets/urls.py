@@ -4,7 +4,7 @@ urls.py
 
 Реализует эндпоинты для работы с твитами населения.
 """
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 
 from app_tweets.schemas import (
     TweetInSchema,
@@ -14,14 +14,14 @@ from app_tweets.schemas import (
 )
 from app_tweets.services import TweetService
 from app_users.services import PermissionService
-from schemas import ErrorSchema, SuccessSchema
+from schemas import SuccessSchema
 
 router = APIRouter()
 
 
-@router.get("/api/tweets", response_model=TweetListOutSchema)
+@router.get("/api/tweets", response_model=TweetListOutSchema, status_code=status.HTTP_200_OK)
 async def get_tweets_list(
-    permission: PermissionService = Depends(), tweet: TweetService = Depends()
+        permission: PermissionService = Depends(), tweet: TweetService = Depends()
 ) -> TweetListOutSchema:
     """Эндпоинт реализует получение всех твитов текущего автора.
 
@@ -41,11 +41,11 @@ async def get_tweets_list(
     return await tweet.get_list(api_key)
 
 
-@router.post("/api/tweets")
+@router.post("/api/tweets", response_model=TweetOutSchema, status_code=status.HTTP_201_CREATED)
 async def create_tweet(
-    new_tweet: TweetInSchema,
-    permission: PermissionService = Depends(),
-    tweet: TweetService = Depends(),
+        new_tweet: TweetInSchema,
+        permission: PermissionService = Depends(),
+        tweet: TweetService = Depends(),
 ) -> TweetOutSchema:
     """Эндпоинт сохранения нового твита в системе.
 
@@ -67,11 +67,11 @@ async def create_tweet(
     return await tweet.create_tweet(new_tweet, api_key)
 
 
-@router.get("/api/tweets/{tweet_id}")
+@router.get("/api/tweets/{tweet_id}", response_model=TweetSchema, status_code=status.HTTP_200_OK)
 async def get_tweet(
-    tweet_id: int,
-    tweet: TweetService = Depends(),
-) -> TweetSchema | ErrorSchema:
+        tweet_id: int,
+        tweet: TweetService = Depends(),
+) -> TweetSchema:
     """Эндпоинт достаёт твит по идентификатору СУБД.
 
     Parameters
@@ -85,18 +85,16 @@ async def get_tweet(
     -------
     TweetSchema
         Pydantic-схема для фронтенда твита.
-    ErrorSchema
-        Pydantic-схема ошибки выполнения.
     """
     return await tweet.get_tweet(tweet_id=tweet_id)
 
 
-@router.delete("/api/tweets/{tweet_id}")
+@router.delete("/api/tweets/{tweet_id}", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def delete_tweet(
-    tweet_id: int,
-    permission: PermissionService = Depends(),
-    tweet: TweetService = Depends(),
-) -> SuccessSchema | ErrorSchema:
+        tweet_id: int,
+        permission: PermissionService = Depends(),
+        tweet: TweetService = Depends(),
+) -> SuccessSchema:
     """Эндпоинт удаления твита.
 
     Parameters
@@ -112,19 +110,17 @@ async def delete_tweet(
     -------
     SuccessSchema
         Pydantic-схема успешного выполнения.
-    ErrorSchema
-        Pydantic-схема ошибки выполнения.
     """
     api_key = await permission.get_api_key()
     return await tweet.delete_tweet(tweet_id=tweet_id, api_key=api_key)
 
 
-@router.post("/api/tweets/{tweet_id}/likes")
+@router.post("/api/tweets/{tweet_id}/likes", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def add_like_to_tweet(
-    tweet_id: int,
-    permission: PermissionService = Depends(),
-    tweet: TweetService = Depends(),
-) -> SuccessSchema | ErrorSchema:
+        tweet_id: int,
+        permission: PermissionService = Depends(),
+        tweet: TweetService = Depends(),
+) -> SuccessSchema:
     """Эндпоинт добавляет лайку к твиту.
 
     Parameters
@@ -140,19 +136,17 @@ async def add_like_to_tweet(
     -------
     SuccessSchema
         Pydantic-схема успешного выполнения.
-    ErrorSchema
-        Pydantic-схема ошибки выполнения.
     """
     api_key = await permission.get_api_key()
     return await tweet.add_like_to_tweet(tweet_id=tweet_id, api_key=api_key)
 
 
-@router.delete("/api/tweets/{tweet_id}/likes")
+@router.delete("/api/tweets/{tweet_id}/likes", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def remove_like_from_tweet(
-    tweet_id: int,
-    permission: PermissionService = Depends(),
-    tweet: TweetService = Depends(),
-) -> SuccessSchema | ErrorSchema:
+        tweet_id: int,
+        permission: PermissionService = Depends(),
+        tweet: TweetService = Depends(),
+) -> SuccessSchema:
     """Эндпоинт удаляет лайку с твита.
 
     Parameters
@@ -168,8 +162,6 @@ async def remove_like_from_tweet(
     -------
     SuccessSchema
         Pydantic-схема успешного выполнения.
-    ErrorSchema
-        Pydantic-схема ошибки выполнения.
     """
     api_key = await permission.get_api_key()
     return await tweet.remove_like_from_tweet(tweet_id=tweet_id, api_key=api_key)
