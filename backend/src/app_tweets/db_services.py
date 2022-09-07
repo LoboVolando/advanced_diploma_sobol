@@ -7,13 +7,14 @@ import typing as t
 
 from loguru import logger
 from sqlalchemy import select, update
+from sqlalchemy.exc import DisconnectionError
 
 from app_tweets.interfaces import AbstractTweetService
 from app_tweets.models import Tweet
 from app_tweets.schemas import TweetInSchema, TweetSchema
 from db import session
 from schemas import SuccessSchema
-from exceptions import BackendException, ErrorsList
+from exceptions import BackendException, ErrorsList, exc_handler
 
 
 class TweetDbService(AbstractTweetService):
@@ -78,6 +79,7 @@ class TweetDbService(AbstractTweetService):
                 # todo не распаковывается модель в схему
                 return tweet
 
+    @exc_handler(ConnectionRefusedError)
     async def get_tweet_by_id(self, tweet_id: int) -> t.Optional[TweetSchema]:
         """Метод возвращает твит по идентификатору СУБД.
 
@@ -96,11 +98,16 @@ class TweetDbService(AbstractTweetService):
         async with session() as async_session:
             async with async_session.begin():
                 qs = await async_session.execute(query)
-                result = qs.scalars().first()
+                try:
+                    result = qs.scalars().first()
+                except Exception as e:
+                    logger.warning(e)
+                    logger.warning(type(e))
                 if result:
                     return TweetSchema.from_orm(result)
         raise BackendException(**ErrorsList.tweet_not_exists)
 
+    @exc_handler(ConnectionRefusedError)
     async def delete_tweet(self, tweet_id: int, author_id: int) -> SuccessSchema:
         """Метод удаляет твит по идентификатору СУБД.
 
@@ -129,6 +136,7 @@ class TweetDbService(AbstractTweetService):
                 await async_session.commit()
                 return SuccessSchema()
 
+    @exc_handler(ConnectionRefusedError)
     async def update_like_in_tweet(self, tweet_id: int, likes: dict) -> SuccessSchema:
         """Метод перезаписывает лайки в СУБД у конкретного твита.
 

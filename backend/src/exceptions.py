@@ -4,7 +4,7 @@
 
 Модуль содержит исключения для приложения.
 """
-
+import typing as t
 from loguru import logger
 
 
@@ -12,6 +12,7 @@ class BackendException(Exception):
     """
     Базовое исключение. Код 404
     """
+
     def __init__(self, error_type: str, error_message: str):
         self.result = False
         self.error_type = error_type
@@ -60,8 +61,26 @@ class ErrorsList:
                                 error_message=f"неверные параметры")
     not_authorized = dict(error_type='AUTH_ERROR',
                           error_message='отсутствует api-key в HTTP-заголовке')
-    db_error = dict(error_type='DB_ERROR',
-                          error_message='ошибка сохранения в СУБД')
+    connection_refused = dict(error_type='CON_REFUSED',
+                    error_message='соединение с СУБД было сброшено. Проверьте контейнер с СУБД')
+
+
+def exc_handler(ExceptionClass):
+    """декоратор для перехвата исключений СУБД"""
+
+    def decorator(func: t.Callable):
+        async def wrapper(*args, **kwargs):
+            try:
+                return await func(*args, **kwargs)
+            except Exception as e:
+                if isinstance(e, ExceptionClass):
+                    logger.exception(e)
+                    logger.error(' я не дам тебе возбудиться')
+                    raise InternalServerException(**ErrorsList.connection_refused)
+
+        return wrapper
+
+    return decorator
 
 # ToDo - забубенить декоратор с аргументом. Аргумент - тип исключения и сообщение об ошибке.
 # ToDo - и покрыть ими асинхронные вызовы СУБД.

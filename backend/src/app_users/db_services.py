@@ -16,7 +16,7 @@ from app_users.models import Author
 from app_users.schemas import ProfileAuthorSchema
 from db import redis, session
 from schemas import SuccessSchema
-from exceptions import BackendException, ErrorsList
+from exceptions import BackendException, ErrorsList, exc_handler
 
 TTL = 60
 
@@ -24,6 +24,7 @@ TTL = 60
 class AuthorDbService(AbstractAuthorService):
     """Класс инкапсулирует cruid для модели авторов"""
 
+    @exc_handler(ConnectionRefusedError)
     async def me(self, api_key: str) -> ProfileAuthorSchema:
         """
         Метод возвращает информацию о пользователе по ключу api_key.
@@ -44,6 +45,7 @@ class AuthorDbService(AbstractAuthorService):
             logger.info(f"найден автор в бд {author}")
             return author
 
+    @exc_handler(ConnectionRefusedError)
     async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> ProfileAuthorSchema:
         """
         Метод ищет автора по одному из параметров.
@@ -80,6 +82,7 @@ class AuthorDbService(AbstractAuthorService):
                 if user:
                     return ProfileAuthorSchema.from_orm(user)
 
+    @exc_handler(ConnectionRefusedError)
     async def create_author(self, name: str, api_key: str, password: str) -> t.Optional[Author]:
         """Метод сохраняет нового автора в базе данных
 
@@ -105,6 +108,7 @@ class AuthorDbService(AbstractAuthorService):
                 logger.info(f"создали нового пользователя: {author}")
                 return author
 
+    @exc_handler(ConnectionRefusedError)
     async def update_follow(
         self,
         reading_author: ProfileAuthorSchema,
