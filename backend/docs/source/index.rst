@@ -60,9 +60,6 @@
 .. automodule:: app_tweets.db_services
     :members:
 
-.. automodule:: app_tweets.exceptions
-    :members:
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
