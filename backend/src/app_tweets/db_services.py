@@ -7,14 +7,13 @@ import typing as t
 
 from loguru import logger
 from sqlalchemy import select, update
-from sqlalchemy.exc import DisconnectionError
 
 from app_tweets.interfaces import AbstractTweetService
 from app_tweets.models import Tweet
 from app_tweets.schemas import TweetInSchema, TweetSchema
 from db import session
-from schemas import SuccessSchema
 from exceptions import BackendException, ErrorsList, exc_handler
+from schemas import SuccessSchema
 
 
 class TweetDbService(AbstractTweetService):
@@ -40,10 +39,10 @@ class TweetDbService(AbstractTweetService):
                     return [TweetSchema.from_orm(item) for item in query_set.scalars()]
 
     async def create_tweet(
-            self,
-            new_tweet: TweetInSchema,
-            author_id: int,
-            attachments: t.Optional[t.List[str]],
+        self,
+        new_tweet: TweetInSchema,
+        author_id: int,
+        attachments: t.Optional[t.List[str]],
     ) -> Tweet:
         """
         Метод создаёт новый твит автора.

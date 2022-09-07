@@ -5,7 +5,6 @@ db_services.py
 Модуль реализует взаимодействие с базой данных приложения app_users.
 """
 
-import pickle
 import typing as t
 
 from loguru import logger
@@ -14,9 +13,9 @@ from sqlalchemy import select, update
 from app_users.interfaces import AbstractAuthorService
 from app_users.models import Author
 from app_users.schemas import ProfileAuthorSchema
-from db import redis, session
-from schemas import SuccessSchema
+from db import session
 from exceptions import BackendException, ErrorsList, exc_handler
+from schemas import SuccessSchema
 
 TTL = 60
 
@@ -145,46 +144,3 @@ class AuthorDbService(AbstractAuthorService):
                 await async_session.execute(query_w)
                 await async_session.commit()
         return SuccessSchema()
-
-
-class AuthorRedisService:
-    """Класс инкапсулирует методы по кэшированию авторов в redis."""
-
-    @classmethod
-    async def save_author_model(cls, api_key: str, model: Author) -> None:
-        """Метод сохраняет SqlAlchemy-model в redis.
-
-        api_key: str
-            Уникальный ключ для фронтенда.
-        model: Author
-            SqlAlchemy-model автора.
-        """
-        try:
-            model = pickle.dumps(model)
-            await redis.set(api_key, model, ex=TTL)
-            logger.info("юзер сохранён в редис успешно")
-        except Exception as e:
-            logger.exception(e)
-            logger.error("ошибка сохранения в редис")
-
-    @classmethod
-    async def get_author_model(cls, api_key: str) -> t.Optional[Author]:
-        """Метод возвращает модель автора из redis по api-key.
-
-        Parameters
-        ----------
-        api_key: str
-            Уникальный ключ для фронтенда.
-        Returns
-        -------
-        Author
-            Модель автора
-        """
-        try:
-            if author := await redis.get(api_key):
-                author = pickle.loads(author)
-                logger.info("юзер загружен из редис успешно: %s", author)
-                return author
-        except Exception as e:
-            logger.exception(e)
-            logger.error("ошибка получения пользователя из редис %s", api_key)

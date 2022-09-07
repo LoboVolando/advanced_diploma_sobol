@@ -8,7 +8,7 @@ from loguru import logger
 
 from app_users.schemas import ProfileAuthorOutSchema, RegisterAuthorSchema
 from app_users.services import AuthorService, PermissionService
-from schemas import ErrorSchema, SuccessSchema
+from schemas import SuccessSchema
 
 router = APIRouter()
 
@@ -48,8 +48,8 @@ async def register(author: RegisterAuthorSchema, service: AuthorService = Depend
 @router.get("/api/userinfo", response_model=ProfileAuthorOutSchema, status_code=status.HTTP_200_OK)
 @router.get("/api/users/me", response_model=ProfileAuthorOutSchema, status_code=status.HTTP_200_OK)
 async def me(
-        user: AuthorService = Depends(),
-        permission: PermissionService = Depends(),
+    user: AuthorService = Depends(),
+    permission: PermissionService = Depends(),
 ) -> ProfileAuthorOutSchema:
     """Эндпоинт возвращает информацию о текущем пользователе.
 
@@ -64,8 +64,6 @@ async def me(
     -------
     ProfileAuthorOutSchema
         pydantic-схема профиля пользователя.
-    ErrorSchema
-        pydantic-схема сообщения об ошибке.
     """
     api_key = await permission.get_api_key()
     return await user.me(api_key)
@@ -73,9 +71,9 @@ async def me(
 
 @router.get("/api/users/{author_id}", status_code=status.HTTP_200_OK, response_model=ProfileAuthorOutSchema)
 async def get_author_by_id(
-        author_id: int,
-        user: AuthorService = Depends(),
-        permission: PermissionService = Depends(),
+    author_id: int,
+    user: AuthorService = Depends(),
+    permission: PermissionService = Depends(),
 ) -> ProfileAuthorOutSchema:
     """Эндпоинт возвращает автора по идентификатору в базе данных.
 
@@ -92,8 +90,6 @@ async def get_author_by_id(
     -------
     ProfileAuthorOutSchema
         pydantic-схема профиля пользователя.
-    ErrorSchema
-        pydantic-схема сообщения об ошибке.
 
     """
     await permission.get_api_key()
@@ -103,9 +99,9 @@ async def get_author_by_id(
 
 @router.post("/api/users/{author_id}/follow", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def follow_author(
-        author_id: int,
-        permission: PermissionService = Depends(),
-        author: AuthorService = Depends(),
+    author_id: int,
+    permission: PermissionService = Depends(),
+    author: AuthorService = Depends(),
 ) -> SuccessSchema:
     """Эндпоинт добавляет пишущему автору читателей, а читателям - писателя.
 
@@ -122,8 +118,6 @@ async def follow_author(
     -------
     SuccessSchema
         Pydantic-схема успешного выполнения.
-    ErrorSchema
-        Pydantic-схема ошибки выполнения.
 
     Note
     ----
@@ -135,9 +129,9 @@ async def follow_author(
 
 @router.delete("/api/users/{author_id}/follow", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def unfollow_author(
-        author_id: int,
-        permission: PermissionService = Depends(),
-        author: AuthorService = Depends(),
+    author_id: int,
+    permission: PermissionService = Depends(),
+    author: AuthorService = Depends(),
 ) -> SuccessSchema:
     """Эндпоинт удаляет у пишущего автора читателя, а у  читателя - писателя.
 

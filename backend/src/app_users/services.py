@@ -17,8 +17,8 @@ from loguru import logger
 from passlib.context import CryptContext
 
 from app_users.db_services import AuthorDbService as AuthorTransportService
-from exceptions import BackendException, AuthException, ErrorsList
 from app_users.schemas import ProfileAuthorOutSchema, ProfileAuthorSchema
+from exceptions import AuthException, BackendException, ErrorsList
 from schemas import ErrorSchema, SuccessSchema
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -305,4 +305,3 @@ class AuthorService:
         if reading_author.id == writing_author.id:
             logger.error("автор (%s) follow-ит сам себя ", {reading_author.id})
             raise BackendException(**ErrorsList.recursive_follow)
-

@@ -14,13 +14,12 @@ from loguru import logger
 from app_media.db_services import MediaDbService as MediaTransportService
 from app_media.schemas import MediaOutSchema
 from exceptions import BackendException, ErrorsList
-from schemas import ErrorSchema
 from settings import settings
 
 
 class MediaService:
     @staticmethod
-    async def get_or_create_media(file: UploadFile) -> MediaOutSchema | ErrorSchema:
+    async def get_or_create_media(file: UploadFile) -> MediaOutSchema:
         """
         Метод сохраняет файл на сервере.
 

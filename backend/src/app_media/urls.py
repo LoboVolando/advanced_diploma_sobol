@@ -30,6 +30,7 @@ async def medias(file: UploadFile) -> MediaOutSchema:
     if result := await MediaService.get_or_create_media(file):
         return result
 
+
 @router.get("/api/exception")
 async def raise_exception():
     """Недокументированный эндпоинт. Выдаёт исключение при обращении."""

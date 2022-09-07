@@ -33,13 +33,13 @@ app : FastAPI
     Экземпляр приложения FastApi, к которому подключаются middleware и роуты приложений
 """
 from fastapi import FastAPI, Request, status
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app_media import router as app_media_router
 from app_tweets import router as app_tweets_router
 from app_users import router as app_users_router
-from exceptions import BackendException, AuthException, InternalServerException
+from exceptions import AuthException, BackendException, InternalServerException
 
 app = FastAPI(title="CLI-ter", description="Импортозамещение in action", version="0.01a")
 
@@ -51,12 +51,14 @@ async def media_exception_handler(request: Request, exc: BackendException):
         content={"result": exc.result, "error_type": exc.error_type, "error_message": exc.error_message},
     )
 
+
 @app.exception_handler(AuthException)
 async def auth_exception_handler(request: Request, exc: AuthException):
     return JSONResponse(
         status_code=status.HTTP_401_UNAUTHORIZED,
         content={"result": exc.result, "error_type": exc.error_type, "error_message": exc.error_message},
     )
+
 
 @app.exception_handler(InternalServerException)
 async def internal_exception_handler(request: Request, exc: AuthException):

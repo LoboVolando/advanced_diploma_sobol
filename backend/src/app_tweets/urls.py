@@ -21,7 +21,7 @@ router = APIRouter()
 
 @router.get("/api/tweets", response_model=TweetListOutSchema, status_code=status.HTTP_200_OK)
 async def get_tweets_list(
-        permission: PermissionService = Depends(), tweet: TweetService = Depends()
+    permission: PermissionService = Depends(), tweet: TweetService = Depends()
 ) -> TweetListOutSchema:
     """Эндпоинт реализует получение всех твитов текущего автора.
 
@@ -43,9 +43,9 @@ async def get_tweets_list(
 
 @router.post("/api/tweets", response_model=TweetOutSchema, status_code=status.HTTP_201_CREATED)
 async def create_tweet(
-        new_tweet: TweetInSchema,
-        permission: PermissionService = Depends(),
-        tweet: TweetService = Depends(),
+    new_tweet: TweetInSchema,
+    permission: PermissionService = Depends(),
+    tweet: TweetService = Depends(),
 ) -> TweetOutSchema:
     """Эндпоинт сохранения нового твита в системе.
 
@@ -69,8 +69,8 @@ async def create_tweet(
 
 @router.get("/api/tweets/{tweet_id}", response_model=TweetSchema, status_code=status.HTTP_200_OK)
 async def get_tweet(
-        tweet_id: int,
-        tweet: TweetService = Depends(),
+    tweet_id: int,
+    tweet: TweetService = Depends(),
 ) -> TweetSchema:
     """Эндпоинт достаёт твит по идентификатору СУБД.
 
@@ -91,9 +91,9 @@ async def get_tweet(
 
 @router.delete("/api/tweets/{tweet_id}", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def delete_tweet(
-        tweet_id: int,
-        permission: PermissionService = Depends(),
-        tweet: TweetService = Depends(),
+    tweet_id: int,
+    permission: PermissionService = Depends(),
+    tweet: TweetService = Depends(),
 ) -> SuccessSchema:
     """Эндпоинт удаления твита.
 
@@ -117,9 +117,9 @@ async def delete_tweet(
 
 @router.post("/api/tweets/{tweet_id}/likes", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def add_like_to_tweet(
-        tweet_id: int,
-        permission: PermissionService = Depends(),
-        tweet: TweetService = Depends(),
+    tweet_id: int,
+    permission: PermissionService = Depends(),
+    tweet: TweetService = Depends(),
 ) -> SuccessSchema:
     """Эндпоинт добавляет лайку к твиту.
 
@@ -143,9 +143,9 @@ async def add_like_to_tweet(
 
 @router.delete("/api/tweets/{tweet_id}/likes", response_model=SuccessSchema, status_code=status.HTTP_200_OK)
 async def remove_like_from_tweet(
-        tweet_id: int,
-        permission: PermissionService = Depends(),
-        tweet: TweetService = Depends(),
+    tweet_id: int,
+    permission: PermissionService = Depends(),
+    tweet: TweetService = Depends(),
 ) -> SuccessSchema:
     """Эндпоинт удаляет лайку с твита.
 

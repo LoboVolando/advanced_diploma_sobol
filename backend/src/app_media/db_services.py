@@ -7,13 +7,12 @@ import typing as t
 
 from loguru import logger
 from sqlalchemy import select
-from sqlalchemy.exc import DisconnectionError
 
 from app_media.interfaces import AbstractMediaService
 from app_media.models import Media
 from app_media.schemas import MediaOrmSchema
 from db import session
-from exceptions import InternalServerException, BackendException, ErrorsList, exc_handler
+from exceptions import BackendException, ErrorsList, exc_handler
 
 
 class MediaDbService(AbstractMediaService):

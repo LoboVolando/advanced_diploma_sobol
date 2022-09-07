@@ -10,7 +10,6 @@ from loguru import logger
 
 from app_media.services import MediaService
 from app_tweets.db_services import TweetDbService as TweetTransportService
-from exceptions import BackendException, ErrorsList
 from app_tweets.schemas import (
     TweetInSchema,
     TweetListOutSchema,
@@ -19,6 +18,7 @@ from app_tweets.schemas import (
 )
 from app_users.schemas import LikeAuthorSchema
 from app_users.services import AuthorService
+from exceptions import BackendException, ErrorsList
 from schemas import SuccessSchema
 
 
