@@ -99,8 +99,6 @@ class TweetService:
         -------
         TweetOutSchema
             Pydantic-схема вновь созданного твита для фронтенда.
-        ErrorSchema
-            Pydantic-схема ошибки выполнения.
         """
         logger.info("создаём твит: %s", new_tweet.dict())
         if author := await self.author_service.get_author(api_key=api_key):

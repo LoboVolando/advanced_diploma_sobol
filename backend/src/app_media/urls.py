@@ -11,7 +11,7 @@ from app_media.services import MediaService
 router = APIRouter()
 
 
-@router.post("/api/medias", response_model=MediaOutSchema, status_code=status.HTTP_201_CREATED)
+@router.post("/api/medias", response_model=MediaOutSchema, status_code=status.HTTP_201_CREATED, tags=["media"])
 async def medias(file: UploadFile) -> MediaOutSchema:
     """
     Эндпоинт загружает файл с картинкой на сервер.
@@ -31,7 +31,7 @@ async def medias(file: UploadFile) -> MediaOutSchema:
         return result
 
 
-@router.get("/api/exception")
+@router.get("/api/exception", tags=["media"])
 async def raise_exception():
     """Недокументированный эндпоинт. Выдаёт исключение при обращении."""
 
