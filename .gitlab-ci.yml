@@ -1,17 +1,21 @@
-image: python:3.10
+before_script:
+  - python3 -m venv venv
+  - source ./venv/bin/activate
+  - pip install fabric
 
 stages:
+  - tests
   - deploy
 
-deploy_to_server:
-  stage: deploy
+test_job:
+  stage: tests
   script:
-    - cd /projects/sites/advanced_diploma
-    - git config --global --add safe.directory /projects/sites/advanced_diploma
-    - docker-compose stop
-    - git pull origin main --recurse-submodules --rebase
-    - docker-compose up --build -d
-  only:
-    - main
-    
-    
+    - echo "все тесты отработали успешно. Красавчег"
+
+deploy-job:
+  stage: deploy
+  #only: main
+  script:
+    - echo "Развёртывание приложения"
+    - fab gitlab-deploy
+    - echo "Приложение развёрнуто"

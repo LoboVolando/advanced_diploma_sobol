@@ -4,6 +4,7 @@ networks:
     driver: bridge
 services:
   backend:
+    working_dir: /backend
     container_name: backend
     build:
       context: .

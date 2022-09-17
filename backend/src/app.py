@@ -36,12 +36,18 @@ from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+import tags
 from app_media import router as app_media_router
 from app_tweets import router as app_tweets_router
 from app_users import router as app_users_router
 from exceptions import AuthException, BackendException, InternalServerException
 
-app = FastAPI(title="CLI-ter", description="Импортозамещение in action", version="0.01a")
+app = FastAPI(
+    title="CLI-ter",
+    description="Импортозамещение in action",
+    version="0.01a",
+    openapi_tags=tags.tags_metadata
+)
 
 
 @app.exception_handler(BackendException)
