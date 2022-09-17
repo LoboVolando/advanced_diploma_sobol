@@ -41,7 +41,7 @@ class MediaService:
         MediaService.write_media_to_static_folder(file)
         if media := await MediaTransportService.create_media(hash=hash, file_name=file.filename):
             return MediaOutSchema(media_id=media.id)
-        raise BackendException(**ErrorsList.media_import_error)
+        # raise BackendException(**ErrorsList.media_import_error)
 
     @staticmethod
     def write_media_to_static_folder(file: UploadFile) -> None:
