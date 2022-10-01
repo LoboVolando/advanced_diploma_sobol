@@ -39,4 +39,4 @@ engine = create_async_engine(
 Base = declarative_base()
 session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
-redis = aioredis.from_url(f"redis://{settings.redis_host}:{settings.redis_port}/1")
+# redis = aioredis.from_url(f"redis://{settings.redis_host}:{settings.redis_port}/1")

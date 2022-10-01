@@ -23,3 +23,5 @@ passlib[bcrypt]
 loguru
 python-multipart
 sphinx
+requests
+pytest-async-sqlalchemy

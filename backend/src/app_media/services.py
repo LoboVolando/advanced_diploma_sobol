@@ -36,12 +36,12 @@ class MediaService:
         bytez = await file.read()
         hash = hashlib.sha256(bytez).hexdigest()
         logger.warning(hash)
-        if media := await MediaTransportService.get_media(hash=hash):
+        if media := await MediaTransportService().get_media(hash=hash):
             return MediaOutSchema(media_id=media.id)
         MediaService.write_media_to_static_folder(file)
-        if media := await MediaTransportService.create_media(hash=hash, file_name=file.filename):
+        if media := await MediaTransportService().create_media(hash=hash, file_name=file.filename):
             return MediaOutSchema(media_id=media.id)
-        # raise BackendException(**ErrorsList.media_import_error)
+        raise BackendException(**ErrorsList.media_import_error)
 
     @staticmethod
     def write_media_to_static_folder(file: UploadFile) -> None:
@@ -53,14 +53,14 @@ class MediaService:
         file: UploadFile
             Загруженный файл.
         """
-        path = Path(settings.media_root) / file.filename
+        path = Path(settings.docker_media_root) / file.filename
+        if not path.parent.exists():
+            path.parent.mkdir(parents=True)
         with open(path, "wb") as fl:
             file.file.seek(0)
             logger.info(f"запишем картинку в файл: {str(path)}")
             shutil.copyfileobj(file.file, fl)
             file.file.close()
-        for file in Path(settings.media_root).glob("*.*"):
-            logger.info(f"{file.absolute()}")
 
     @staticmethod
     async def get_many_media(ids: t.List[int]) -> t.Optional[t.List[str]]:

@@ -12,10 +12,10 @@ services:
     volumes:
       - ./backend/src:/backend
       - ./.env:/backend/.env
-      - ${SERVER_MEDIA_ROOT}:/static
-    command: bash -c "alembic -с ${ALEMBIC} upgrade head && gunicorn app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind backend:80"
+      - ${SERVER_MEDIA_ROOT}:${DOCKER_MEDIA_ROOT}
+    command: bash -c "alembic -c ${ALEMBIC} upgrade head && gunicorn app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind backend:80"
     ports:
-      - "5455:80"
+      - "7202:80"
     networks:
       - skynet
     environment:
@@ -28,12 +28,12 @@ services:
     container_name: frontend
     image: nginx
     volumes:
-      - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ${NGINX}:/etc/nginx/nginx.conf:ro
       - ./frontend/src:/frontend
       - ./frontend/logs:/frontend/logs
-      - ${SERVER_MEDIA_ROOT}:/static
-    depends_on:
-      - backend
+      - ${SERVER_MEDIA_ROOT}:${DOCKER_MEDIA_ROOT}
+#    depends_on:
+#      - backend
     expose:
       - 5454
     ports:
@@ -67,7 +67,7 @@ services:
       POSTGRES_DB: ${POSTGRES_ROOT_DB}
     volumes:
       - ${DATA_ROOT}/postgres/data/:/var/lib/postgresql/data
-      - ${DATA_ROOT}/pginit/:/docker-entrypoint-initdb.d
+      - ${DATA_ROOT}/postgres/pginit/:/docker-entrypoint-initdb.d
     networks:
       - skynet
     healthcheck:

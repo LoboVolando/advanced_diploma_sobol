@@ -13,7 +13,8 @@ class Settings(BaseSettings):
     web_db: str = "postgres"
     redis_host: str = "localhost"
     redis_port: str = 5479
-    media_root: str = "/home/svv/Изображения/diploma"
+    docker_media_root: str = "/home/svv/projects/data/diploma/static/media"
+    media_url: str = '/static/media'
 
     # db_url = ""
     # async_db_url = ""
@@ -24,4 +25,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings(_env_file="./.env", _env_file_encoding="UTF-8")
-logger.info(settings.dict())
+# logger.info(settings.dict())

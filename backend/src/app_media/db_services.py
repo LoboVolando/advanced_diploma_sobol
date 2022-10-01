@@ -13,6 +13,7 @@ from app_media.models import Media
 from app_media.schemas import MediaOrmSchema
 from db import session
 from exceptions import BackendException, ErrorsList, exc_handler
+from settings import settings
 
 
 class MediaDbService(AbstractMediaService):
@@ -20,7 +21,7 @@ class MediaDbService(AbstractMediaService):
     Класс реализует CRUID для медиа объектов в СУБД PostgreSql
     """
 
-    @exc_handler(ConnectionRefusedError)
+    # @exc_handler(ConnectionRefusedError)
     async def get_media(self, media_id: int = None, hash: str = None) -> t.Optional[MediaOrmSchema]:
         """Метод возвращает pydantic-схему записи СУБД по идентификатору в СУБД или по хэшу файла.
 
@@ -51,7 +52,7 @@ class MediaDbService(AbstractMediaService):
                 if result := qs.scalars().first():
                     return MediaOrmSchema.from_orm(result)
 
-    @exc_handler(ConnectionRefusedError)
+    # @exc_handler(ConnectionRefusedError)
     async def create_media(self, hash: str, file_name: str) -> t.Optional[MediaOrmSchema]:
         """
         Метод сохраняет данные о файле в СУБД.
@@ -68,7 +69,7 @@ class MediaDbService(AbstractMediaService):
         MediaOrmSchema, optional
             Pydantic-схема ОРМ модели медиа ресурса.
         """
-        media = Media(hash=hash, link="static/" + file_name)
+        media = Media(hash=hash, link=settings.media_url + '/' + file_name)
         async with session() as async_session:
             async with async_session.begin():
                 async_session.add(media)
