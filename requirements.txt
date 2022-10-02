@@ -25,3 +25,5 @@ python-multipart
 sphinx
 requests
 pytest-async-sqlalchemy
+pillow==9.2.0
+coverage==6.5.0

@@ -76,8 +76,8 @@ class MediaDbService(AbstractMediaService):
                 await async_session.commit()
                 return MediaOrmSchema.from_orm(media)
 
-    @exc_handler(ConnectionRefusedError)
-    async def get_many_media(self, ids: t.List[int]):
+    # @exc_handler(ConnectionRefusedError)
+    async def get_many_media(self, ids: t.List[int]) -> t.List[str]:
         """
         Метод возвращает множество медиа-ресурсов по списку идентификаторов.
 
@@ -87,7 +87,8 @@ class MediaDbService(AbstractMediaService):
             Список идентификаторов ресурсов в СУБД.
         Returns
         -------
-        ???
+        links: List[str]
+            Список URL адресов картинки
         """
         query = select(Media.link).filter(Media.id.in_(ids))
         async with session() as async_session:

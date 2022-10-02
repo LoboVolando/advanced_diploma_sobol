@@ -44,7 +44,7 @@ class MediaService:
         raise BackendException(**ErrorsList.media_import_error)
 
     @staticmethod
-    def write_media_to_static_folder(file: UploadFile) -> None:
+    def write_media_to_static_folder(file: UploadFile) -> Path:
         """
         Метод записывает файл в папку на сервере.
 
@@ -61,6 +61,7 @@ class MediaService:
             logger.info(f"запишем картинку в файл: {str(path)}")
             shutil.copyfileobj(file.file, fl)
             file.file.close()
+        return path
 
     @staticmethod
     async def get_many_media(ids: t.List[int]) -> t.Optional[t.List[str]]:
@@ -80,7 +81,7 @@ class MediaService:
             Пустой список, если ничего нет.
         """
         logger.info(f"запросим медиа по идентификаторам: {ids}")
-        if attachments := await MediaTransportService.get_many_media(ids):
+        if attachments := await MediaTransportService().get_many_media(ids):
             return attachments
         return list()
 
