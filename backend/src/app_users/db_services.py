@@ -44,7 +44,7 @@ class AuthorDbService(AbstractAuthorService):
             logger.info(f"найден автор в бд {author}")
             return author
 
-    @exc_handler(ConnectionRefusedError)
+    # @exc_handler(ConnectionRefusedError)
     async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> ProfileAuthorSchema:
         """
         Метод ищет автора по одному из параметров.
@@ -81,7 +81,7 @@ class AuthorDbService(AbstractAuthorService):
                 if user:
                     return ProfileAuthorSchema.from_orm(user)
 
-    @exc_handler(ConnectionRefusedError)
+    # @exc_handler(ConnectionRefusedError)
     async def create_author(self, name: str, api_key: str, password: str) -> t.Optional[Author]:
         """Метод сохраняет нового автора в базе данных
 
@@ -107,13 +107,13 @@ class AuthorDbService(AbstractAuthorService):
                 logger.info(f"создали нового пользователя: {author}")
                 return author
 
-    @exc_handler(ConnectionRefusedError)
+    # @exc_handler(ConnectionRefusedError)
     async def update_follow(
         self,
         reading_author: ProfileAuthorSchema,
         writing_author: ProfileAuthorSchema,
-        followers: dict,
-        following: dict,
+        followers: list,
+        following: list,
     ) -> SuccessSchema:
         """
 
@@ -123,10 +123,10 @@ class AuthorDbService(AbstractAuthorService):
             Профиль читающего автора.
         writing_author: ProfileAuthorSchema
             Профиль пишущего автора.
-        followers: dict
-            Словарь всех писателей пользователя.
-        following: dict
-            Сроварь всех читателей пользователя.
+        followers: list
+            Список словарей всех писателей пользователя.
+        following: list
+            Список словарей всех читателей пользователя.
 
         Returns
         -------

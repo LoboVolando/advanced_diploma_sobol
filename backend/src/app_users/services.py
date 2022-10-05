@@ -135,8 +135,8 @@ class AuthorService:
             raise AuthException(**ErrorsList.not_authorized)
         else:
             api_key = self.generate_api_key(64)
-            author = await self.service.create_author(name, api_key, PermissionService.hash_password(password))
-            return api_key, True
+            if author := await self.service.create_author(name, api_key, PermissionService.hash_password(password)):
+                return api_key, True
 
     async def me(self, api_key: str) -> ProfileAuthorOutSchema | ErrorSchema:
         """Метод возвращает информацио о текущем пользователе.

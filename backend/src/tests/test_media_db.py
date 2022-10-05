@@ -1,10 +1,8 @@
 import pytest
-import asyncio
 from faker import Faker
 from faker.providers import python
 from fastapi.testclient import TestClient
 from loguru import logger
-from sqlalchemy import inspect
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -43,11 +41,6 @@ async def session():
     return sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
 
-def object_as_dict(obj):
-    return {c.key: getattr(obj, c.key)
-            for c in inspect(obj).mapper.column_attrs}
-
-
 @pytest.mark.asyncio
 async def test_create_media(session, get_media_parameters):
     await session
@@ -62,7 +55,7 @@ async def test_create_media(session, get_media_parameters):
 
 
 @pytest.mark.asyncio
-async def test_create_media_error(session, get_media_parameters):
+async def test_create_media_error(get_media_parameters):
     service = MediaDbService()
     parameters = get_media_parameters
     for param in parameters:

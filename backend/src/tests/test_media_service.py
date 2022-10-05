@@ -40,16 +40,6 @@ class RandomColorRectangle:
         return UploadFile(filename=f'{random.randint(100, 100000)}.png', file=self.stream, content_type='image/png')
 
 
-# @pytest.fixture(scope="session", autouse=True)
-# def event_loop():
-#     try:
-#         loop = asyncio.get_running_loop()
-#     except RuntimeError:
-#         loop = asyncio.new_event_loop()
-#     yield loop
-#     loop.close()
-
-
 @pytest.mark.asyncio
 async def test_get_or_create_media():
     logger.warning('test get or create media')

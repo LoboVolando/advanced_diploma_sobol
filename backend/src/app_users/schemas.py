@@ -29,6 +29,17 @@ class AuthorBaseSchema(BaseModel):
         orm_mode = True
 
 
+class FollowAuthorSchema(AuthorBaseSchema):
+    """Схема автора твита для полей followers following
+
+    Arguments
+    ---------
+    id: int
+        Идентификатор автора
+    """
+    id: int
+
+
 class RegisterAuthorSchema(AuthorBaseSchema):
     """Схема автора твита, фронтенд->бэкенд для регистрации автора.
 
@@ -91,8 +102,8 @@ class ProfileAuthorSchema(AuthorOutSchema):
         Кто читает автора.
     """
 
-    followers: t.Optional[t.List[AuthorOutSchema]]
-    following: t.Optional[t.List[AuthorOutSchema]]
+    followers: t.Optional[t.List[FollowAuthorSchema]]
+    following: t.Optional[t.List[FollowAuthorSchema]]
 
     class Config:
         orm_mode = True
