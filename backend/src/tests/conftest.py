@@ -6,7 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from db import Base
 from settings import settings
-
+from app_users.services import AuthorService
+from app_users.db_services import AuthorDbService
 
 @pytest.fixture(scope="session", autouse=True)
 def event_loop():
@@ -48,3 +49,20 @@ def get_media_parameters():
 @pytest.fixture
 def get_users_parameters():
     return [("Ivan", "key_1", "pass_1"), ("Stepan", "key_2", "pass_2"), ("Vovan", "key_3", "pass_3")]
+
+@pytest.fixture
+async def get_authors(get_users_parameters):
+    service = AuthorService()
+    users = []
+    for user in get_users_parameters:
+        users.append(await service.me(api_key=user[1]))
+    logger.info(users)
+    return users
+
+@pytest.fixture
+def author_service():
+    return AuthorService()
+
+@pytest.fixture
+def author_db_service():
+    return AuthorDbService()

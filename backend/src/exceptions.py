@@ -65,6 +65,9 @@ class ErrorsList:
     connection_refused = dict(
         error_type="CON_REFUSED", error_message="соединение с СУБД было сброшено. Проверьте контейнер с СУБД"
     )
+    postgres_query_error = dict(
+        error_type="POSTGRES_QUERY_ERROR", error_message="Неверный запрос к БД"
+    )
 
 
 def exc_handler(ExceptionClass):

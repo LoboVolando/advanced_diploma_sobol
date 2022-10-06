@@ -9,7 +9,8 @@ import typing as t
 
 from loguru import logger
 from sqlalchemy import select, update
-
+from asyncpg.exceptions import UndefinedFunctionError
+from sqlalchemy.exc import ProgrammingError
 from app_users.interfaces import AbstractAuthorService
 from app_users.models import Author
 from app_users.schemas import ProfileAuthorSchema
@@ -74,12 +75,16 @@ class AuthorDbService(AbstractAuthorService):
         else:
             raise BackendException(**ErrorsList.incorrect_parameters)
         logger.info("подготовлен запрос...")
-        async with session() as async_session:
-            async with async_session.begin():
-                qs = await async_session.execute(query)
-                user = qs.scalars().first()
-                if user:
-                    return ProfileAuthorSchema.from_orm(user)
+        try:
+            async with session() as async_session:
+                async with async_session.begin():
+                    qs = await async_session.execute(query)
+                    user = qs.scalars().first()
+                    if user:
+                        return ProfileAuthorSchema.from_orm(user)
+        except Exception as e:
+            logger.error(e)
+            raise BackendException(**ErrorsList.postgres_query_error)
 
     # @exc_handler(ConnectionRefusedError)
     async def create_author(self, name: str, api_key: str, password: str) -> t.Optional[Author]:
@@ -109,11 +114,11 @@ class AuthorDbService(AbstractAuthorService):
 
     # @exc_handler(ConnectionRefusedError)
     async def update_follow(
-        self,
-        reading_author: ProfileAuthorSchema,
-        writing_author: ProfileAuthorSchema,
-        followers: list,
-        following: list,
+            self,
+            reading_author: ProfileAuthorSchema,
+            writing_author: ProfileAuthorSchema,
+            followers: list,
+            following: list,
     ) -> SuccessSchema:
         """
 

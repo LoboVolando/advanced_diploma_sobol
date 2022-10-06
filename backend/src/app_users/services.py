@@ -165,7 +165,7 @@ class AuthorService:
 
     async def get_author(
         self, author_id: int = None, api_key: str = None, name: str = None
-    ) -> ProfileAuthorOutSchema | ErrorSchema:
+    ) -> ProfileAuthorOutSchema:
         """Метод возвращает информацио о пользователе по одному из параметров.
 
         Parameters
@@ -181,15 +181,13 @@ class AuthorService:
         -------
         ProfileAuthorOutSchema
             Pydantic-схема профиля пользователя.
-        ErrorSchema
-            Pydantic-схема ошибки выполнения метода.
         """
         logger.info("достанем автора...")
         if user := await self.service.get_author(author_id, api_key, name):
             logger.info(user)
             return ProfileAuthorOutSchema(result=True, user=user)
         logger.error("пользователь не найден")
-        raise BackendException(**ErrorsList.author_not_exists)
+        raise BackendException(**ErrorsList.postgres_query_error)
 
     async def add_follow(self, writing_author_id: int, api_key: str) -> SuccessSchema:
         """Метод добавляет читателя к пишущему автору, а писателя - в список авторов читателя.
