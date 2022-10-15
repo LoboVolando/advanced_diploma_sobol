@@ -1,8 +1,8 @@
-from copy import copy
 import io
-from pathlib import Path
 import random
 import typing as t
+from copy import copy
+from pathlib import Path
 
 import pytest
 from PIL import Image
@@ -20,12 +20,12 @@ class RandomColorRectangle:
 
     def random_rectangle(self, size_range: t.Tuple[int, int], color_range: tuple):
         self.image = Image.new("RGB",
-                              (random.randint(size_range[0], size_range[1]),
-                               random.randint(size_range[0], size_range[1])),
-                              color=(random.randint(color_range[0], color_range[1]),
-                                     random.randint(color_range[0], color_range[1]),
-                                     random.randint(color_range[0], color_range[1]))
-                              )
+                               (random.randint(size_range[0], size_range[1]),
+                                random.randint(size_range[0], size_range[1])),
+                               color=(random.randint(color_range[0], color_range[1]),
+                                      random.randint(color_range[0], color_range[1]),
+                                      random.randint(color_range[0], color_range[1]))
+                               )
         self.image.save(self.stream, "png")
         self.stream.seek(0)
         return self
@@ -80,3 +80,13 @@ async def test_write_file_to_static():
     assert path.exists()
     assert path.stat().st_size > 0
     logger.info(path)
+
+
+async def create_many_medias(count: int):
+    medias = []
+    media_service = MediaService()
+    for _ in range(count):
+        file = RandomColorRectangle().random_rectangle((50, 70), (100, 250)).as_upload_file()
+        medias.append(await media_service.get_or_create_media(file))
+    assert len(medias) == count
+    return medias

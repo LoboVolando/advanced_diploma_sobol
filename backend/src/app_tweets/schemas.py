@@ -123,3 +123,15 @@ class TweetOutSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+class TweetModelSchema(BaseModel):
+    id: int
+    content: str
+    author_id: int
+    soft_delete: bool
+    likes: t.List[dict] = None
+    attachments: t.List[dict] = None
+    author: t.Any = None
+
+    class Config:
+        orm_mode = True

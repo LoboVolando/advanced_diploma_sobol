@@ -104,7 +104,7 @@ class TweetService:
         if author := await self.author_service.get_author(api_key=api_key):
             attachments = await MediaService.get_many_media(new_tweet.tweet_media_ids)
             created_tweet = await self.service.create_tweet(new_tweet, author.user.id, attachments)
-            return TweetOutSchema(result=True, tweet_id=created_tweet.id)
+            return created_tweet
 
     async def delete_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema:
         """

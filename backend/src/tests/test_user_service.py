@@ -1,22 +1,25 @@
+import typing
+
 import pytest
 from loguru import logger
 from sqlalchemy.exc import ProgrammingError
 
 from app_users.schemas import ProfileAuthorOutSchema
 from exceptions import BackendException
-from schemas import SuccessSchema
 
 
 @pytest.mark.asyncio
-async def test_get_or_create_user(author_service):
+async def test_get_or_create_user(author_service, faker):
     """тестирование недокументированного апи = получить или создать юзера"""
-    api_key, created = await author_service.get_or_create_user('Авгерий', 'password')
+    name = faker.name()
+    password = faker.password()
+    api_key, created = await author_service.get_or_create_user(name, password)
     logger.info(api_key)
     logger.info(created)
     assert isinstance(api_key, str)
     assert isinstance(created, bool)
     assert created is True
-    api_key, created = await author_service.get_or_create_user('Авгерий', 'password')
+    api_key, created = await author_service.get_or_create_user(name, password)
     logger.info(api_key)
     logger.info(created)
     assert isinstance(api_key, str)
@@ -59,10 +62,49 @@ async def test_get_author(get_authors, author_service):
 
 
 @pytest.mark.asyncio
-async def test_add_follow(author_service, get_authors):
-    #todo = прикрутить фейкер
-    authors = await get_authors
-    result = await author_service.add_follow(
-        writing_author_id=authors[0].user.id, api_key=authors[1].user.api_key)
-    logger.info(result)
-    assert isinstance(result, SuccessSchema)
+async def test_add_followers(author_service, faker):
+    """тестируем добавление фоловеров"""
+    users_count = 5
+    api_keys, users = await register_fake_users(users_count, author_service, faker)
+
+    read_user = users[0]
+    followers = users[1:]
+    await check_followers_for_user(author_service, read_user, followers)
+    await check_following_for_user(author_service, followers, 1)
+
+
+async def register_fake_users(count: int, author_service, faker) -> tuple[typing.List[str], typing.List[ProfileAuthorOutSchema]]:
+    """регистрируем произвольное количество фейковых юзеров в базе"""
+    api_keys = []
+    users = []
+    for _ in range(count):
+        key = await author_service.get_or_create_user(name=faker.name(), password=faker.password())
+        logger.info(key[0])
+        api_keys.append(key[0])
+        users.append(await author_service.get_author(api_key=key[0]))
+    logger.info(api_keys)
+    logger.info(users)
+    assert len(api_keys) == count
+    assert len(users) == count
+    return api_keys, users
+
+
+async def check_followers_for_user(author_service,
+                                   read_user: ProfileAuthorOutSchema,
+                                   followers: typing.List[ProfileAuthorOutSchema]):
+    """тестируем количество добавленных юзеров в фоловеры"""
+    folowers_count_before = len(read_user.user.followers)
+    assert folowers_count_before == 0
+    for user in followers:
+        assert len(user.user.following) == 0
+        await author_service.add_follow(user.user.id, read_user.user.api_key)
+    read_user = await author_service.get_author(author_id=read_user.user.id)
+    logger.info(f"followers: {read_user.user.followers}")
+    assert len(read_user.user.followers) == len(followers)
+
+async def check_following_for_user(author_service,
+                                   followers: typing.List[ProfileAuthorOutSchema], following_count: int):
+    """тестируем фолофингов"""
+    for user in followers:
+        user = await author_service.get_author(author_id=user.user.id)
+        assert len(user.user.following) == following_count

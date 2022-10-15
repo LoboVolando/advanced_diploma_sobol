@@ -42,7 +42,7 @@ async def register(author: RegisterAuthorSchema, service: AuthorService = Depend
     logger.warning("регистрируем нового пользователя...")
     api_key, created = await service.get_or_create_user(name=author.name, password=author.password)
     logger.info(api_key)
-    return {"result": "true", "api-key": api_key, "created": created}
+    return {"result": True, "api-key": api_key, "created": created}
 
 
 @router.get("/api/userinfo", response_model=ProfileAuthorOutSchema, status_code=status.HTTP_200_OK, tags=["users"])

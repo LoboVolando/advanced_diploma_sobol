@@ -77,7 +77,7 @@ class MediaDbService(AbstractMediaService):
                 return MediaOrmSchema.from_orm(media)
 
     # @exc_handler(ConnectionRefusedError)
-    async def get_many_media(self, ids: t.List[int]) -> t.List[str]:
+    async def get_many_media(self, ids: t.List[int]) -> t.List[int]:
         """
         Метод возвращает множество медиа-ресурсов по списку идентификаторов.
 

@@ -149,3 +149,18 @@ class AuthorDbService(AbstractAuthorService):
                 await async_session.execute(query_w)
                 await async_session.commit()
         return SuccessSchema()
+
+    async def verify_api_key_exist(self, api_key: str) -> bool:
+        logger.info(f"check api key: {api_key}")
+        query = select(Author.api_key).filter_by(api_key=api_key)
+        async with session() as async_session:
+            async with async_session.begin():
+                qs = await async_session.execute(query)
+                logger.info(qs)
+                user = qs.scalars().first()
+                logger.info(user)
+                if user:
+                    logger.info(f"api-key: {api_key} esists")
+                    return True
+                logger.info(f"api-key: {api_key} not esists")
+                return False

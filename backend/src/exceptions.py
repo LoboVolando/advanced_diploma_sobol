@@ -14,7 +14,7 @@ class BackendException(Exception):
     Базовое исключение. Код 404
     """
 
-    def __init__(self, error_type: str, error_message: str):
+    def __init__(self, error_type: str, error_message: str, *args, **kwargs):
         self.result = False
         self.error_type = error_type
         self.error_message = error_message
@@ -62,6 +62,7 @@ class ErrorsList:
     incorrect_password = dict(error_type="INCORRECT_PASSWORD", error_message="неверный пароль")
     incorrect_parameters = dict(error_type="INCORRECT_PARAMETERS", error_message="неверные параметры")
     not_authorized = dict(error_type="AUTH_ERROR", error_message="отсутствует api-key в HTTP-заголовке")
+    api_key_not_exists = dict(error_type="AUTH_ERROR", error_message="неправильный api-key")
     connection_refused = dict(
         error_type="CON_REFUSED", error_message="соединение с СУБД было сброшено. Проверьте контейнер с СУБД"
     )

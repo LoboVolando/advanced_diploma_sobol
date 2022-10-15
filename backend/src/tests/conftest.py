@@ -1,4 +1,5 @@
 import asyncio
+import typing as t
 
 import pytest
 from loguru import logger
@@ -7,7 +8,12 @@ from sqlalchemy.orm import sessionmaker
 from db import Base
 from settings import settings
 from app_users.services import AuthorService
+from app_media.services import MediaService
 from app_users.db_services import AuthorDbService
+from app_tweets.db_services import TweetDbService
+from app_tweets.services import TweetService
+from faker import Factory
+from tests.test_media_service import RandomColorRectangle
 
 @pytest.fixture(scope="session", autouse=True)
 def event_loop():
@@ -42,6 +48,22 @@ async def session():
     return sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
 
+@pytest.fixture()
+async def simple_session():
+    credentials = dict(
+        user=settings.postgres_root_user,
+        password=settings.postgres_root_password,
+        host=settings.postgres_host,
+        port=settings.postgres_port,
+        db=settings.web_db,
+    )
+    engine = create_async_engine(
+        "postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}".format(**credentials),
+        echo=False,
+    )
+    logger.info('simple fixture connection created')
+    return sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+
 @pytest.fixture
 def get_media_parameters():
     return [("111", "file1.jpg"), ("222", "file2.jpg"), ("333", "file3.jpg")]
@@ -61,8 +83,42 @@ async def get_authors(get_users_parameters):
 
 @pytest.fixture
 def author_service():
-    return AuthorService()
+    service = AuthorService()
+    assert isinstance(service.service, AuthorDbService)
+    return service
+
+@pytest.fixture
+def media_service():
+    service = MediaService()
+    return service
 
 @pytest.fixture
 def author_db_service():
     return AuthorDbService()
+
+@pytest.fixture
+def tweet_db_service():
+    return TweetDbService()
+
+@pytest.fixture
+def tweet_service():
+    return TweetService()
+
+@pytest.fixture
+def media_service():
+    return MediaService()
+
+@pytest.fixture
+def faker():
+    fake = Factory.create('ru-RU')
+    return fake
+
+@pytest.fixture
+async def create_authors(author_count: int, faker, author_db_service) -> t.List[int]:
+    ids = []
+    for _ in range(author_count):
+        author = await author_db_service.create_author(
+            name=faker.name(), password=faker.password(), api_key=faker.pystr(min_chars=64, max_chars=64))
+        ids.append(author.id)
+    return ids
+

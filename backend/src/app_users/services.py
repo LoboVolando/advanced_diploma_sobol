@@ -96,6 +96,24 @@ class PermissionService:
         return pwd_context.verify(raw_password, hashed_password)
 
 
+    @staticmethod
+    async def verify_api_key(api_key: str) -> bool:
+        """Метод проверяет наличие ключа в СУБД.
+
+        Parameters
+        ----------
+        api_key: str
+            api-key из заголовка запроса.
+
+        Returns
+        -------
+        bool
+            True если api-key совпал, иначе Else.
+        """
+        logger.info("verify", api_key)
+        return await AuthorTransportService().verify_api_key_exist(api_key)
+
+
 class AuthorService:
     """Класс реализует бизнес-логику работы с авторами твитов."""
 
@@ -124,7 +142,6 @@ class AuthorService:
         tuple: str, bool
             api-key для фронтенда и флаг created, означающий, был пользователь создан или запрошен из базы данных.
         """
-        # todo декомпозировать на 2 функции, метод сломан
         logger.info("регистрация нового автора")
         author = await self.service.get_author(name=name)
         if author:

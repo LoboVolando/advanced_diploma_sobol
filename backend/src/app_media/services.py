@@ -8,11 +8,12 @@ import shutil
 import typing as t
 from pathlib import Path
 
-from fastapi import UploadFile
+from fastapi import UploadFile, Depends
 from loguru import logger
 
 from app_media.db_services import MediaDbService as MediaTransportService
 from app_media.schemas import MediaOutSchema
+from app_users.services import PermissionService
 from exceptions import BackendException, ErrorsList
 from settings import settings
 
@@ -64,7 +65,7 @@ class MediaService:
         return path
 
     @staticmethod
-    async def get_many_media(ids: t.List[int]) -> t.Optional[t.List[str]]:
+    async def get_many_media(ids: t.List[int]) -> t.Optional[t.List[int]]:
         """
         Метод запрашивает множество медиа-ресурсов по списку идентификаторов.
 

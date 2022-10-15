@@ -78,3 +78,7 @@ async def test_update_follow(get_users_parameters, author_db_service):
     assert follower_2 in users[1].following
     logger.info(users)
 
+@pytest.mark.asyncio
+async def test_update_follow(author_db_service):
+    key = await author_db_service.verify_api_key_exist('11111')
+    logger.info(f"test key: {key}")

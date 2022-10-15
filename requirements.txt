@@ -15,7 +15,8 @@ python-dotenv
 sqlalchemy
 sqlalchemy-stubs
 aioredis
-faker
+Faker
+factory_boy
 alembic
 aiopg
 asyncpg
@@ -27,3 +28,6 @@ requests
 pytest-async-sqlalchemy
 pillow==9.2.0
 coverage==6.5.0
+httpx
+anyio
+trio
