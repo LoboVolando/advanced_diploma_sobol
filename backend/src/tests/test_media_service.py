@@ -40,6 +40,7 @@ class RandomColorRectangle:
         return UploadFile(filename=f'{random.randint(100, 100000)}.png', file=self.stream, content_type='image/png')
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_get_or_create_media():
     logger.warning('test get or create media')
@@ -54,6 +55,7 @@ async def test_get_or_create_media():
     logger.warning(result)
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_get_or_create_media_error():
     logger.warning('test get or create media error')
@@ -68,6 +70,7 @@ async def test_get_or_create_media_error():
     logger.warning(result)
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_write_file_to_static():
     logger.warning('test write file to static')

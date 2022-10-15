@@ -11,6 +11,7 @@ from schemas import SuccessSchema
 from tests.test_user_service import register_fake_users
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_get_tweet_list(tweet_service, author_service, faker):
     """3 в 1. Тестируется getlist, get_tweet и create_tweet в корутине register_fake_tweets"""
@@ -33,6 +34,7 @@ async def test_get_tweet_list(tweet_service, author_service, faker):
         assert isinstance(tweet, TweetSchema)
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_add_remove_like_to_tweet(author_service, tweet_service, faker):
     user_count = 5
@@ -54,6 +56,7 @@ async def test_add_remove_like_to_tweet(author_service, tweet_service, faker):
             assert len(tweet.likes) == 0
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_tweet_delete(author_service, tweet_service, faker):
     user_count = 5

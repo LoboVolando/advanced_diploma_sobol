@@ -39,6 +39,7 @@ class PermissionService:
         """
         self.request = request
         self.response = response
+        self.service = AuthorTransportService()
         logger.info("проверяем права...")
         if api_key := self.request.headers.get("api-key"):
             logger.info(f"api_key: {api_key}")
@@ -96,8 +97,7 @@ class PermissionService:
         return pwd_context.verify(raw_password, hashed_password)
 
 
-    @staticmethod
-    async def verify_api_key(api_key: str) -> bool:
+    async def verify_api_key(self, api_key: str) -> bool:
         """Метод проверяет наличие ключа в СУБД.
 
         Parameters
@@ -111,7 +111,7 @@ class PermissionService:
             True если api-key совпал, иначе Else.
         """
         logger.info("verify", api_key)
-        return await AuthorTransportService().verify_api_key_exist(api_key)
+        return await self.service.verify_api_key_exist(api_key)
 
 
 class AuthorService:

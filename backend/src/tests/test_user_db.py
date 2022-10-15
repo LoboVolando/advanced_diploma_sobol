@@ -17,6 +17,7 @@ fake = Faker()
 fake.add_provider(python)
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_create_user(get_users_parameters, author_db_service):
     for user in get_users_parameters:
@@ -28,6 +29,7 @@ async def test_create_user(get_users_parameters, author_db_service):
         assert result.password == user[2]
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_create_user_error(get_users_parameters, author_db_service):
     for user in get_users_parameters:
@@ -35,6 +37,7 @@ async def test_create_user_error(get_users_parameters, author_db_service):
             await author_db_service.create_author(name=user[0], api_key=user[1], password=user[2])
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_get_user(get_users_parameters, author_db_service):
     for user in get_users_parameters:
@@ -46,6 +49,7 @@ async def test_get_user(get_users_parameters, author_db_service):
         assert result.password == user[2]
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_update_follow(get_users_parameters, author_db_service):
     users = []
@@ -77,8 +81,3 @@ async def test_update_follow(get_users_parameters, author_db_service):
     assert follower_0 in users[1].following
     assert follower_2 in users[1].following
     logger.info(users)
-
-@pytest.mark.asyncio
-async def test_update_follow(author_db_service):
-    key = await author_db_service.verify_api_key_exist('11111')
-    logger.info(f"test key: {key}")
