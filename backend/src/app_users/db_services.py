@@ -156,7 +156,6 @@ class AuthorDbService(AbstractAuthorService):
         async with session() as async_session:
             async with async_session.begin():
                 qs = await async_session.execute(query)
-                logger.info(qs)
                 user = qs.scalars().first()
                 logger.info(user)
                 if user:

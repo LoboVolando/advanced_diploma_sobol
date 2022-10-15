@@ -12,6 +12,7 @@ from tests.test_user_service import register_fake_users
 client = TestClient(app)
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_create_tweet(author_service, tweet_db_service, faker):
     """тест записи твита в базу."""
@@ -30,6 +31,7 @@ async def test_create_tweet(author_service, tweet_db_service, faker):
         assert tweet.tweet_id > 0
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_get_tweet_by_id(simple_session, tweet_db_service):
     """тест получение твита по ид"""
@@ -44,6 +46,7 @@ async def test_get_tweet_by_id(simple_session, tweet_db_service):
         logger.info(f"tweet: {selected_tweet}")
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_get_tweet_list_by_author_id(simple_session, tweet_db_service):
     """тестируем получения списка твитов для автора"""
@@ -65,6 +68,7 @@ async def test_get_tweet_list_by_author_id(simple_session, tweet_db_service):
         assert isinstance(tweets[0], TweetSchema)
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_update_likes_for_tweet(simple_session, tweet_db_service, author_service, faker):
     """тест гбновления лайков"""
@@ -87,6 +91,7 @@ async def test_update_likes_for_tweet(simple_session, tweet_db_service, author_s
     logger.info(f"verify likes in tweets")
 
 
+@pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_delete_tweet(simple_session, tweet_db_service):
     tweet_count = 10

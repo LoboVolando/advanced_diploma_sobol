@@ -1,12 +1,17 @@
 import asyncio
 import typing as t
-
+from fastapi import FastAPI, Depends
 import pytest
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from db import Base
 from settings import settings
+from app import verify_api_key
+from app_media import router as app_media_router
+from app_tweets import router as app_tweets_router
+from app_users import router as app_users_router
+
 from app_users.services import AuthorService
 from app_media.services import MediaService
 from app_users.db_services import AuthorDbService
@@ -25,6 +30,22 @@ def event_loop():
     yield loop
     loop.close()
 
+
+@pytest.fixture
+async def get_app():
+    app = FastAPI(
+        title="CLI-ter",
+        description="Импортозамещение in action",
+        version="0.01a",
+        docs_url='/api/docs',
+        openapi_url="/api/v1/openapi.json",
+        dependencies=[Depends(verify_api_key)],
+    )
+    app.include_router(app_tweets_router)
+    app.include_router(app_users_router)
+    app.include_router(app_media_router)
+
+    return app
 
 @pytest.fixture(scope="session")
 async def session():

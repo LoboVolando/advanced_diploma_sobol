@@ -7,7 +7,7 @@ from sqlalchemy.exc import ProgrammingError
 from app_users.schemas import ProfileAuthorOutSchema
 from exceptions import BackendException
 
-
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_get_or_create_user(author_service, faker):
     """тестирование недокументированного апи = получить или создать юзера"""
@@ -27,6 +27,7 @@ async def test_get_or_create_user(author_service, faker):
     assert created is False
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_generate_api_key(author_service):
     """тест генератора ключей"""
@@ -36,8 +37,9 @@ async def test_generate_api_key(author_service):
     assert len(key) == 10
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
-async def test_me_service(get_users_parameters, get_authors, author_service):
+async def test_me_service(get_users_parameters, author_service):
     for user in get_users_parameters:
         result = await author_service.me(api_key=user[1])
         logger.info(result)
@@ -46,6 +48,7 @@ async def test_me_service(get_users_parameters, get_authors, author_service):
             await author_service.me(api_key=author_service.generate_api_key(10))
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_get_author(get_authors, author_service):
     authors = await get_authors
@@ -61,6 +64,7 @@ async def test_get_author(get_authors, author_service):
             await author_service.get_author(api_key=1)
 
 
+@pytest.mark.service
 @pytest.mark.asyncio
 async def test_add_followers(author_service, faker):
     """тестируем добавление фоловеров"""

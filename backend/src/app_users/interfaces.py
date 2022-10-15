@@ -11,6 +11,7 @@ from abc import ABC, abstractmethod
 from app_users.models import Author
 from app_users.schemas import ProfileAuthorSchema
 from schemas import SuccessSchema
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class AbstractAuthorService(ABC):
