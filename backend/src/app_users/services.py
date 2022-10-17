@@ -17,7 +17,7 @@ from loguru import logger
 from passlib.context import CryptContext
 
 from app_users.db_services import AuthorDbService as AuthorTransportService
-from app_users.schemas import ProfileAuthorOutSchema, ProfileAuthorSchema
+from app_users.schemas import *
 from exceptions import AuthException, BackendException, ErrorsList
 from schemas import ErrorSchema, SuccessSchema
 
@@ -96,7 +96,6 @@ class PermissionService:
         logger.info("compare: %s", hashed_password)
         return pwd_context.verify(raw_password, hashed_password)
 
-
     async def verify_api_key(self, api_key: str) -> bool:
         """Метод проверяет наличие ключа в СУБД.
 
@@ -155,7 +154,7 @@ class AuthorService:
             if author := await self.service.create_author(name, api_key, PermissionService.hash_password(password)):
                 return api_key, True
 
-    async def me(self, api_key: str) -> ProfileAuthorOutSchema | ErrorSchema:
+    async def me(self, api_key: str) -> AuthorProfileApiSchema:
         """Метод возвращает информацио о текущем пользователе.
 
         Parameters
@@ -173,16 +172,16 @@ class AuthorService:
         """
         logger.info("exec business AuthorService.me %s", api_key)
         if user := await self.service.get_author(api_key=api_key):
-            return ProfileAuthorOutSchema(
+            return AuthorProfileApiSchema(
                 result=True,
-                user=user,
+                user=AuthorProfileSchema(**user.dict(include={'id', 'name', 'followers', 'following'})),
             )
         logger.error("не нашли юзера по api-key: %s", api_key)
         raise BackendException(**ErrorsList.author_not_exists)
 
     async def get_author(
-        self, author_id: int = None, api_key: str = None, name: str = None
-    ) -> ProfileAuthorOutSchema:
+            self, author_id: int = None, api_key: str = None, name: str = None
+    ) -> AuthorProfileApiSchema:
         """Метод возвращает информацио о пользователе по одному из параметров.
 
         Parameters
@@ -202,7 +201,9 @@ class AuthorService:
         logger.info("достанем автора...")
         if user := await self.service.get_author(author_id, api_key, name):
             logger.info(user)
-            return ProfileAuthorOutSchema(result=True, user=user)
+            return AuthorProfileApiSchema(
+                result=True,
+                user=AuthorProfileSchema(**user.dict(include={'id', 'name', 'followers', 'following'})))
         logger.error("пользователь не найден")
         raise BackendException(**ErrorsList.postgres_query_error)
 
@@ -228,14 +229,14 @@ class AuthorService:
         writing_author = await self.service.get_author(author_id=writing_author_id)
         self._check_follower_authors(reading_author, writing_author)
 
-        followers = reading_author.dict(include={"followers"})["followers"]
-        new_follower = {"id": writing_author.id, "name": writing_author.name}
+        followers = reading_author.followers
+        new_follower = AuthorBaseSchema(id=writing_author.id, name=writing_author.name)
         if new_follower not in followers:
-            followers.append(new_follower)
-        following = writing_author.dict(include={"following"})["following"]
-        new_following = {"id": reading_author.id, "name": reading_author.name}
+            followers.append(new_follower.dict())
+        following = writing_author.following
+        new_following = AuthorBaseSchema(id=reading_author.id, name=reading_author.name)
         if new_following not in following:
-            following.append(new_following)
+            following.append(new_following.dict())
 
         return await self.service.update_follow(
             reading_author=reading_author,
@@ -265,16 +266,18 @@ class AuthorService:
         reading_author = await self.service.get_author(api_key=api_key)
         writing_author = await self.service.get_author(author_id=writing_author_id)
         self._check_follower_authors(reading_author, writing_author)
-
         followers = reading_author.dict(include={"followers"}).get("followers", [])
-        new_follower = {"id": writing_author.id, "name": writing_author.name}
-        if new_follower in followers:
-            followers.remove(new_follower)
+
+
+
+        new_follower = AuthorBaseSchema(id=writing_author.id, name=writing_author.name)
+        if new_follower.dict() in followers:
+            followers.remove(new_follower.dict())
 
         following = writing_author.dict(include={"following"}).get("following", [])
-        new_following = {"id": reading_author.id, "name": reading_author.name}
-        if new_following in following:
-            following.remove(new_following)
+        new_following = AuthorBaseSchema(id=reading_author.id, name=reading_author.name)
+        if new_following.dict() in following:
+            following.remove(new_following.dict())
 
         return await self.service.update_follow(
             reading_author=reading_author,
@@ -300,9 +303,9 @@ class AuthorService:
         return "".join(random.sample(char_set, length))
 
     def _check_follower_authors(
-        self,
-        reading_author: t.Optional[ProfileAuthorSchema],
-        writing_author: t.Optional[ProfileAuthorSchema],
+            self,
+            reading_author: t.Optional[AuthorModelSchema],
+            writing_author: t.Optional[AuthorModelSchema],
     ):
         """
         Внутренний метод проверки авторов перед установлением связей.

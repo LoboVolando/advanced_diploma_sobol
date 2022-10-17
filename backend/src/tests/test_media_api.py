@@ -35,4 +35,3 @@ async def test_create_media(faker, get_app):
     assert response_dict.get("result") is True
     assert isinstance(response_dict.get("media_id"), int)
     assert response_dict.get("media_id") > 0
-

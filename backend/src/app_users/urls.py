@@ -6,7 +6,7 @@ urls.py
 from fastapi import APIRouter, Depends, status
 from loguru import logger
 
-from app_users.schemas import ProfileAuthorOutSchema, RegisterAuthorSchema
+from app_users.schemas import *
 from app_users.services import AuthorService, PermissionService
 from schemas import SuccessSchema
 
@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.post("/api/register", status_code=status.HTTP_201_CREATED, tags=["users"])
-async def register(author: RegisterAuthorSchema, service: AuthorService = Depends()) -> dict:
+async def register(author: AuthorRegisterSchema, service: AuthorService = Depends()) -> dict:
     """Эндпоинт регистрации нового автора.
 
     Parameters
@@ -45,12 +45,12 @@ async def register(author: RegisterAuthorSchema, service: AuthorService = Depend
     return {"result": True, "api-key": api_key, "created": created}
 
 
-@router.get("/api/userinfo", response_model=ProfileAuthorOutSchema, status_code=status.HTTP_200_OK, tags=["users"])
-@router.get("/api/users/me", response_model=ProfileAuthorOutSchema, status_code=status.HTTP_200_OK, tags=["users"])
+@router.get("/api/userinfo", response_model=AuthorProfileApiSchema, status_code=status.HTTP_200_OK, tags=["users"])
+@router.get("/api/users/me", response_model=AuthorProfileApiSchema, status_code=status.HTTP_200_OK, tags=["users"])
 async def me(
     user: AuthorService = Depends(),
     permission: PermissionService = Depends(),
-) -> ProfileAuthorOutSchema:
+) -> AuthorProfileApiSchema:
     """Эндпоинт возвращает информацию о текущем пользователе.
 
     Parameters
@@ -69,12 +69,12 @@ async def me(
     return await user.me(api_key)
 
 
-@router.get("/api/users/{author_id}", status_code=status.HTTP_200_OK, response_model=ProfileAuthorOutSchema, tags=["users"])
+@router.get("/api/users/{author_id}", status_code=status.HTTP_200_OK, response_model=AuthorProfileApiSchema, tags=["users"])
 async def get_author_by_id(
     author_id: int,
     user: AuthorService = Depends(),
     permission: PermissionService = Depends(),
-) -> ProfileAuthorOutSchema:
+) -> AuthorProfileApiSchema:
     """Эндпоинт возвращает автора по идентификатору в базе данных.
 
     Parameters

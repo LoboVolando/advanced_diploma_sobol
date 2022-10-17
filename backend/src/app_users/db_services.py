@@ -5,17 +5,13 @@ db_services.py
 Модуль реализует взаимодействие с базой данных приложения app_users.
 """
 
-import typing as t
-
 from loguru import logger
 from sqlalchemy import select, update
-from asyncpg.exceptions import UndefinedFunctionError
-from sqlalchemy.exc import ProgrammingError
 from app_users.interfaces import AbstractAuthorService
 from app_users.models import Author
-from app_users.schemas import ProfileAuthorSchema
+from app_users.schemas import *
 from db import session
-from exceptions import BackendException, ErrorsList, exc_handler
+from exceptions import BackendException, ErrorsList
 from schemas import SuccessSchema
 
 TTL = 60
@@ -24,29 +20,8 @@ TTL = 60
 class AuthorDbService(AbstractAuthorService):
     """Класс инкапсулирует cruid для модели авторов"""
 
-    @exc_handler(ConnectionRefusedError)
-    async def me(self, api_key: str) -> ProfileAuthorSchema:
-        """
-        Метод возвращает информацию о пользователе по ключу api_key.
 
-        Parameters
-        ----------
-            api_key: str
-                Ключ, передаваемый фронтендом, по которому ищем пользователя.
-
-        Returns
-        -------
-        ProfileOutSchema
-            Pydantic-схема профиля пользователя, валидная для эндпоинта.
-        """
-        logger.info("make postgres query...")
-        # token = self.get_token_from_redis_by_api_key(api_key)
-        if author := await self.get_author(api_key=api_key):
-            logger.info(f"найден автор в бд {author}")
-            return author
-
-    # @exc_handler(ConnectionRefusedError)
-    async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> ProfileAuthorSchema:
+    async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> AuthorModelSchema:
         """
         Метод ищет автора по одному из параметров.
 
@@ -81,13 +56,12 @@ class AuthorDbService(AbstractAuthorService):
                     qs = await async_session.execute(query)
                     user = qs.scalars().first()
                     if user:
-                        return ProfileAuthorSchema.from_orm(user)
+                        return AuthorModelSchema.from_orm(user)
         except Exception as e:
             logger.error(e)
             raise BackendException(**ErrorsList.postgres_query_error)
 
-    # @exc_handler(ConnectionRefusedError)
-    async def create_author(self, name: str, api_key: str, password: str) -> t.Optional[Author]:
+    async def create_author(self, name: str, api_key: str, password: str) -> t.Optional[AuthorModelSchema]:
         """Метод сохраняет нового автора в базе данных
 
         Parameters
@@ -105,18 +79,21 @@ class AuthorDbService(AbstractAuthorService):
             SqlAlchemy-модель автора.
         """
         author = Author(name=name, api_key=api_key, password=password)
+        query = select(Author).filter_by(api_key=api_key)
         async with session() as async_session:
             async with async_session.begin():
                 async_session.add(author)
                 await async_session.flush()
-                logger.info(f"создали нового пользователя: {author}")
-                return author
+                qs = await async_session.execute(query)
+                user = qs.scalars().first()
+                if user:
+                    logger.info(f"создали нового пользователя: {user}")
+                    return AuthorModelSchema.from_orm(user)
 
-    # @exc_handler(ConnectionRefusedError)
     async def update_follow(
             self,
-            reading_author: ProfileAuthorSchema,
-            writing_author: ProfileAuthorSchema,
+            reading_author: AuthorModelSchema,
+            writing_author: AuthorModelSchema,
             followers: list,
             following: list,
     ) -> SuccessSchema:

@@ -11,9 +11,12 @@ Note
 
 import typing as t
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
+from sqlalchemy.orm import Query
+from loguru import logger
 
-from app_users.schemas import AuthorOutSchema, LikeAuthorSchema
+from app_users.models import Author
+from app_users.schemas import *
 
 
 class AttachmentSchema(BaseModel):
@@ -48,8 +51,8 @@ class TweetSchema(BaseModel):
     id: int
     content: str = Field(example="запомните этот твит")
     attachments: t.Optional[t.List[str]]
-    author: AuthorOutSchema
-    likes: t.Optional[t.List[LikeAuthorSchema]]
+    author: AuthorBaseSchema
+    likes: t.Optional[t.List[AuthorLikeSchema]]
 
     class Config:
         orm_mode = True
@@ -130,8 +133,10 @@ class TweetModelSchema(BaseModel):
     author_id: int
     soft_delete: bool
     likes: t.List[dict] = None
-    attachments: t.List[dict] = None
-    author: t.Any = None
+    attachments: t.List[int] = None
+    author: AuthorModelSchema = None
+    # author_: AuthorModelSchema = None
+
 
     class Config:
         orm_mode = True

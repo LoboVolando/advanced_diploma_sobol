@@ -1,15 +1,9 @@
-import io
-import json
 import pytest
 from httpx import AsyncClient
-from fastapi import status
 from loguru import logger
 
-# from app import app
-from app_users.services import AuthorService
-from schemas import ErrorSchema, SuccessSchema
-from exceptions import ErrorsList, BackendException
-from tests.test_user_service import register_fake_users
+from app_users.schemas import *
+from schemas import SuccessSchema
 
 
 @pytest.mark.api
@@ -21,20 +15,53 @@ async def test_user_create_api(faker, get_app):
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post('/api/register', headers={"api-key": "test"}, json=data)
-    context = response.json()
-    logger.info(f"context: {context}")
-    # assert response.status_code == status.HTTP_201_CREATED
-    # assert set(context.keys()) == {"result", "api-key", "created"}
-    # assert context['result'] is True
 
 
-# @pytest.mark.api
-# @pytest.mark.asyncio
-# async def test_user_me(faker, get_app):
-#     app = await get_app
-#     api_keys, users = await register_fake_users(count=4, faker=faker, author_service=AuthorService())
-#     logger.warning(users)
-#     for user in users:
-#         async with AsyncClient(app=app, base_url="http://test") as ac:
-#             response = await ac.get('/api/userinfo', headers={"api-key": user.user.api_key})
-#             logger.info(response.json())
+@pytest.mark.api
+@pytest.mark.asyncio
+async def test_user_me(get_authors_api_key_list, faker, get_app):
+    app = await get_app
+    api_keys = await get_authors_api_key_list
+    for key in api_keys:
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get('/api/userinfo', headers={"api-key": key})
+            response_dict = response.json()
+            response_schema = AuthorProfileApiSchema(**response_dict)
+            assert isinstance(response_schema, AuthorProfileApiSchema)
+            assert response_schema.result is True
+            assert set(response_dict.keys()) == {"result", "user"}
+            assert set(response_dict["user"].keys()) == {"id", "name", "followers", "following"}
+    logger.info("test user me complete")
+
+
+@pytest.mark.api
+@pytest.mark.asyncio
+async def test_get_author_by_id(get_authors_id_list, get_app):
+    app = await get_app
+    ids = await get_authors_id_list
+    logger.info(f"ids: {ids}")
+    for author_id in ids:
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.get(f'/api/users/{author_id}', headers={"api-key": "test"})
+            response_dict = response.json()
+            response_schema = AuthorProfileApiSchema(**response.json())
+            assert isinstance(response_schema, AuthorProfileApiSchema)
+            assert set(response_dict.keys()) == {"result", "user"}
+            assert set(response_dict["user"].keys()) == {"id", "name", "followers", "following"}
+
+
+@pytest.mark.api
+@pytest.mark.asyncio
+async def test_add_follow(get_authors_schemas_list, author_service, get_app):
+    app = await get_app
+    authors = await get_authors_schemas_list
+    alpha_author = authors[0]
+    for author in authors[1:]:
+        async with AsyncClient(app=app, base_url="http://test") as ac:
+            response = await ac.post(f'/api/users/{author.id}/follow', headers={"api-key": alpha_author.api_key})
+            response_dict = response.json()
+            assert SuccessSchema() == SuccessSchema(**response_dict)
+            response = await ac.delete(f'/api/users/{author.id}/follow', headers={"api-key": alpha_author.api_key})
+            response_dict = response.json()
+            assert SuccessSchema() == SuccessSchema(**response_dict)
+            logger.info(response_dict)

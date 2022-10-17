@@ -7,7 +7,7 @@ interfaces.py
 import typing as t
 from abc import ABC, abstractmethod
 
-from app_tweets.schemas import TweetInSchema, TweetSchema
+from app_tweets.schemas import TweetInSchema, TweetSchema, TweetModelSchema
 from schemas import SuccessSchema
 
 
@@ -15,7 +15,7 @@ class AbstractTweetService(ABC):
     """Абстрактный класс инкапсулирует cruid-методы для твитов в СУБД."""
 
     @abstractmethod
-    def get_list(self, author_id: int):
+    def get_list(self, author_id: int) -> t.List[TweetModelSchema]:
         """Абстрактный метод получения списка твитов для конкретного автора.
 
         Parameters
@@ -65,7 +65,7 @@ class AbstractTweetService(ABC):
         ...
 
     @abstractmethod
-    async def get_tweet_by_id(self, tweet_id: int) -> t.Optional[TweetSchema]:
+    async def get_tweet_by_id(self, tweet_id: int) -> t.Optional[TweetModelSchema]:
         """Абстрактный метод возвращает твит по идентификатору СУБД.
 
         Parameters

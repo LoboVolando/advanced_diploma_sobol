@@ -4,8 +4,6 @@ services.py
 
 Модуль определяет бизнес-логику приложения app_tweets.
 """
-import typing as t
-
 from loguru import logger
 
 from app_media.services import MediaService
@@ -16,10 +14,12 @@ from app_tweets.schemas import (
     TweetOutSchema,
     TweetSchema,
 )
-from app_users.schemas import LikeAuthorSchema
+from app_users.schemas import *
 from app_users.services import AuthorService
 from exceptions import BackendException, ErrorsList
 from schemas import SuccessSchema
+
+
 
 
 class TweetService:
@@ -153,7 +153,7 @@ class TweetService:
         logger.info("поставим лайк на твит...")
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
-        like = LikeAuthorSchema(user_id=author.user.id, name=author.user.name)
+        like = AuthorLikeSchema(user_id=author.user.id, name=author.user.name)
         if like in tweet.likes:
             raise BackendException(**ErrorsList.double_like)
         tweet.likes.append(like)
@@ -178,7 +178,7 @@ class TweetService:
         logger.info("удалим лайк на твит...")
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
-        like = LikeAuthorSchema(user_id=author.user.id, name=author.user.name)
+        like = AuthorLikeSchema(user_id=author.user.id, name=author.user.name)
         if like not in tweet.likes:
             raise BackendException(**ErrorsList.remove_not_exist_like)
         tweet.likes.remove(like)

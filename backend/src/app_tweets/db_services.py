@@ -7,19 +7,21 @@ import typing as t
 
 from loguru import logger
 from sqlalchemy import select, update
+from sqlalchemy.orm import selectinload
 
 from app_tweets.interfaces import AbstractTweetService
 from app_tweets.models import Tweet
-from app_tweets.schemas import TweetInSchema, TweetSchema, TweetOutSchema
+from app_tweets.schemas import TweetInSchema, TweetSchema, TweetModelSchema
+from app_users.schemas import AuthorModelSchema
 from db import session
-from exceptions import BackendException, ErrorsList, exc_handler
+from exceptions import BackendException, ErrorsList
 from schemas import SuccessSchema
 
 
 class TweetDbService(AbstractTweetService):
     """Класс инкапсулирует cruid-методы для твитов в СУБД."""
 
-    async def get_list(self, author_id: int) -> t.Optional[t.List[TweetSchema]]:
+    async def get_list(self, author_id: int) -> t.Optional[t.List[TweetModelSchema]]:
         """Метод получает список твитов из СУБД конкретного автора.
 
         Parameters
@@ -32,18 +34,21 @@ class TweetDbService(AbstractTweetService):
         List[TweetSchema], optional
             Список pydantic-схем твитов автора.
         """
-        query = select(Tweet).filter_by(author_id=author_id, soft_delete=False)
+
+        query = (select(Tweet)
+                 .filter_by(author_id=author_id, soft_delete=False)
+                 .options(selectinload(Tweet.author)))
         async with session() as async_session:
             async with async_session.begin():
                 if query_set := await async_session.execute(query):
-                    return [TweetSchema.from_orm(item) for item in query_set.scalars()]
+                    return [TweetModelSchema.from_orm(item) for item in query_set.scalars().all()]
 
     async def create_tweet(
-        self,
-        new_tweet: TweetInSchema,
-        author_id: int,
-        attachments: t.Optional[t.List[str]],
-    ) -> TweetOutSchema:
+            self,
+            new_tweet: TweetInSchema,
+            author_id: int,
+            attachments: t.Optional[t.List[str]],
+    ) -> TweetModelSchema:
         """
         Метод создаёт новый твит автора.
 
@@ -68,15 +73,19 @@ class TweetDbService(AbstractTweetService):
             soft_delete=False,
             attachments=attachments,
         )
+        logger.info(f"new tweet: {tweet}")
         async with session() as async_session:
             async with async_session.begin():
                 async_session.add(tweet)
                 await async_session.commit()
-                logger.info(f"создали твит: {tweet.id} :: {tweet.content}, medias: {tweet.attachments}")
-                return TweetOutSchema(result=True, tweet_id=tweet.id)
+        tweet = await self.get_tweet_by_id(tweet_id=tweet.id)
+        logger.info(f"создали твит: {tweet.id} :: {tweet.content}, medias: {tweet.attachments}, "
+                    f"author:")
+
+        return TweetModelSchema.from_orm(tweet)
 
     # @exc_handler(ConnectionRefusedError)
-    async def get_tweet_by_id(self, tweet_id: int) -> t.Optional[TweetSchema]:
+    async def get_tweet_by_id(self, tweet_id: int) -> t.Optional[TweetModelSchema]:
         """Метод возвращает твит по идентификатору СУБД.
 
         Parameters
@@ -90,7 +99,7 @@ class TweetDbService(AbstractTweetService):
             Pydantic-схема твита.
         """
         logger.info("запрос твитта по идентификатору СУБД.")
-        query = select(Tweet).filter_by(id=tweet_id, soft_delete=False)
+        query = select(Tweet).filter_by(id=tweet_id)
         async with session() as async_session:
             async with async_session.begin():
                 qs = await async_session.execute(query)
@@ -100,7 +109,10 @@ class TweetDbService(AbstractTweetService):
                     logger.warning(e)
                     logger.warning(type(e))
                 if result:
-                    return TweetSchema.from_orm(result)
+                    tweet = TweetModelSchema.from_orm(result)
+                    logger.warning(tweet)
+                    # tweet.author_ = AuthorModelSchema.from_orm(result.author)
+                    return tweet
         raise BackendException(**ErrorsList.tweet_not_exists)
 
     # @exc_handler(ConnectionRefusedError)

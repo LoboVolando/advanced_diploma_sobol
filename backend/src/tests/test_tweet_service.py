@@ -8,7 +8,6 @@ from app_tweets.services import TweetService
 from app_users.services import AuthorService
 from exceptions import BackendException
 from schemas import SuccessSchema
-from tests.test_user_service import register_fake_users
 
 
 @pytest.mark.service

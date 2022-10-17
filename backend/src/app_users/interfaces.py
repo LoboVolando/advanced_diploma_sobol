@@ -9,7 +9,7 @@ import typing as t
 from abc import ABC, abstractmethod
 
 from app_users.models import Author
-from app_users.schemas import ProfileAuthorSchema
+from app_users.schemas import *
 from schemas import SuccessSchema
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,19 +18,7 @@ class AbstractAuthorService(ABC):
     """Класс инкапсулирует методы для работы с авторами твитов."""
 
     @abstractmethod
-    async def me(self, api_key: str) -> ProfileAuthorSchema:
-        """Абстрактный метод получения собственного профиля автора по ключу фронтэнда.
-
-        Parameters
-        ----------
-
-        api_key: str
-            Уникальный ключ от фронтенда.
-        """
-        ...
-
-    @abstractmethod
-    async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> ProfileAuthorSchema:
+    async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> AuthorProfileApiSchema:
         """Абстрактный метод получения автора по одному из параметров.
 
         Parameters
@@ -62,8 +50,8 @@ class AbstractAuthorService(ABC):
     @abstractmethod
     async def update_follow(
         self,
-        reading_author: ProfileAuthorSchema,
-        writing_author: ProfileAuthorSchema,
+        reading_author: AuthorBaseSchema,
+        writing_author: AuthorBaseSchema,
         followers: dict,
         following: dict,
     ) -> SuccessSchema:

@@ -1,11 +1,11 @@
-import typing
-
 import pytest
 from loguru import logger
 from sqlalchemy.exc import ProgrammingError
 
-from app_users.schemas import ProfileAuthorOutSchema
+from app_users.schemas import *
 from exceptions import BackendException
+from schemas import SuccessSchema
+
 
 @pytest.mark.service
 @pytest.mark.asyncio
@@ -39,76 +39,60 @@ async def test_generate_api_key(author_service):
 
 @pytest.mark.service
 @pytest.mark.asyncio
-async def test_me_service(get_users_parameters, author_service):
-    for user in get_users_parameters:
-        result = await author_service.me(api_key=user[1])
+async def test_me_service(get_authors_api_key_list, author_service):
+    api_list = await get_authors_api_key_list
+    for api_key in api_list:
+        result = await author_service.me(api_key=api_key)
         logger.info(result)
-        assert isinstance(result, ProfileAuthorOutSchema)
+        assert isinstance(result, AuthorProfileApiSchema)
+        assert set(result.dict().keys()) == {"result", "user"}
+        assert result.result is True
+        assert set(result.user.dict().keys()) == {"id", "name", "followers", "following"}
         with pytest.raises(BackendException):
             await author_service.me(api_key=author_service.generate_api_key(10))
 
 
 @pytest.mark.service
 @pytest.mark.asyncio
-async def test_get_author(get_authors, author_service):
-    authors = await get_authors
-    for author in authors:
-        result = await author_service.get_author(author_id=author.user.id)
-        assert isinstance(result, ProfileAuthorOutSchema)
+async def test_get_author_by_id(get_authors_id_list, author_service):
+    ids = await get_authors_id_list
+    for author_id in ids:
+        result = await author_service.get_author(author_id=author_id)
+        assert isinstance(result, AuthorProfileApiSchema)
         with pytest.raises(BackendException) or pytest.raises(ProgrammingError):
             await author_service.get_author(author_id='id')
 
-        result = await author_service.get_author(api_key=author.user.api_key)
-        assert isinstance(result, ProfileAuthorOutSchema)
+@pytest.mark.service
+@pytest.mark.asyncio
+async def test_get_author_by_keys(get_authors_api_key_list, author_service):
+    keys = await get_authors_api_key_list
+    for key in keys:
+        result = await author_service.get_author(api_key=key)
+        assert isinstance(result, AuthorProfileApiSchema)
         with pytest.raises(BackendException) or pytest.raises(ProgrammingError):
             await author_service.get_author(api_key=1)
 
 
 @pytest.mark.service
 @pytest.mark.asyncio
-async def test_add_followers(author_service, faker):
+async def test_add_remove_followers(get_authors_schemas_list, author_service, faker):
     """тестируем добавление фоловеров"""
-    users_count = 5
-    api_keys, users = await register_fake_users(users_count, author_service, faker)
-
-    read_user = users[0]
-    followers = users[1:]
-    await check_followers_for_user(author_service, read_user, followers)
-    await check_following_for_user(author_service, followers, 1)
-
-
-async def register_fake_users(count: int, author_service, faker) -> tuple[typing.List[str], typing.List[ProfileAuthorOutSchema]]:
-    """регистрируем произвольное количество фейковых юзеров в базе"""
-    api_keys = []
-    users = []
-    for _ in range(count):
-        key = await author_service.get_or_create_user(name=faker.name(), password=faker.password())
-        logger.info(key[0])
-        api_keys.append(key[0])
-        users.append(await author_service.get_author(api_key=key[0]))
-    logger.info(api_keys)
-    logger.info(users)
-    assert len(api_keys) == count
-    assert len(users) == count
-    return api_keys, users
-
-
-async def check_followers_for_user(author_service,
-                                   read_user: ProfileAuthorOutSchema,
-                                   followers: typing.List[ProfileAuthorOutSchema]):
-    """тестируем количество добавленных юзеров в фоловеры"""
-    folowers_count_before = len(read_user.user.followers)
-    assert folowers_count_before == 0
-    for user in followers:
-        assert len(user.user.following) == 0
-        await author_service.add_follow(user.user.id, read_user.user.api_key)
-    read_user = await author_service.get_author(author_id=read_user.user.id)
-    logger.info(f"followers: {read_user.user.followers}")
-    assert len(read_user.user.followers) == len(followers)
-
-async def check_following_for_user(author_service,
-                                   followers: typing.List[ProfileAuthorOutSchema], following_count: int):
-    """тестируем фолофингов"""
-    for user in followers:
-        user = await author_service.get_author(author_id=user.user.id)
-        assert len(user.user.following) == following_count
+    users = await get_authors_schemas_list
+    reading_author = users[0]
+    writing_author = users[1]
+    result = await author_service.add_follow(writing_author.id, reading_author.api_key)
+    reading_author = await author_service.get_author(author_id=reading_author.id)
+    writing_author = await author_service.get_author(author_id=writing_author.id)
+    new_follower = AuthorBaseSchema(id=writing_author.user.id, name=writing_author.user.name)
+    new_following = AuthorBaseSchema(id=reading_author.user.id, name=reading_author.user.name)
+    assert isinstance(result, SuccessSchema)
+    assert new_follower.dict() in reading_author.user.followers
+    assert new_following.dict() in writing_author.user.following
+    reading_author = users[0]
+    writing_author = users[1]
+    result = await author_service.remove_follow(writing_author.id, reading_author.api_key)
+    reading_author = await author_service.get_author(author_id=reading_author.id)
+    writing_author = await author_service.get_author(author_id=writing_author.id)
+    assert isinstance(result, SuccessSchema)
+    assert new_follower.dict() not in reading_author.user.followers
+    assert new_following.dict() not in writing_author.user.following
