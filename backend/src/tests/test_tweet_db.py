@@ -1,9 +1,7 @@
 import pytest
 from loguru import logger
-from sqlalchemy import select
 
-from app_tweets.models import Tweet
-from app_tweets.schemas import TweetInSchema, TweetOutSchema, TweetSchema, TweetModelSchema
+from app_tweets.schemas import TweetInSchema, TweetModelSchema
 from schemas import SuccessSchema
 from tests.test_media_service import create_many_medias
 
@@ -25,6 +23,8 @@ async def test_create_tweet(get_authors_id_list, author_service, tweet_db_servic
         assert tweet.id > 0
         assert tweet.content == new_tweet.tweet_data
         assert attachments == tweet.attachments
+        assert set(tweet.dict().keys()) == {"id", "content", "author_id", "soft_delete", "likes",
+                                                     "attachments", "author"}
 
 
 @pytest.mark.dbtest
@@ -36,11 +36,12 @@ async def test_get_tweet_by_id(get_tweet_schemas_list, tweet_db_service):
     assert len(tweet_list) > 0
     for tweet in tweet_list:
         selected_tweet = await tweet_db_service.get_tweet_by_id(tweet_id=tweet.id)
-        logger.debug(selected_tweet)
         assert isinstance(selected_tweet, TweetModelSchema)
+        assert set(selected_tweet.dict().keys()) == {"id", "content", "author_id", "soft_delete", "likes",
+                                                     "attachments", "author"}
         assert selected_tweet == tweet
-#
-#
+
+
 @pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_get_tweet_list_by_author_id(get_tweet_schemas_list, tweet_db_service):
@@ -52,7 +53,8 @@ async def test_get_tweet_list_by_author_id(get_tweet_schemas_list, tweet_db_serv
         assert len(tweets) > 0
         for tweet in tweets:
             assert isinstance(tweet, TweetModelSchema)
-            logger.info(tweet)
+            assert set(tweet.dict().keys()) == {"id", "content", "author_id", "soft_delete", "likes",
+                                                         "attachments", "author"}
             assert tweet == tweet_dict.get(tweet.id)
 
 

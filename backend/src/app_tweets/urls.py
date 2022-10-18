@@ -11,6 +11,7 @@ from app_tweets.schemas import (
     TweetListOutSchema,
     TweetOutSchema,
     TweetSchema,
+    TweetModelOutSchema,
 )
 from app_tweets.services import TweetService
 from app_users.services import PermissionService
@@ -67,11 +68,11 @@ async def create_tweet(
     return await tweet.create_tweet(new_tweet, api_key)
 
 
-@router.get("/api/tweets/{tweet_id}", response_model=TweetSchema, status_code=status.HTTP_200_OK, tags=["tweets"])
+@router.get("/api/tweets/{tweet_id}", response_model=TweetModelOutSchema, status_code=status.HTTP_200_OK, tags=["tweets"])
 async def get_tweet(
         tweet_id: int,
         tweet: TweetService = Depends(),
-) -> TweetSchema:
+) -> TweetModelOutSchema:
     """Эндпоинт достаёт твит по идентификатору СУБД.
 
     Parameters
