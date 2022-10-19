@@ -11,7 +11,7 @@ from sqlalchemy.orm import selectinload
 
 from app_tweets.interfaces import AbstractTweetService
 from app_tweets.models import Tweet
-from app_tweets.schemas import TweetInSchema, TweetSchema, TweetModelSchema
+from app_tweets.schemas import TweetInSchema, TweetModelSchema, TweetSchema
 from app_users.schemas import AuthorModelSchema
 from db import session
 from exceptions import BackendException, ErrorsList
@@ -35,19 +35,17 @@ class TweetDbService(AbstractTweetService):
             Список pydantic-схем твитов автора.
         """
 
-        query = (select(Tweet)
-                 .filter_by(author_id=author_id, soft_delete=False)
-                 .options(selectinload(Tweet.author)))
+        query = select(Tweet).filter_by(author_id=author_id, soft_delete=False).options(selectinload(Tweet.author))
         async with session() as async_session:
             async with async_session.begin():
                 if query_set := await async_session.execute(query):
                     return [TweetModelSchema.from_orm(item) for item in query_set.scalars().all()]
 
     async def create_tweet(
-            self,
-            new_tweet: TweetInSchema,
-            author_id: int,
-            attachments: t.Optional[t.List[str]],
+        self,
+        new_tweet: TweetInSchema,
+        author_id: int,
+        attachments: t.Optional[t.List[str]],
     ) -> TweetModelSchema:
         """
         Метод создаёт новый твит автора.
@@ -79,8 +77,7 @@ class TweetDbService(AbstractTweetService):
                 async_session.add(tweet)
                 await async_session.commit()
         tweet = await self.get_tweet_by_id(tweet_id=tweet.id)
-        logger.info(f"создали твит: {tweet.id} :: {tweet.content}, medias: {tweet.attachments}, "
-                    f"author:")
+        logger.info(f"создали твит: {tweet.id} :: {tweet.content}, medias: {tweet.attachments}, " f"author:")
 
         return TweetModelSchema.from_orm(tweet)
 

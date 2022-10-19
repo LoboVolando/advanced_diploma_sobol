@@ -69,7 +69,7 @@ class MediaDbService(AbstractMediaService):
         MediaOrmSchema, optional
             Pydantic-схема ОРМ модели медиа ресурса.
         """
-        media = Media(hash=hash, link=settings.media_url + '/' + file_name)
+        media = Media(hash=hash, link=settings.media_url + "/" + file_name)
         async with session() as async_session:
             async with async_session.begin():
                 async_session.add(media)

@@ -7,6 +7,7 @@ db_services.py
 
 from loguru import logger
 from sqlalchemy import select, update
+
 from app_users.interfaces import AbstractAuthorService
 from app_users.models import Author
 from app_users.schemas import *
@@ -19,7 +20,6 @@ TTL = 60
 
 class AuthorDbService(AbstractAuthorService):
     """Класс инкапсулирует cruid для модели авторов"""
-
 
     async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> AuthorModelSchema:
         """
@@ -91,11 +91,11 @@ class AuthorDbService(AbstractAuthorService):
                     return AuthorModelSchema.from_orm(user)
 
     async def update_follow(
-            self,
-            reading_author: AuthorModelSchema,
-            writing_author: AuthorModelSchema,
-            followers: list,
-            following: list,
+        self,
+        reading_author: AuthorModelSchema,
+        writing_author: AuthorModelSchema,
+        followers: list,
+        following: list,
     ) -> SuccessSchema:
         """
 

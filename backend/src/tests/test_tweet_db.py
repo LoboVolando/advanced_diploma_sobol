@@ -16,15 +16,21 @@ async def test_create_tweet(get_authors_id_list, author_service, tweet_db_servic
         attachments = await create_many_medias(count=2)
         attachments = [attach.media_id for attach in attachments]
         logger.warning(f"attachements: {attachments}")
-        tweet = await tweet_db_service.create_tweet(new_tweet=new_tweet, author_id=user_id,
-                                                    attachments=attachments)
+        tweet = await tweet_db_service.create_tweet(new_tweet=new_tweet, author_id=user_id, attachments=attachments)
         logger.info(f"== {attachments == tweet.attachments}")
         assert isinstance(tweet, TweetModelSchema)
         assert tweet.id > 0
         assert tweet.content == new_tweet.tweet_data
         assert attachments == tweet.attachments
-        assert set(tweet.dict().keys()) == {"id", "content", "author_id", "soft_delete", "likes",
-                                                     "attachments", "author"}
+        assert set(tweet.dict().keys()) == {
+            "id",
+            "content",
+            "author_id",
+            "soft_delete",
+            "likes",
+            "attachments",
+            "author",
+        }
 
 
 @pytest.mark.dbtest
@@ -37,8 +43,15 @@ async def test_get_tweet_by_id(get_tweet_schemas_list, tweet_db_service):
     for tweet in tweet_list:
         selected_tweet = await tweet_db_service.get_tweet_by_id(tweet_id=tweet.id)
         assert isinstance(selected_tweet, TweetModelSchema)
-        assert set(selected_tweet.dict().keys()) == {"id", "content", "author_id", "soft_delete", "likes",
-                                                     "attachments", "author"}
+        assert set(selected_tweet.dict().keys()) == {
+            "id",
+            "content",
+            "author_id",
+            "soft_delete",
+            "likes",
+            "attachments",
+            "author",
+        }
         assert selected_tweet == tweet
 
 
@@ -53,8 +66,15 @@ async def test_get_tweet_list_by_author_id(get_tweet_schemas_list, tweet_db_serv
         assert len(tweets) > 0
         for tweet in tweets:
             assert isinstance(tweet, TweetModelSchema)
-            assert set(tweet.dict().keys()) == {"id", "content", "author_id", "soft_delete", "likes",
-                                                         "attachments", "author"}
+            assert set(tweet.dict().keys()) == {
+                "id",
+                "content",
+                "author_id",
+                "soft_delete",
+                "likes",
+                "attachments",
+                "author",
+            }
             assert tweet == tweet_dict.get(tweet.id)
 
 

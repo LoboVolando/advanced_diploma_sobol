@@ -8,7 +8,7 @@ import shutil
 import typing as t
 from pathlib import Path
 
-from fastapi import UploadFile, Depends
+from fastapi import Depends, UploadFile
 from loguru import logger
 
 from app_media.db_services import MediaDbService as MediaTransportService

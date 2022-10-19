@@ -60,7 +60,8 @@ async def test_get_author_by_id(get_authors_id_list, author_service):
         result = await author_service.get_author(author_id=author_id)
         assert isinstance(result, AuthorProfileApiSchema)
         with pytest.raises(BackendException) or pytest.raises(ProgrammingError):
-            await author_service.get_author(author_id='id')
+            await author_service.get_author(author_id="id")
+
 
 @pytest.mark.service
 @pytest.mark.asyncio

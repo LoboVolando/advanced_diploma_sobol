@@ -11,17 +11,15 @@ from app_tweets.db_services import TweetDbService as TweetTransportService
 from app_tweets.schemas import (
     TweetInSchema,
     TweetListOutSchema,
+    TweetModelOutSchema,
+    TweetModelSchema,
     TweetOutSchema,
     TweetSchema,
-    TweetModelSchema,
-    TweetModelOutSchema,
 )
 from app_users.schemas import *
 from app_users.services import AuthorService
 from exceptions import BackendException, ErrorsList
 from schemas import SuccessSchema
-
-
 
 
 class TweetService:

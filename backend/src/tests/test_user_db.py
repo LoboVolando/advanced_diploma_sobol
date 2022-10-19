@@ -8,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from app import app
 from app_users.schemas import *
 from schemas import SuccessSchema
+
 client = TestClient(app)
 
 fake = Faker()
@@ -23,10 +24,7 @@ async def test_create_user(faker, author_db_service):
         name = faker.name()
         key = faker.pystr()
         password = faker.password()
-        result = await author_db_service.create_author(
-            name=name,
-            api_key=key,
-            password=password)
+        result = await author_db_service.create_author(name=name, api_key=key, password=password)
         fake_users.append(result)
         assert isinstance(result, AuthorModelSchema)
         assert result.name == name
@@ -34,10 +32,7 @@ async def test_create_user(faker, author_db_service):
         assert result.password == password
     for user in fake_users:
         with pytest.raises(IntegrityError):
-            await author_db_service.create_author(
-                name=user.name,
-                api_key=user.api_key,
-                password=faker.password())
+            await author_db_service.create_author(name=user.name, api_key=user.api_key, password=faker.password())
 
 
 @pytest.mark.dbtest
@@ -66,8 +61,8 @@ async def test_update_follow(get_authors_schemas_list, author_db_service):
             reading_author=users[0],
             writing_author=user,
             followers=[u.dict(include={"id", "name"}) for u in followings],
-            following=[users[0].dict(include={"id", "name"})]
-            )
+            following=[users[0].dict(include={"id", "name"})],
+        )
         assert isinstance(result, SuccessSchema)
         following = await author_db_service.get_author(api_key=user.api_key)
         follower = await author_db_service.get_author(api_key=users[0].api_key)

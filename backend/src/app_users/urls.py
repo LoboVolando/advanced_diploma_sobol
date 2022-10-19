@@ -69,7 +69,9 @@ async def me(
     return await user.me(api_key)
 
 
-@router.get("/api/users/{author_id}", status_code=status.HTTP_200_OK, response_model=AuthorProfileApiSchema, tags=["users"])
+@router.get(
+    "/api/users/{author_id}", status_code=status.HTTP_200_OK, response_model=AuthorProfileApiSchema, tags=["users"]
+)
 async def get_author_by_id(
     author_id: int,
     user: AuthorService = Depends(),
@@ -97,7 +99,9 @@ async def get_author_by_id(
     return await user.get_author(author_id=author_id)
 
 
-@router.post("/api/users/{author_id}/follow", response_model=SuccessSchema, status_code=status.HTTP_200_OK, tags=["users"])
+@router.post(
+    "/api/users/{author_id}/follow", response_model=SuccessSchema, status_code=status.HTTP_200_OK, tags=["users"]
+)
 async def follow_author(
     author_id: int,
     permission: PermissionService = Depends(),
@@ -127,7 +131,9 @@ async def follow_author(
     return await author.add_follow(writing_author_id=author_id, api_key=api_key)
 
 
-@router.delete("/api/users/{author_id}/follow", response_model=SuccessSchema, status_code=status.HTTP_200_OK, tags=["users"])
+@router.delete(
+    "/api/users/{author_id}/follow", response_model=SuccessSchema, status_code=status.HTTP_200_OK, tags=["users"]
+)
 async def unfollow_author(
     author_id: int,
     permission: PermissionService = Depends(),

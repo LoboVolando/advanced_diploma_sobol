@@ -7,7 +7,7 @@ interfaces.py
 import typing as t
 from abc import ABC, abstractmethod
 
-from app_tweets.schemas import TweetInSchema, TweetSchema, TweetModelSchema
+from app_tweets.schemas import TweetInSchema, TweetModelSchema, TweetSchema
 from schemas import SuccessSchema
 
 

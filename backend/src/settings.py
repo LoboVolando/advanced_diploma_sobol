@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     redis_host: str = "localhost"
     redis_port: str = 5479
     docker_media_root: str = "/home/svv/projects/data/diploma/static/media"
-    media_url: str = '/static/media'
+    media_url: str = "/static/media"
 
     # db_url = ""
     # async_db_url = ""

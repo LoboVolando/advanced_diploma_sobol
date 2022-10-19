@@ -174,14 +174,12 @@ class AuthorService:
         if user := await self.service.get_author(api_key=api_key):
             return AuthorProfileApiSchema(
                 result=True,
-                user=AuthorProfileSchema(**user.dict(include={'id', 'name', 'followers', 'following'})),
+                user=AuthorProfileSchema(**user.dict(include={"id", "name", "followers", "following"})),
             )
         logger.error("не нашли юзера по api-key: %s", api_key)
         raise BackendException(**ErrorsList.author_not_exists)
 
-    async def get_author(
-            self, author_id: int = None, api_key: str = None, name: str = None
-    ) -> AuthorProfileApiSchema:
+    async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> AuthorProfileApiSchema:
         """Метод возвращает информацио о пользователе по одному из параметров.
 
         Parameters
@@ -202,8 +200,8 @@ class AuthorService:
         if user := await self.service.get_author(author_id, api_key, name):
             logger.info(user)
             return AuthorProfileApiSchema(
-                result=True,
-                user=AuthorProfileSchema(**user.dict(include={'id', 'name', 'followers', 'following'})))
+                result=True, user=AuthorProfileSchema(**user.dict(include={"id", "name", "followers", "following"}))
+            )
         logger.error("пользователь не найден")
         raise BackendException(**ErrorsList.postgres_query_error)
 
@@ -268,8 +266,6 @@ class AuthorService:
         self._check_follower_authors(reading_author, writing_author)
         followers = reading_author.dict(include={"followers"}).get("followers", [])
 
-
-
         new_follower = AuthorBaseSchema(id=writing_author.id, name=writing_author.name)
         if new_follower.dict() in followers:
             followers.remove(new_follower.dict())
@@ -303,9 +299,9 @@ class AuthorService:
         return "".join(random.sample(char_set, length))
 
     def _check_follower_authors(
-            self,
-            reading_author: t.Optional[AuthorModelSchema],
-            writing_author: t.Optional[AuthorModelSchema],
+        self,
+        reading_author: t.Optional[AuthorModelSchema],
+        writing_author: t.Optional[AuthorModelSchema],
     ):
         """
         Внутренний метод проверки авторов перед установлением связей.

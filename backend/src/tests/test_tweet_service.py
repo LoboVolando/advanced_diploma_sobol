@@ -3,7 +3,7 @@ import typing as t
 import pytest
 from loguru import logger
 
-from app_tweets.schemas import TweetOutSchema, TweetInSchema, TweetSchema, TweetModelOutSchema, AuthorLikeSchema
+from app_tweets.schemas import AuthorLikeSchema, TweetInSchema, TweetModelOutSchema, TweetOutSchema, TweetSchema
 from app_tweets.services import TweetService
 from app_users.services import AuthorService
 from exceptions import BackendException
@@ -44,8 +44,8 @@ async def test_create_tweet(get_authors_schemas_list, tweet_service, faker):
     authors_list = await get_authors_schemas_list
     for author in authors_list:
         tweet = await tweet_service.create_tweet(
-            TweetInSchema(tweet_data=faker.text(200), tweet_media_ids=[]),
-            author.api_key)
+            TweetInSchema(tweet_data=faker.text(200), tweet_media_ids=[]), author.api_key
+        )
         assert isinstance(tweet, TweetOutSchema)
         assert set(tweet.dict().keys()) == {"result", "tweet_id"}
 

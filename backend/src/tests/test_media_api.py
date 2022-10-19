@@ -13,7 +13,7 @@ async def test_media_exception(get_app):
     app = await get_app
     with pytest.raises(BackendException):
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            await ac.get('/api/exception', headers={"api-key": "test"})
+            await ac.get("/api/exception", headers={"api-key": "test"})
 
 
 @pytest.mark.api
@@ -21,10 +21,10 @@ async def test_media_exception(get_app):
 async def test_create_media(faker, get_app):
     app = await get_app
     image = io.BytesIO(faker.image(size=(100, 100), image_format="png"))
-    files = {"file": (f"{faker.text(8)}png", image, 'image/png')}
+    files = {"file": (f"{faker.text(8)}png", image, "image/png")}
     with pytest.raises(BackendException):
         async with AsyncClient(app=app, base_url="http://test") as ac:
-            response = await ac.post('/api/medias', headers={"api-key": "fake_api_key"}, files=files)
+            response = await ac.post("/api/medias", headers={"api-key": "fake_api_key"}, files=files)
             logger.info(f"response: {response.json()}")
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post(url="/api/medias", headers={"api-key": "test"}, files=files)

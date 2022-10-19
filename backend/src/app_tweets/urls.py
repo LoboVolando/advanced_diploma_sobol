@@ -6,13 +6,7 @@ urls.py
 """
 from fastapi import APIRouter, Depends, status
 
-from app_tweets.schemas import (
-    TweetInSchema,
-    TweetListOutSchema,
-    TweetOutSchema,
-    TweetSchema,
-    TweetModelOutSchema,
-)
+from app_tweets.schemas import TweetInSchema, TweetListOutSchema, TweetModelOutSchema, TweetOutSchema, TweetSchema
 from app_tweets.services import TweetService
 from app_users.services import PermissionService
 from schemas import SuccessSchema
@@ -22,7 +16,7 @@ router = APIRouter()
 
 @router.get("/api/tweets", response_model=TweetListOutSchema, status_code=status.HTTP_200_OK, tags=["tweets"])
 async def get_tweets_list(
-        permission: PermissionService = Depends(), tweet: TweetService = Depends()
+    permission: PermissionService = Depends(), tweet: TweetService = Depends()
 ) -> TweetListOutSchema:
     """Эндпоинт реализует получение всех твитов текущего автора.
 
@@ -44,9 +38,9 @@ async def get_tweets_list(
 
 @router.post("/api/tweets", response_model=TweetOutSchema, status_code=status.HTTP_201_CREATED, tags=["tweets"])
 async def create_tweet(
-        new_tweet: TweetInSchema,
-        permission: PermissionService = Depends(),
-        tweet: TweetService = Depends(),
+    new_tweet: TweetInSchema,
+    permission: PermissionService = Depends(),
+    tweet: TweetService = Depends(),
 ) -> TweetOutSchema:
     """Эндпоинт сохранения нового твита в системе.
 
@@ -68,10 +62,12 @@ async def create_tweet(
     return await tweet.create_tweet(new_tweet, api_key)
 
 
-@router.get("/api/tweets/{tweet_id}", response_model=TweetModelOutSchema, status_code=status.HTTP_200_OK, tags=["tweets"])
+@router.get(
+    "/api/tweets/{tweet_id}", response_model=TweetModelOutSchema, status_code=status.HTTP_200_OK, tags=["tweets"]
+)
 async def get_tweet(
-        tweet_id: int,
-        tweet: TweetService = Depends(),
+    tweet_id: int,
+    tweet: TweetService = Depends(),
 ) -> TweetModelOutSchema:
     """Эндпоинт достаёт твит по идентификатору СУБД.
 
@@ -92,9 +88,9 @@ async def get_tweet(
 
 @router.delete("/api/tweets/{tweet_id}", response_model=SuccessSchema, status_code=status.HTTP_200_OK, tags=["tweets"])
 async def delete_tweet(
-        tweet_id: int,
-        permission: PermissionService = Depends(),
-        tweet: TweetService = Depends(),
+    tweet_id: int,
+    permission: PermissionService = Depends(),
+    tweet: TweetService = Depends(),
 ) -> SuccessSchema:
     """Эндпоинт удаления твита.
 
@@ -116,12 +112,13 @@ async def delete_tweet(
     return await tweet.delete_tweet(tweet_id=tweet_id, api_key=api_key)
 
 
-@router.post("/api/tweets/{tweet_id}/likes", response_model=SuccessSchema, status_code=status.HTTP_200_OK,
-             tags=["tweets"])
+@router.post(
+    "/api/tweets/{tweet_id}/likes", response_model=SuccessSchema, status_code=status.HTTP_200_OK, tags=["tweets"]
+)
 async def add_like_to_tweet(
-        tweet_id: int,
-        permission: PermissionService = Depends(),
-        tweet: TweetService = Depends(),
+    tweet_id: int,
+    permission: PermissionService = Depends(),
+    tweet: TweetService = Depends(),
 ) -> SuccessSchema:
     """Эндпоинт добавляет лайку к твиту.
 
@@ -143,12 +140,13 @@ async def add_like_to_tweet(
     return await tweet.add_like_to_tweet(tweet_id=tweet_id, api_key=api_key)
 
 
-@router.delete("/api/tweets/{tweet_id}/likes", response_model=SuccessSchema, status_code=status.HTTP_200_OK,
-               tags=["tweets"])
+@router.delete(
+    "/api/tweets/{tweet_id}/likes", response_model=SuccessSchema, status_code=status.HTTP_200_OK, tags=["tweets"]
+)
 async def remove_like_from_tweet(
-        tweet_id: int,
-        permission: PermissionService = Depends(),
-        tweet: TweetService = Depends(),
+    tweet_id: int,
+    permission: PermissionService = Depends(),
+    tweet: TweetService = Depends(),
 ) -> SuccessSchema:
     """Эндпоинт удаляет лайку с твита.
 

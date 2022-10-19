@@ -8,10 +8,11 @@ interfaces.py
 import typing as t
 from abc import ABC, abstractmethod
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app_users.models import Author
 from app_users.schemas import *
 from schemas import SuccessSchema
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class AbstractAuthorService(ABC):
