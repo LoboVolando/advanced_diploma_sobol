@@ -9,14 +9,32 @@ Note
     Большинство схем поддерживают загрузку из орм-моделей.
 """
 
-import typing as t
-
 from pydantic import Field
 
 from app_users.schemas import *
 
 
 class TweetModelSchema(BaseModel):
+    """Схема ОРМ модели твита.
+
+    Arguments
+    ---------
+    id: int
+        Идентификатор твита в СУБД.
+    content: str
+        Умная мысль. Не обязательно умная. Не обязательно мысль.
+    author_id: int
+        Вторичный ключ для связи один-ко-многим.
+    soft_delete: bool
+        Флаг удаления твита.
+    likes: List[LikeAuthorSchema], optional
+        Список авторов, отлайкавших этот твит.
+    attachments: t.List[int]
+        Список идентификаторов медиа-ресурсов.
+    author: AuthorModelSchema.
+        Схема ОРМ модели Автора твита.
+    """
+
     id: int
     content: str
     author_id: int
@@ -27,18 +45,6 @@ class TweetModelSchema(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-class AttachmentSchema(BaseModel):
-    """Схема вложения к твитту.
-
-    Parameters
-    ----------
-    link: str
-        адрес картинки, которую должен обработать фронт.
-    """
-
-    link: str
 
 
 class TweetSchema(BaseModel):
@@ -85,18 +91,6 @@ class TweetModelOutSchema(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-class TweetListSchema(BaseModel):
-    """Простой список твитов.
-
-    Parameters
-    ----------
-    tweets: t.List[TweetSchema]
-        Список твитов.
-    """
-
-    tweets: t.List[TweetSchema]
 
 
 class TweetListOutSchema(BaseModel):

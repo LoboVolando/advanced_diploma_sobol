@@ -5,6 +5,7 @@ db_services.py
 """
 import typing as t
 
+import structlog
 from loguru import logger
 from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload
@@ -12,10 +13,12 @@ from sqlalchemy.orm import selectinload
 from app_tweets.interfaces import AbstractTweetService
 from app_tweets.models import Tweet
 from app_tweets.schemas import TweetInSchema, TweetModelSchema, TweetSchema
-from app_users.schemas import AuthorModelSchema
 from db import session
 from exceptions import BackendException, ErrorsList
 from schemas import SuccessSchema
+
+structlog.configure(processors=[structlog.processors.JSONRenderer(ensure_ascii=False)])
+log = structlog.get_logger()
 
 
 class TweetDbService(AbstractTweetService):
@@ -31,8 +34,8 @@ class TweetDbService(AbstractTweetService):
 
         Returns
         -------
-        List[TweetSchema], optional
-            Список pydantic-схем твитов автора.
+        List[TweetModelSchema], optional
+            Список pydantic-схем ORM модели твитов автора.
         """
 
         query = select(Tweet).filter_by(author_id=author_id, soft_delete=False).options(selectinload(Tweet.author))
@@ -62,7 +65,7 @@ class TweetDbService(AbstractTweetService):
         Returns
         -------
         Tweet
-            SqlAlchemy модель нового твита.
+            Pydantic схема ORM модели нового твита.
         """
         tweet = Tweet(
             content=new_tweet.tweet_data,
@@ -71,13 +74,14 @@ class TweetDbService(AbstractTweetService):
             soft_delete=False,
             attachments=attachments,
         )
-        logger.info(f"new tweet: {tweet}")
+        l = log.bind(tweet=new_tweet.dict(), attachments=attachments, author_id=author_id)
         async with session() as async_session:
             async with async_session.begin():
                 async_session.add(tweet)
                 await async_session.commit()
+                l.bind(session="commit")
+                l.info("создан твит")
         tweet = await self.get_tweet_by_id(tweet_id=tweet.id)
-        logger.info(f"создали твит: {tweet.id} :: {tweet.content}, medias: {tweet.attachments}, " f"author:")
 
         return TweetModelSchema.from_orm(tweet)
 

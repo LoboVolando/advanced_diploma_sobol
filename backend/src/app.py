@@ -41,7 +41,12 @@ from app_media import router as app_media_router
 from app_tweets import router as app_tweets_router
 from app_users import router as app_users_router
 from app_users.services import PermissionService
-from exceptions import AuthException, BackendException, ErrorsList, InternalServerException
+from exceptions import (
+    AuthException,
+    BackendException,
+    ErrorsList,
+    InternalServerException,
+)
 from tags import tags_metadata
 
 

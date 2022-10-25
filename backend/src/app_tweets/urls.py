@@ -6,7 +6,13 @@ urls.py
 """
 from fastapi import APIRouter, Depends, status
 
-from app_tweets.schemas import TweetInSchema, TweetListOutSchema, TweetModelOutSchema, TweetOutSchema, TweetSchema
+from app_tweets.schemas import (
+    TweetInSchema,
+    TweetListOutSchema,
+    TweetModelOutSchema,
+    TweetOutSchema,
+    TweetSchema,
+)
 from app_tweets.services import TweetService
 from app_users.services import PermissionService
 from schemas import SuccessSchema

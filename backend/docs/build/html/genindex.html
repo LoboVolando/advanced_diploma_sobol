@@ -49,7 +49,6 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
- | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -57,6 +56,7 @@
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  | <a href="#М"><strong>М</strong></a>
  
 </div>
@@ -156,8 +156,6 @@
         <li><a href="index.html#module-app_tweets.interfaces">модуль</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     app_tweets.models
 
@@ -165,6 +163,8 @@
         <li><a href="index.html#module-app_tweets.models">модуль</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     app_tweets.schemas
 
@@ -235,17 +235,27 @@
         <li><a href="index.html#module-app_users.urls">модуль</a>
 </li>
       </ul></li>
-      <li><a href="index.html#app_tweets.schemas.AttachmentSchema">AttachmentSchema (класс в app_tweets.schemas)</a>
-</li>
       <li><a href="index.html#exceptions.AuthException">AuthException</a>
 </li>
       <li><a href="index.html#app_users.models.Author">Author (класс в app_users.models)</a>
+</li>
+      <li><a href="index.html#tests.conftest.author_db_service">author_db_service() (в модуле tests.conftest)</a>
+</li>
+      <li><a href="index.html#tests.conftest.author_service">author_service() (в модуле tests.conftest)</a>
 </li>
       <li><a href="index.html#app_users.schemas.AuthorBaseSchema">AuthorBaseSchema (класс в app_users.schemas)</a>
 </li>
       <li><a href="index.html#app_users.db_services.AuthorDbService">AuthorDbService (класс в app_users.db_services)</a>
 </li>
-      <li><a href="index.html#app_users.schemas.AuthorOutSchema">AuthorOutSchema (класс в app_users.schemas)</a>
+      <li><a href="index.html#app_users.schemas.AuthorLikeSchema">AuthorLikeSchema (класс в app_users.schemas)</a>
+</li>
+      <li><a href="index.html#app_users.schemas.AuthorModelSchema">AuthorModelSchema (класс в app_users.schemas)</a>
+</li>
+      <li><a href="index.html#app_users.schemas.AuthorProfileApiSchema">AuthorProfileApiSchema (класс в app_users.schemas)</a>
+</li>
+      <li><a href="index.html#app_users.schemas.AuthorProfileSchema">AuthorProfileSchema (класс в app_users.schemas)</a>
+</li>
+      <li><a href="index.html#app_users.schemas.AuthorRegisterSchema">AuthorRegisterSchema (класс в app_users.schemas)</a>
 </li>
       <li><a href="index.html#app_users.services.AuthorService">AuthorService (класс в app_users.services)</a>
 </li>
@@ -332,6 +342,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#tests.conftest.event_loop">event_loop() (в модуле tests.conftest)</a>
+</li>
       <li><a href="index.html#exceptions.exc_handler">exc_handler() (в модуле exceptions)</a>
 </li>
       <li>
@@ -347,6 +359,10 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#tests.conftest.faker">faker() (в модуле tests.conftest)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#app_users.urls.follow_author">follow_author() (в модуле app_users.urls)</a>
 </li>
   </ul></td>
@@ -359,6 +375,8 @@
 </li>
       <li><a href="index.html#app_users.services.PermissionService.get_api_key">get_api_key() (метод app_users.services.PermissionService)</a>
 </li>
+      <li><a href="index.html#tests.conftest.get_app">get_app() (в модуле tests.conftest)</a>
+</li>
       <li><a href="index.html#app_users.db_services.AuthorDbService.get_author">get_author() (метод app_users.db_services.AuthorDbService)</a>
 
       <ul>
@@ -368,6 +386,12 @@
 </li>
       </ul></li>
       <li><a href="index.html#app_users.urls.get_author_by_id">get_author_by_id() (в модуле app_users.urls)</a>
+</li>
+      <li><a href="index.html#tests.conftest.get_authors_api_key_list">get_authors_api_key_list() (в модуле tests.conftest)</a>
+</li>
+      <li><a href="index.html#tests.conftest.get_authors_id_list">get_authors_id_list() (в модуле tests.conftest)</a>
+</li>
+      <li><a href="index.html#tests.conftest.get_authors_schemas_list">get_authors_schemas_list() (в модуле tests.conftest)</a>
 </li>
       <li><a href="index.html#app_tweets.db_services.TweetDbService.get_list">get_list() (метод app_tweets.db_services.TweetDbService)</a>
 
@@ -384,6 +408,8 @@
       <ul>
         <li><a href="index.html#app_media.interfaces.AbstractMediaService.get_many_media">(метод app_media.interfaces.AbstractMediaService)</a>
 </li>
+        <li><a href="index.html#app_media.services.MediaService.get_many_media">(статический метод app_media.services.MediaService)</a>
+</li>
       </ul></li>
       <li><a href="index.html#app_media.db_services.MediaDbService.get_media">get_media() (метод app_media.db_services.MediaDbService)</a>
 
@@ -391,6 +417,10 @@
         <li><a href="index.html#app_media.interfaces.AbstractMediaService.get_media">(метод app_media.interfaces.AbstractMediaService)</a>
 </li>
       </ul></li>
+      <li><a href="index.html#tests.conftest.get_media_parameters">get_media_parameters() (в модуле tests.conftest)</a>
+</li>
+      <li><a href="index.html#app_media.services.MediaService.get_or_create_media">get_or_create_media() (статический метод app_media.services.MediaService)</a>
+</li>
       <li><a href="index.html#app_users.services.AuthorService.get_or_create_user">get_or_create_user() (метод app_users.services.AuthorService)</a>
 </li>
       <li><a href="index.html#app_tweets.urls.get_tweet">get_tweet() (в модуле app_tweets.urls)</a>
@@ -405,6 +435,8 @@
         <li><a href="index.html#app_tweets.interfaces.AbstractTweetService.get_tweet_by_id">(метод app_tweets.interfaces.AbstractTweetService)</a>
 </li>
       </ul></li>
+      <li><a href="index.html#tests.conftest.get_tweet_schemas_list">get_tweet_schemas_list() (в модуле tests.conftest)</a>
+</li>
       <li><a href="index.html#app_tweets.urls.get_tweets_list">get_tweets_list() (в модуле app_tweets.urls)</a>
 </li>
   </ul></td>
@@ -426,38 +458,28 @@
   </ul></td>
 </tr></table>
 
-<h2 id="L">L</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="index.html#app_users.schemas.LikeAuthorSchema">LikeAuthorSchema (класс в app_users.schemas)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#app_users.urls.me">me() (в модуле app_users.urls)</a>
 
       <ul>
-        <li><a href="index.html#app_users.db_services.AuthorDbService.me">(метод app_users.db_services.AuthorDbService)</a>
-</li>
-        <li><a href="index.html#app_users.interfaces.AbstractAuthorService.me">(метод app_users.interfaces.AbstractAuthorService)</a>
-</li>
         <li><a href="index.html#app_users.services.AuthorService.me">(метод app_users.services.AuthorService)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#app_media.models.Media">Media (класс в app_media.models)</a>
 </li>
       <li><a href="index.html#app_media.db_services.MediaDbService">MediaDbService (класс в app_media.db_services)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#app_media.schemas.MediaOrmSchema">MediaOrmSchema (класс в app_media.schemas)</a>
 </li>
       <li><a href="index.html#app_media.schemas.MediaOutSchema">MediaOutSchema (класс в app_media.schemas)</a>
 </li>
       <li><a href="index.html#app_media.urls.medias">medias() (в модуле app_media.urls)</a>
+</li>
+      <li><a href="index.html#app_media.services.MediaService">MediaService (класс в app_media.services)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -466,12 +488,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#app_users.services.PermissionService">PermissionService (класс в app_users.services)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="index.html#app_users.schemas.ProfileAuthorOutSchema">ProfileAuthorOutSchema (класс в app_users.schemas)</a>
-</li>
-      <li><a href="index.html#app_users.schemas.ProfileAuthorSchema">ProfileAuthorSchema (класс в app_users.schemas)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -487,8 +503,6 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="index.html#app_users.schemas.RegisterAuthorSchema">RegisterAuthorSchema (класс в app_users.schemas)</a>
-</li>
       <li><a href="index.html#app_users.services.AuthorService.remove_follow">remove_follow() (метод app_users.services.AuthorService)</a>
 </li>
       <li><a href="index.html#app_tweets.urls.remove_like_from_tweet">remove_like_from_tweet() (в модуле app_tweets.urls)</a>
@@ -510,9 +524,13 @@
         <li><a href="index.html#module-schemas">модуль</a>
 </li>
       </ul></li>
+      <li><a href="index.html#db.session">session (в модуле db)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="index.html#db.session">session (в модуле db)</a>
+      <li><a href="index.html#tests.conftest.session">session() (в модуле tests.conftest)</a>
+</li>
+      <li><a href="index.html#tests.conftest.simple_session">simple_session() (в модуле tests.conftest)</a>
 </li>
       <li><a href="index.html#schemas.SuccessSchema">SuccessSchema (класс в schemas)</a>
 </li>
@@ -522,7 +540,48 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#tests.test_media_api.test_create_media">test_create_media() (в модуле tests.test_media_api)</a>
+
+      <ul>
+        <li><a href="index.html#tests.test_media_db.test_create_media">(в модуле tests.test_media_db)</a>
+</li>
+      </ul></li>
+      <li><a href="index.html#tests.test_media_db.test_create_media_error">test_create_media_error() (в модуле tests.test_media_db)</a>
+</li>
+      <li><a href="index.html#tests.test_media_db.test_get_many_media">test_get_many_media() (в модуле tests.test_media_db)</a>
+</li>
+      <li><a href="index.html#tests.test_media_db.test_get_media">test_get_media() (в модуле tests.test_media_db)</a>
+</li>
+      <li><a href="index.html#tests.test_media_api.test_media_exception">test_media_exception() (в модуле tests.test_media_api)</a>
+</li>
+      <li>
+    tests.conftest
+
+      <ul>
+        <li><a href="index.html#module-tests.conftest">модуль</a>
+</li>
+      </ul></li>
+      <li>
+    tests.test_media_api
+
+      <ul>
+        <li><a href="index.html#module-tests.test_media_api">модуль</a>
+</li>
+      </ul></li>
+      <li>
+    tests.test_media_db
+
+      <ul>
+        <li><a href="index.html#module-tests.test_media_db">модуль</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#app_tweets.models.Tweet">Tweet (класс в app_tweets.models)</a>
+</li>
+      <li><a href="index.html#tests.conftest.tweet_db_service">tweet_db_service() (в модуле tests.conftest)</a>
+</li>
+      <li><a href="index.html#tests.conftest.tweet_service">tweet_service() (в модуле tests.conftest)</a>
 </li>
       <li><a href="index.html#app_tweets.db_services.TweetDbService">TweetDbService (класс в app_tweets.db_services)</a>
 </li>
@@ -530,9 +589,9 @@
 </li>
       <li><a href="index.html#app_tweets.schemas.TweetListOutSchema">TweetListOutSchema (класс в app_tweets.schemas)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="index.html#app_tweets.schemas.TweetListSchema">TweetListSchema (класс в app_tweets.schemas)</a>
+      <li><a href="index.html#app_tweets.schemas.TweetModelOutSchema">TweetModelOutSchema (класс в app_tweets.schemas)</a>
+</li>
+      <li><a href="index.html#app_tweets.schemas.TweetModelSchema">TweetModelSchema (класс в app_tweets.schemas)</a>
 </li>
       <li><a href="index.html#app_tweets.schemas.TweetOutSchema">TweetOutSchema (класс в app_tweets.schemas)</a>
 </li>
@@ -568,7 +627,23 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#app.verify_api_key">verify_api_key() (в модуле app)</a>
+
+      <ul>
+        <li><a href="index.html#app_users.services.PermissionService.verify_api_key">(метод app_users.services.PermissionService)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="index.html#app_users.services.PermissionService.verify_password">verify_password() (статический метод app_users.services.PermissionService)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#app_media.services.MediaService.write_media_to_static_folder">write_media_to_static_folder() (статический метод app_media.services.MediaService)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -629,6 +704,12 @@
         <li><a href="index.html#module-exceptions">exceptions</a>
 </li>
         <li><a href="index.html#module-schemas">schemas</a>
+</li>
+        <li><a href="index.html#module-tests.conftest">tests.conftest</a>
+</li>
+        <li><a href="index.html#module-tests.test_media_api">tests.test_media_api</a>
+</li>
+        <li><a href="index.html#module-tests.test_media_db">tests.test_media_db</a>
 </li>
       </ul></li>
   </ul></td>

@@ -1,3 +1,9 @@
+"""
+test_media_db.py
+----------------
+
+Модуль содержит тесты сервиса взаимодействия с СУБД приложения app_media
+"""
 import pytest
 from faker import Faker
 from faker.providers import python
@@ -18,6 +24,16 @@ fake.add_provider(python)
 @pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_create_media(session, get_media_parameters):
+    """
+    Тест сохранения картинки в СУБД.
+
+    Parameters
+    ----------
+    session: pytest.fixture
+        Фикстура возвращает асинхронную сессию SqlAlchemy.
+    get_media_parameters: pytest.fixture
+        Фикстура возвращает данные для заполнения СУБД.
+    """
     await session
     service = MediaDbService()
     parameters = get_media_parameters
@@ -32,6 +48,15 @@ async def test_create_media(session, get_media_parameters):
 @pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_create_media_error(get_media_parameters):
+    """
+    Тест исключения сохранения картинки в недоступную СУБД.
+
+    Parameters
+    ----------
+    get_media_parameters: pytest.fixture
+        Фикстура возвращает данные для заполнения СУБД.
+    """
+
     service = MediaDbService()
     parameters = get_media_parameters
     for param in parameters:
@@ -42,7 +67,14 @@ async def test_create_media_error(get_media_parameters):
 @pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_get_media(get_media_parameters):
-    """Тест получения картинки по хэшу"""
+    """
+    Тест получения картинки по хэшу
+
+    Parameters
+    ----------
+    get_media_parameters: pytest.fixture
+        Фикстура возвращает данные для заполнения СУБД.
+    """
     service = MediaDbService()
     parameters = get_media_parameters
     for param in parameters:
@@ -54,6 +86,15 @@ async def test_get_media(get_media_parameters):
 @pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_get_many_media(get_media_parameters):
+    """
+    Тест получения нескольких картинок по списку идентификаторов.
+
+    Parameters
+    ----------
+    get_media_parameters: pytest.fixture
+        Фикстура возвращает данные для заполнения СУБД.
+    """
+
     service = MediaDbService()
     parameters = get_media_parameters
     ids = []
@@ -63,3 +104,4 @@ async def test_get_many_media(get_media_parameters):
     result = await service.get_many_media(ids)
     logger.info(ids)
     logger.info(result)
+    assert len(result) == len(ids)

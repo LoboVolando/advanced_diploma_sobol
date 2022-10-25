@@ -41,7 +41,7 @@ class AbstractMediaService(ABC):
         ...
 
     @abstractmethod
-    async def get_many_media(self, ids: t.List[int]):
+    async def get_many_media(self, ids: t.List[int]) -> t.Optional[t.List[str]]:
         """Абстрактный метод возвращает множество медиа-ресурсов по списку идентификаторов.
 
         Parameters
@@ -50,6 +50,7 @@ class AbstractMediaService(ABC):
             Список идентификаторов ресурсов в СУБД.
         Returns
         -------
-        ???
+        links: List[str]
+            Список URL адресов картинки
         """
         ...

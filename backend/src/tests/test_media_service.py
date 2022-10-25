@@ -1,3 +1,9 @@
+"""
+test_media_service.py
+---------------------
+
+Модуль содержит тесты бизнес-логики приложения app_media
+"""
 import io
 import random
 import typing as t
@@ -14,6 +20,9 @@ from app_media.services import MediaService
 
 
 class RandomColorRectangle:
+    """
+    Класс инкапсулирует методы работы с фейковыми изображениями.
+    """
     def __init__(self):
         self.image = None
         self.stream = io.BytesIO()

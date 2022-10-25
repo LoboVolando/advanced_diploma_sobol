@@ -1,6 +1,6 @@
 run:
 	cd ./backend/src
-	gunicorn app:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+	gunicorn src.app:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
 up:
 	docker-compose up backend
 down:

@@ -61,7 +61,7 @@
     :members:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
 .. automodule:: app_media
@@ -83,6 +83,18 @@
     :members:
 
 .. automodule:: app_media.db_services
+    :members:
+
+.. automodule:: tests.conftest
+    :members:
+
+.. automodule:: tests.test_media_api
+    :members:
+
+.. automodule:: tests.test_media_db
+    :members:
+
+.. automodule:: tests.test_media_service
     :members:
 
 Indices and tables

@@ -1,3 +1,9 @@
+"""
+test_media_api.py
+-----------------
+
+Модуль содержит тесты эндпоинтов приложения FastAPI.
+"""
 import io
 
 import pytest
@@ -10,6 +16,15 @@ from exceptions import BackendException
 @pytest.mark.api
 @pytest.mark.asyncio
 async def test_media_exception(get_app):
+    """
+    Тест эндпоинта /api/exception
+
+    Parameters
+    ----------
+    get_app: pytest.fixture
+        фикстура возвращает экземпляр приложения FastAPI для тестирования
+
+    """
     app = await get_app
     with pytest.raises(BackendException):
         async with AsyncClient(app=app, base_url="http://test") as ac:
@@ -19,6 +34,16 @@ async def test_media_exception(get_app):
 @pytest.mark.api
 @pytest.mark.asyncio
 async def test_create_media(faker, get_app):
+    """
+    Тест эндпоинта /api/medias
+
+    Parameters
+    ----------
+    faker: pytest.fixture
+        Фикстура фейковых данных
+    get_app:pytest.fixture
+        Фикстура возвращает экземпляр приложения FastAPI
+    """
     app = await get_app
     image = io.BytesIO(faker.image(size=(100, 100), image_format="png"))
     files = {"file": (f"{faker.text(8)}png", image, "image/png")}

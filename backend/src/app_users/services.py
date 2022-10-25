@@ -9,7 +9,6 @@ pwd_context: CryptContext
 """
 import random
 import string
-import typing as t
 
 from fastapi.requests import Request
 from fastapi.responses import Response

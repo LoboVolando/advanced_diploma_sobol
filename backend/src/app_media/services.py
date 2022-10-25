@@ -2,23 +2,25 @@
 services.py
 -----------
 Модуль реализует бизнес-логику приложения app_media
+
 """
 import hashlib
 import shutil
 import typing as t
 from pathlib import Path
 
-from fastapi import Depends, UploadFile
+from fastapi import UploadFile
 from loguru import logger
 
 from app_media.db_services import MediaDbService as MediaTransportService
 from app_media.schemas import MediaOutSchema
-from app_users.services import PermissionService
 from exceptions import BackendException, ErrorsList
 from settings import settings
 
 
 class MediaService:
+    """Класс реализует бизнес-логику работы с медиа-файлами."""
+
     @staticmethod
     async def get_or_create_media(file: UploadFile) -> MediaOutSchema:
         """
@@ -53,6 +55,11 @@ class MediaService:
         ----------
         file: UploadFile
             Загруженный файл.
+
+        Returns
+        -------
+        Path
+            путь к файлу
         """
         path = Path(settings.docker_media_root) / file.filename
         if not path.parent.exists():
@@ -65,7 +72,7 @@ class MediaService:
         return path
 
     @staticmethod
-    async def get_many_media(ids: t.List[int]) -> t.Optional[t.List[int]]:
+    async def get_many_media(ids: t.List[int]) -> t.Optional[t.List[str]]:
         """
         Метод запрашивает множество медиа-ресурсов по списку идентификаторов.
 

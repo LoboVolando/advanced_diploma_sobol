@@ -2,6 +2,7 @@
 urls.py
 -------
 Модуль реализует эндпоинты приложения app_users.
+
 """
 from fastapi import APIRouter, Depends, status
 from loguru import logger
