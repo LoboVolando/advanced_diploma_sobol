@@ -5,10 +5,12 @@ deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
   #only: dev
   before_script:
+    - mkdir /home/svv/projects/py/test-diploma
+    - cd /home/svv/projects/py/test-diploma
     - python3 -m venv venv
     - source ./venv/bin/activate
-    - pip install fabric
+#    - pip install fabric
   script:
     - echo "Развёртывание приложения"
-    - fab gitlab-deploy
+    - git clone git@gitlab.com:0507033/advanced_diploma.git
     - echo "Приложение развёрнуто"
