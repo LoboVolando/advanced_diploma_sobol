@@ -25,5 +25,7 @@ def gitlab_deploy(ctx):
         with c.cd("/home/svv/projects/py/advanced_diploma"):
             c.run("ls -la")
             c.run("docker-compose down")
+            c.run("git stash clear")
+            c.run("git stash -m 'to drop'")
             c.run("git pull origin dev --rebase")
             c.run("docker-compose up --build -d")
