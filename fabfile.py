@@ -9,10 +9,10 @@ def deploy(ctx):
             host="192.168.0.193",
             user="svv",
     ) as c:
-        with c.cd("/home/svv/projects/py/red"):
+        with c.cd("/home/svv/projects/py/advanced_diploma"):
             c.run("ls -la")
             c.run("docker-compose down")
-            c.run("git pull origin update_admin --rebase")
+            c.run("git pull origin dev --rebase")
             c.run("docker-compose up --build -d")
 
 @task
@@ -25,5 +25,5 @@ def gitlab_deploy(ctx):
         with c.cd("/home/svv/projects/py/advanced_diploma"):
             c.run("ls -la")
             c.run("docker-compose down")
-            c.run("git pull origin db_and_migrations --rebase")
+            c.run("git pull origin dev --rebase")
             c.run("docker-compose up --build -d")
