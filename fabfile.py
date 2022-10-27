@@ -28,4 +28,4 @@ def gitlab_deploy(ctx):
             c.run("git stash clear")
             c.run("git stash -m 'to drop'")
             c.run("git pull origin dev --rebase")
-            c.run("docker-compose up --build -d")
+            c.run("docker-compose up --build -d backend frontend postgres pgadmin")

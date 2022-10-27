@@ -1,14 +1,21 @@
-stages:          # List of stages for jobs, and their order of execution
+before_script:
+  - python3 -m venv venv
+  - source ./venv/bin/activate
+  - pip install fabric
+
+stages:
+#  - tests
   - deploy
 
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  #only: dev
-  before_script:
-    - python3 -m venv venv
-    - source ./venv/bin/activate
-    - pip install fabric
+#test_job:
+#  stage: tests
+#  script:
+#    - echo "все тесты отработали успешно. Красавчег"
+
+deploy-job:
+  stage: deploy
+  #only: main
   script:
     - echo "Развёртывание приложения"
     - fab gitlab-deploy
-    - echo "Приложение развёрнуто"
+    - echo "Дипломная работа развёрнута"
