@@ -1,8 +1,17 @@
 version: "3.7"
-networks:
-  skynet:
-    driver: bridge
+
 services:
+  fluentd:
+    container_name: fly-diplom
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    ports:
+      - "24224:24224"
+      - "24224:4224/udp"
+    build: ./fluentd
+    networks:
+      - skynet
+
   backend:
     working_dir: /backend
     container_name: backend
@@ -18,11 +27,20 @@ services:
       - "7202:80"
     networks:
       - skynet
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: docker.app
     environment:
       POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
       POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: 5432
+      DEBUG: ${DEBUG}
+    depends_on:
+      - postgres
+      - fluentd
 
   frontend:
     container_name: frontend
@@ -140,3 +158,8 @@ services:
     depends_on:
       - postgres
 #          - condition: service_started
+
+networks:
+  skynet:
+    driver: bridge
+    name: home-net

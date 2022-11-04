@@ -32,10 +32,14 @@ Attributes
 app : FastAPI
     Экземпляр приложения FastApi, к которому подключаются middleware и роуты приложений
 """
+import logging
+
+import orjson
+import sentry_sdk
+import structlog
 from fastapi import Depends, FastAPI, Header, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from loguru import logger
 
 from app_media import router as app_media_router
 from app_tweets import router as app_tweets_router
@@ -47,12 +51,45 @@ from exceptions import (
     ErrorsList,
     InternalServerException,
 )
+from log_fab import UrlVariables
+from settings import settings
 from tags import tags_metadata
+
+DEBUG = settings.debug
+
+if DEBUG:
+    render = structlog.dev.ConsoleRenderer()
+    factory = structlog.WriteLoggerFactory()
+else:
+    render = structlog.processors.JSONRenderer(serializer=orjson.dumps)
+    factory = structlog.BytesLoggerFactory()
+
+structlog.configure(
+    # cache_logger_on_first_use=True,
+    wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+    processors=[
+        structlog.contextvars.merge_contextvars,
+        structlog.processors.add_log_level,
+        structlog.processors.format_exc_info,
+        structlog.processors.TimeStamper(fmt="iso", utc=True),
+        structlog.processors.CallsiteParameterAdder(
+            parameters={
+                structlog.processors.CallsiteParameter.MODULE,
+                structlog.processors.CallsiteParameter.FUNC_NAME,
+                structlog.processors.CallsiteParameter.LINENO,
+            }
+        ),
+        render,
+    ],
+    logger_factory=factory,
+)
+
+logger = structlog.get_logger()
 
 
 async def verify_api_key(api_key: str = Header(), permission: PermissionService = Depends()):
     """Зависимость проверяет api-key при каждом запросе"""
-    logger.info(f"api_key: {api_key}")
+    # logger.info(f"api_key: {api_key}")
     if not api_key:
         raise BackendException(**ErrorsList.not_authorized)
     if api_key == "test":
@@ -61,6 +98,11 @@ async def verify_api_key(api_key: str = Header(), permission: PermissionService 
         raise BackendException(**ErrorsList.api_key_not_exists)
     return True
 
+
+# sentry_sdk.init(
+#     dsn="http://16fbc408e7d34d6386f70c3f1d5a3bcb@192.168.0.193:9000/3",
+#     traces_sample_rate=1.0,
+# )
 
 app = FastAPI(
     title="CLI-ter",
@@ -71,6 +113,18 @@ app = FastAPI(
     openapi_url="/api/v1/openapi.json",
     dependencies=[Depends(verify_api_key)],
 )
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    UrlVariables.make_context(request)
+    logger.info(
+        event="обрабатываем запрос",
+        peer=request.client.host,
+        headers=request.headers,
+    )
+    response = await call_next(request)
+    return response
 
 
 @app.exception_handler(BackendException)

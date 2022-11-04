@@ -14,7 +14,7 @@ from app_tweets.interfaces import AbstractTweetService
 from app_tweets.models import Tweet
 from app_tweets.schemas import TweetInSchema, TweetModelSchema, TweetSchema
 from db import session
-from exceptions import BackendException, ErrorsList
+from exceptions import BackendException, ErrorsList, exc_handler
 from schemas import SuccessSchema
 
 structlog.configure(processors=[structlog.processors.JSONRenderer(ensure_ascii=False)])
@@ -24,6 +24,7 @@ log = structlog.get_logger()
 class TweetDbService(AbstractTweetService):
     """Класс инкапсулирует cruid-методы для твитов в СУБД."""
 
+    @exc_handler(ConnectionRefusedError)
     async def get_list(self, author_id: int) -> t.Optional[t.List[TweetModelSchema]]:
         """Метод получает список твитов из СУБД конкретного автора.
 
@@ -44,6 +45,7 @@ class TweetDbService(AbstractTweetService):
                 if query_set := await async_session.execute(query):
                     return [TweetModelSchema.from_orm(item) for item in query_set.scalars().all()]
 
+    @exc_handler(ConnectionRefusedError)
     async def create_tweet(
         self,
         new_tweet: TweetInSchema,
@@ -74,18 +76,16 @@ class TweetDbService(AbstractTweetService):
             soft_delete=False,
             attachments=attachments,
         )
-        l = log.bind(tweet=new_tweet.dict(), attachments=attachments, author_id=author_id)
+        log.info(event="пишем твит в postgres", tweet=new_tweet.dict(), attachments=attachments, author_id=author_id)
         async with session() as async_session:
             async with async_session.begin():
                 async_session.add(tweet)
                 await async_session.commit()
-                l.bind(session="commit")
-                l.info("создан твит")
+                log.info("создан твит")
         tweet = await self.get_tweet_by_id(tweet_id=tweet.id)
-
         return TweetModelSchema.from_orm(tweet)
 
-    # @exc_handler(ConnectionRefusedError)
+    @exc_handler(ConnectionRefusedError)
     async def get_tweet_by_id(self, tweet_id: int) -> t.Optional[TweetModelSchema]:
         """Метод возвращает твит по идентификатору СУБД.
 
@@ -99,24 +99,19 @@ class TweetDbService(AbstractTweetService):
         TweetSchema
             Pydantic-схема твита.
         """
-        logger.info("запрос твитта по идентификатору СУБД.")
+        logger.info("запрос твитта по идентификатору СУБД.", tweet_id=tweet_id)
         query = select(Tweet).filter_by(id=tweet_id)
         async with session() as async_session:
             async with async_session.begin():
                 qs = await async_session.execute(query)
-                try:
-                    result = qs.scalars().first()
-                except Exception as e:
-                    logger.warning(e)
-                    logger.warning(type(e))
-                if result:
-                    tweet = TweetModelSchema.from_orm(result)
-                    logger.warning(tweet)
-                    # tweet.author_ = AuthorModelSchema.from_orm(result.author)
-                    return tweet
+                result = qs.scalars().first()
+        if result:
+            tweet = TweetModelSchema.from_orm(result)
+            logger.info("твит запрошен успешно", tweet=tweet.dict())
+            return tweet
         raise BackendException(**ErrorsList.tweet_not_exists)
 
-    # @exc_handler(ConnectionRefusedError)
+    @exc_handler(ConnectionRefusedError)
     async def delete_tweet(self, tweet_id: int, author_id: int) -> SuccessSchema:
         """Метод удаляет твит по идентификатору СУБД.
 
@@ -137,15 +132,15 @@ class TweetDbService(AbstractTweetService):
         Имеется в виду мягкое удаление через флаг удаления. На самом деле твит остаётся для принятия решения о
         возбуждении уголовного дела по 288 статье УК РФ.
         """
-        logger.info("удаляем твит из постгрес")
         query = update(Tweet).filter_by(id=tweet_id, author_id=author_id).values(soft_delete=True)
         async with session() as async_session:
             async with async_session.begin():
                 await async_session.execute(query)
                 await async_session.commit()
+                logger.info("удаляем твит из postgresql", tweet_id=tweet_id, author_id=author_id)
                 return SuccessSchema()
 
-    # @exc_handler(ConnectionRefusedError)
+    @exc_handler(ConnectionRefusedError)
     async def update_like_in_tweet(self, tweet_id: int, likes: dict) -> SuccessSchema:
         """Метод перезаписывает лайки в СУБД у конкретного твита.
 
@@ -166,4 +161,5 @@ class TweetDbService(AbstractTweetService):
             async with async_session.begin():
                 await async_session.execute(query)
                 await async_session.commit()
+                logger.info("обновляем лаек автора в postgresql", tweet_id=tweet_id, likes=likes)
         return SuccessSchema()

@@ -14,6 +14,7 @@ from sqlalchemy.exc import IntegrityError
 from app import app
 from app_media.db_services import MediaDbService
 from app_media.schemas import MediaOrmSchema
+from exceptions import BackendException
 
 client = TestClient(app)
 
@@ -60,7 +61,7 @@ async def test_create_media_error(get_media_parameters):
     service = MediaDbService()
     parameters = get_media_parameters
     for param in parameters:
-        with pytest.raises(IntegrityError):
+        with pytest.raises((IntegrityError, BackendException)):
             await service.create_media(hash=param[0], file_name=param[1])
 
 

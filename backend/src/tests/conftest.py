@@ -289,7 +289,7 @@ async def get_authors_schemas_list(faker, author_db_service) -> t.List[AuthorMod
 
 @pytest.fixture
 async def get_tweet_schemas_list(
-        faker, get_authors_schemas_list, tweet_db_service
+    faker, get_authors_schemas_list, tweet_db_service
 ) -> t.Tuple[t.List[AuthorModelSchema], t.List[TweetModelSchema]]:
     """
     Фикстура добавляет в субд некоторое количество авторов и твитов.

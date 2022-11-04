@@ -3,10 +3,11 @@ from faker import Faker
 from faker.providers import python
 from fastapi.testclient import TestClient
 from loguru import logger
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 from app import app
 from app_users.schemas import *
+from exceptions import BackendException
 from schemas import SuccessSchema
 
 client = TestClient(app)
@@ -31,7 +32,7 @@ async def test_create_user(faker, author_db_service):
         assert result.api_key == key
         assert result.password == password
     for user in fake_users:
-        with pytest.raises(IntegrityError):
+        with pytest.raises(BackendException):
             await author_db_service.create_author(name=user.name, api_key=user.api_key, password=faker.password())
 
 

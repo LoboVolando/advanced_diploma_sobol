@@ -9,13 +9,16 @@ import shutil
 import typing as t
 from pathlib import Path
 
+import structlog
 from fastapi import UploadFile
-from loguru import logger
+from pydantic import ValidationError
 
 from app_media.db_services import MediaDbService as MediaTransportService
 from app_media.schemas import MediaOutSchema
 from exceptions import BackendException, ErrorsList
 from settings import settings
+
+logger = structlog.get_logger()
 
 
 class MediaService:
@@ -38,12 +41,22 @@ class MediaService:
         """
         bytez = await file.read()
         hash = hashlib.sha256(bytez).hexdigest()
-        logger.warning(hash)
+        logger.info(event="расчитан хэш для файла", hash=hash, file=file.filename, content_type=file.content_type)
         if media := await MediaTransportService().get_media(hash=hash):
-            return MediaOutSchema(media_id=media.id)
+            result = MediaOutSchema(media_id=media.id)
+            logger.info("файл уже существует", result=result.dict())
+            return result
         MediaService.write_media_to_static_folder(file)
         if media := await MediaTransportService().create_media(hash=hash, file_name=file.filename):
-            return MediaOutSchema(media_id=media.id)
+            try:
+                result = MediaOutSchema(media_id=media.id)
+            except ValidationError as e:
+                logger.exception(event="ошибка сериализации", exc_info=e)
+                raise BackendException(**ErrorsList.serialize_error)
+            else:
+                logger.info("возвращаем объект", result=result.dict())
+                return result
+        logger.error(event="ошибка получения или сохранения медиа-объекта")
         raise BackendException(**ErrorsList.media_import_error)
 
     @staticmethod
@@ -64,12 +77,19 @@ class MediaService:
         path = Path(settings.docker_media_root) / file.filename
         if not path.parent.exists():
             path.parent.mkdir(parents=True)
+            logger.warning(event="создаем директорию для файла", folder=path.parent.absolute())
         with open(path, "wb") as fl:
-            file.file.seek(0)
-            logger.info(f"запишем картинку в файл: {str(path)}")
-            shutil.copyfileobj(file.file, fl)
-            file.file.close()
-        return path
+            try:
+                file.file.seek(0)
+                logger.info(event="запись файла", path=path)
+                shutil.copyfileobj(file.file, fl)
+                file.file.close()
+            except Exception as e:
+                logger.exception(event="непредвиденная ошибка сохранения файла", exc_info=e)
+                raise BackendException(**ErrorsList.media_import_error)
+            else:
+                logger.info(event="возврат файлового пути", path=path)
+                return path
 
     @staticmethod
     async def get_many_media(ids: t.List[int]) -> t.Optional[t.List[str]]:
@@ -88,11 +108,13 @@ class MediaService:
         List[]
             Пустой список, если ничего нет.
         """
-        logger.info(f"запросим медиа по идентификаторам: {ids}")
         if attachments := await MediaTransportService().get_many_media(ids):
+            logger.info(event="запросим медиа по списку идентификаторов", id_list=ids, attachments=attachments)
             return attachments
+        logger.warning(event="очень странно, но по списку id не нашлось ничего", id_list=ids)
         return list()
 
     @staticmethod
     async def raise_exception():
+        logger.info(event="поднимаем тестовое исключение")
         raise BackendException("test_exc", "мелкий зехер")

@@ -5,8 +5,11 @@
 Модуль содержит исключения для приложения.
 """
 import typing as t
+from functools import wraps
 
-from loguru import logger
+import structlog
+
+logger = structlog.get_logger()
 
 
 class BackendException(Exception):
@@ -67,25 +70,24 @@ class ErrorsList:
         error_type="CON_REFUSED", error_message="соединение с СУБД было сброшено. Проверьте контейнер с СУБД"
     )
     postgres_query_error = dict(error_type="POSTGRES_QUERY_ERROR", error_message="Неверный запрос к БД")
+    serialize_error = dict(error_type="PYDANTIC_SERIALIZE_ERROR", error_message="Ошибка сериализации данных")
 
 
 def exc_handler(ExceptionClass):
     """декоратор для перехвата исключений СУБД"""
 
     def decorator(func: t.Callable):
+        @wraps(func)
         async def wrapper(*args, **kwargs):
             try:
                 return await func(*args, **kwargs)
+            except ConnectionRefusedError as e:
+                logger.exception(event="ошибка соединения с СУБД postgresql", exc_info=e)
+                raise InternalServerException(**ErrorsList.connection_refused)
             except Exception as e:
-                if isinstance(e, ExceptionClass):
-                    logger.exception(e)
-                    logger.error("я не дам тебе возбудиться")
-                    raise InternalServerException(**ErrorsList.connection_refused)
+                logger.exception(event="непредвиденное исключение работы с Postgresql", exc_info=e)
+                raise BackendException(**ErrorsList.postgres_query_error)
 
         return wrapper
 
     return decorator
-
-
-# ToDo - забубенить декоратор с аргументом. Аргумент - тип исключения и сообщение об ошибке.
-# ToDo - и покрыть ими асинхронные вызовы СУБД.

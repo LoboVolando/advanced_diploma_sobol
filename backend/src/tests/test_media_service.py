@@ -23,6 +23,7 @@ class RandomColorRectangle:
     """
     Класс инкапсулирует методы работы с фейковыми изображениями.
     """
+
     def __init__(self):
         self.image = None
         self.stream = io.BytesIO()

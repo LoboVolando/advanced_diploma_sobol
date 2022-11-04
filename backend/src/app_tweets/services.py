@@ -4,7 +4,7 @@ services.py
 
 Модуль определяет бизнес-логику приложения app_tweets.
 """
-from loguru import logger
+from pydantic import ValidationError
 
 from app_media.services import MediaService
 from app_tweets.db_services import TweetDbService as TweetTransportService
@@ -14,12 +14,14 @@ from app_tweets.schemas import (
     TweetModelOutSchema,
     TweetModelSchema,
     TweetOutSchema,
-    TweetSchema,
 )
 from app_users.schemas import *
 from app_users.services import AuthorService
 from exceptions import BackendException, ErrorsList
+from log_fab import get_logger
 from schemas import SuccessSchema
+
+logger = get_logger()
 
 
 class TweetService:
@@ -57,12 +59,16 @@ class TweetService:
         ErrorSchema
             Pydantic-схема ошибки выполнения.
         """
-        logger.info("запрос твитов для автора...")
         author = await self.author_service.get_author(api_key=api_key)
         tweets = await self.service.get_list(author_id=author.user.id)
-        for tweet in tweets:
-            logger.info(tweet)
-        return TweetListOutSchema(result=True, tweets=tweets)
+        try:
+            result = TweetListOutSchema(result=True, tweets=tweets)
+        except ValidationError as e:
+            logger.exception(event="ошибка преобразования в схему", exc_info=e)
+            raise BackendException(**ErrorsList.serialize_error)
+        else:
+            logger.info(event="успешное преобразование списка твитов в схему", result=result.result, count=len(tweets))
+            return result
 
     async def get_tweet(self, tweet_id: int) -> TweetModelOutSchema:
         """
@@ -80,6 +86,7 @@ class TweetService:
         """
         if tweet := await self.service.get_tweet_by_id(tweet_id):
             return TweetModelOutSchema(result=True, tweet=tweet)
+        logger.warning(event="запрос твита с несуществующим id", tweet_id=tweet_id)
         raise BackendException(**ErrorsList.tweet_not_exists)
 
     async def create_tweet(self, new_tweet: TweetInSchema, api_key: str) -> TweetOutSchema:
@@ -98,11 +105,20 @@ class TweetService:
         TweetOutSchema
             Pydantic-схема вновь созданного твита для фронтенда.
         """
-        logger.info("создаём твит: %s", new_tweet.dict())
+        logger.info(event="творим твит", new_tweet=new_tweet.dict())
         if author := await self.author_service.get_author(api_key=api_key):
             attachments = await MediaService.get_many_media(new_tweet.tweet_media_ids)
             created_tweet = await self.service.create_tweet(new_tweet, author.user.id, attachments)
-            return TweetOutSchema(result=True, tweet_id=created_tweet.id)
+            try:
+                result = TweetOutSchema(result=True, tweet_id=created_tweet.id)
+            except ValidationError as e:
+                logger.exception(event="ошибка преобразования в схему", exc_info=e)
+                raise BackendException(**ErrorsList.serialize_error)
+            else:
+                logger.info(event="успешное преобразование списка твитов в схему", result=result.result)
+                return result
+        logger.error(event="попытка создать твит несуществующим автором")
+        raise BackendException(**ErrorsList.author_not_exists)
 
     async def delete_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema:
         """
@@ -122,13 +138,14 @@ class TweetService:
         ErrorSchema
             Pydantic-схема ошибки выполнения.
         """
-        logger.info("удалим твит, id: %s", tweet_id)
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
-        logger.debug(
-            "сравнение идентификаторов автора запроса и автора твитта %s <?> %s", author.user.id, tweet.author.id
-        )
         if not tweet.author.id == author.user.id:
+            logger.error(
+                event="сравнение идентификаторов автора запроса и автора твитта %s <?> %s",
+                author_id=author.user.id,
+                tweet_id=tweet.author.id,
+            )
             raise BackendException(**ErrorsList.not_self_tweet_remove)
         return await self.service.delete_tweet(tweet_id=tweet_id, author_id=author.user.id)
 
@@ -148,14 +165,18 @@ class TweetService:
         SuccessSchema
             Pydantic-схема успешной операции.
         """
-        logger.info("поставим лайк на твит...")
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
         like = AuthorLikeSchema(user_id=author.user.id, name=author.user.name)
         if like in tweet.likes:
+            logger.error(event="попытка двойного лайка", tweet_id=tweet_id, author_id=author.user.id)
             raise BackendException(**ErrorsList.double_like)
         tweet.likes.append(like.dict())
-        return await self.service.update_like_in_tweet(tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"])
+        result = await self.service.update_like_in_tweet(
+            tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"]
+        )
+        logger.info(event="добавлен лайк", author_id=like.user_id, tweet_id=tweet.id)
+        return result
 
     async def remove_like_from_tweet(self, tweet_id: int, api_key: str) -> SuccessSchema:
         """
@@ -173,32 +194,15 @@ class TweetService:
         SuccessSchema
             Pydantic-схема успешной операции.
         """
-        logger.info("удалим лайк на твит...")
         author = await self.author_service.get_author(api_key=api_key)
         tweet = await self.service.get_tweet_by_id(tweet_id=tweet_id)
         like = AuthorLikeSchema(user_id=author.user.id, name=author.user.name)
         if like not in tweet.likes:
+            logger.error(event="попытка удаления не своего лайка", tweet_id=tweet_id, author_id=author.user.id)
             raise BackendException(**ErrorsList.remove_not_exist_like)
         tweet.likes.remove(like.dict())
-        return await self.service.update_like_in_tweet(tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"])
-
-    async def check_belongs_tweet_to_author(self, tweet_id: int, author_id: int) -> t.Optional[bool]:
-        """
-        Метод проверяет принадлежность твита конкретному автору.
-
-        Parameters
-        ----------
-        tweet_id: int
-            Идентификатор твита в СУБД.
-        author_id: int
-            Идентификатор автора в СУБД.
-
-        Returns
-        -------
-        bool
-            True если этот твит принадлежит автору
-        """
-        tweet = await self.service.get_tweet_by_id(tweet_id)
-        if not tweet.author.id == author_id:
-            raise BackendException(**ErrorsList.not_self_tweet_remove)
-        return True
+        result = await self.service.update_like_in_tweet(
+            tweet_id=tweet_id, likes=tweet.dict(include={"likes"})["likes"]
+        )
+        logger.info(event="удалён лайк", author_id=like.user_id, tweet_id=tweet.id)
+        return result

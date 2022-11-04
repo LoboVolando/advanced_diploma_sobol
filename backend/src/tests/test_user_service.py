@@ -1,5 +1,6 @@
 import pytest
 from loguru import logger
+from pydantic import ValidationError
 from sqlalchemy.exc import ProgrammingError
 
 from app_users.schemas import *
@@ -54,18 +55,18 @@ async def test_me_service(get_authors_api_key_list, author_service):
 
 @pytest.mark.service
 @pytest.mark.asyncio
-async def test_get_author_by_id(get_authors_id_list, author_service):
+async def test_raise_get_author_by_id(get_authors_id_list, author_service):
     ids = await get_authors_id_list
     for author_id in ids:
         result = await author_service.get_author(author_id=author_id)
         assert isinstance(result, AuthorProfileApiSchema)
-        with pytest.raises(BackendException) or pytest.raises(ProgrammingError):
+        with pytest.raises((BackendException, ValidationError)) or pytest.raises(ProgrammingError):
             await author_service.get_author(author_id="id")
 
 
 @pytest.mark.service
 @pytest.mark.asyncio
-async def test_get_author_by_keys(get_authors_api_key_list, author_service):
+async def test_raise_get_author_by_keys(get_authors_api_key_list, author_service):
     keys = await get_authors_api_key_list
     for key in keys:
         result = await author_service.get_author(api_key=key)

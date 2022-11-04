@@ -17,5 +17,5 @@ deploy-job:
   #only: main
   script:
     - echo "Развёртывание приложения"
-    - fab gitlab-deploy
+    - fab deploy
     - echo "Дипломная работа развёрнута"

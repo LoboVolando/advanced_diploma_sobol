@@ -31,3 +31,6 @@ coverage==6.5.0
 httpx
 anyio
 trio
+sentry-sdk==1.10.1
+orjson==3.8.1
+structlog

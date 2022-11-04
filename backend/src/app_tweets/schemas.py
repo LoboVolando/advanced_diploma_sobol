@@ -40,7 +40,7 @@ class TweetModelSchema(BaseModel):
     author_id: int
     soft_delete: bool
     likes: t.List[dict] = None
-    attachments: t.List[int] = None
+    attachments: t.List[str] = None
     author: AuthorModelSchema = None
 
     class Config:

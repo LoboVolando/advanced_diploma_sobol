@@ -10,15 +10,18 @@ pwd_context: CryptContext
 import random
 import string
 
+import structlog
 from fastapi.requests import Request
 from fastapi.responses import Response
-from loguru import logger
 from passlib.context import CryptContext
+from pydantic import ValidationError
 
 from app_users.db_services import AuthorDbService as AuthorTransportService
 from app_users.schemas import *
 from exceptions import AuthException, BackendException, ErrorsList
 from schemas import ErrorSchema, SuccessSchema
+
+logger = structlog.get_logger()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -39,13 +42,13 @@ class PermissionService:
         self.request = request
         self.response = response
         self.service = AuthorTransportService()
-        logger.info("проверяем права...")
         if api_key := self.request.headers.get("api-key"):
-            logger.info(f"api_key: {api_key}")
+            structlog.contextvars.bind_contextvars(api_key=api_key)
+            logger.info(event="получен api_key из заголовка запроса")
             self.response.headers["api-key"] = api_key
             self.api_key = api_key
         else:
-            logger.error("ВНИМАНИЕ, В ЗАГОЛОВКАХ ЗАПРОСА НЕТ api-key!!!")
+            logger.warning(event="не найден api_key в заголовке запроса")
 
     async def get_api_key(self) -> t.Optional[str]:
         """Метод возвращает api-key для фронтенда, если он существует.
@@ -56,8 +59,12 @@ class PermissionService:
             Уникальный api-key для фронтенда.
         """
         if self.api_key:
-            logger.warning(self.api_key)
+            logger.info("вернули api-key", api_key=self.api_key)
+            structlog.contextvars.bind_contextvars(
+                api_key=self.api_key,
+            )
             return self.api_key
+        logger.warning("пользователь не авторизован")
         raise AuthException(**ErrorsList.not_authorized)
 
     @staticmethod
@@ -74,7 +81,9 @@ class PermissionService:
         str, optional
             Хэш пароля.
         """
-        return pwd_context.hash(raw_password)
+        result = pwd_context.hash(raw_password)
+        logger.info(event="сделали хэш пароля", password=result)
+        return result
 
     @staticmethod
     def verify_password(raw_password: str, hashed_password: str) -> bool:
@@ -92,8 +101,9 @@ class PermissionService:
         bool
             True если хэш совпал, иначе Else.
         """
-        logger.info("compare: %s", hashed_password)
-        return pwd_context.verify(raw_password, hashed_password)
+        result = pwd_context.verify(raw_password, hashed_password)
+        logger.info(event="результат проверки пароля", result=result)
+        return result
 
     async def verify_api_key(self, api_key: str) -> bool:
         """Метод проверяет наличие ключа в СУБД.
@@ -108,8 +118,9 @@ class PermissionService:
         bool
             True если api-key совпал, иначе Else.
         """
-        logger.info("verify", api_key)
-        return await self.service.verify_api_key_exist(api_key)
+        result = await self.service.verify_api_key_exist(api_key)
+        logger.info(event="проверка существования api-key в СУБД", result=result)
+        return result
 
 
 class AuthorService:
@@ -140,17 +151,17 @@ class AuthorService:
         tuple: str, bool
             api-key для фронтенда и флаг created, означающий, был пользователь создан или запрошен из базы данных.
         """
-        logger.info("регистрация нового автора")
-        author = await self.service.get_author(name=name)
-        if author:
-            logger.info("автор найден!")
+        if author := await self.service.get_author(name=name):
+            logger.info(event="автор уже существует. выполняем авторизацию.", name=name)
             if PermissionService.verify_password(password, author.password):
-                logger.info("пароль совпал")
+                logger.info("пароль совпал. возврат api-key и флага творения автора", flag=False)
                 return author.api_key, False
+            logger.warning(event="введён неверный пароль")
             raise AuthException(**ErrorsList.not_authorized)
         else:
             api_key = self.generate_api_key(64)
-            if author := await self.service.create_author(name, api_key, PermissionService.hash_password(password)):
+            if await self.service.create_author(name, api_key, PermissionService.hash_password(password)):
+                logger.info(event="создан новый автор", name=name, password=password, flag=True)
                 return api_key, True
 
     async def me(self, api_key: str) -> AuthorProfileApiSchema:
@@ -169,13 +180,19 @@ class AuthorService:
         ErrorSchema
             Pydantic-схема ошибки выполнения метода.
         """
-        logger.info("exec business AuthorService.me %s", api_key)
         if user := await self.service.get_author(api_key=api_key):
-            return AuthorProfileApiSchema(
-                result=True,
-                user=AuthorProfileSchema(**user.dict(include={"id", "name", "followers", "following"})),
-            )
-        logger.error("не нашли юзера по api-key: %s", api_key)
+            try:
+                result = AuthorProfileApiSchema(
+                    result=True,
+                    user=AuthorProfileSchema(**user.dict(include={"id", "name", "followers", "following"})),
+                )
+            except ValidationError as e:
+                logger.exception(event="ошибка сериализации", exc_info=e)
+                raise BackendException(**ErrorsList.serialize_error)
+            else:
+                logger.info(event="запрос собственного профиля выполнен успешно", result=result.dict())
+                return result
+        logger.warning(event="не нашли юзера по api-key")
         raise BackendException(**ErrorsList.author_not_exists)
 
     async def get_author(self, author_id: int = None, api_key: str = None, name: str = None) -> AuthorProfileApiSchema:
@@ -195,12 +212,19 @@ class AuthorService:
         ProfileAuthorOutSchema
             Pydantic-схема профиля пользователя.
         """
-        logger.info("достанем автора...")
+        logger.info("запрос автора по параметрам", author_id=author_id, api_key=api_key, name=name)
         if user := await self.service.get_author(author_id, api_key, name):
-            logger.info(user)
-            return AuthorProfileApiSchema(
-                result=True, user=AuthorProfileSchema(**user.dict(include={"id", "name", "followers", "following"}))
-            )
+            try:
+                result = AuthorProfileApiSchema(
+                    result=True,
+                    user=AuthorProfileSchema(**user.dict(include={"id", "name", "followers", "following"})),
+                )
+            except ValidationError as e:
+                logger.exception(event="ошибка сериализации", exc_info=e)
+                raise BackendException(**ErrorsList.serialize_error)
+            else:
+                logger.info(event="ответ сериализован успешно", result=result.dict())
+                return result
         logger.error("пользователь не найден")
         raise BackendException(**ErrorsList.postgres_query_error)
 
@@ -235,14 +259,23 @@ class AuthorService:
         if new_following not in following:
             following.append(new_following.dict())
 
-        return await self.service.update_follow(
+        result = await self.service.update_follow(
             reading_author=reading_author,
             writing_author=writing_author,
             followers=followers,
             following=following,
         )
+        logger.info(
+            event="добавлен фоловер",
+            result=result,
+            new_follower=new_follower.dict(),
+            new_following=new_following.dict,
+            followers=followers,
+            following=following,
+        )
+        return result
 
-    async def remove_follow(self, writing_author_id: int, api_key: str) -> SuccessSchema | ErrorSchema:
+    async def remove_follow(self, writing_author_id: int, api_key: str) -> SuccessSchema:
         """Метод удаляет читателя из списка читателей пишущего автора, а писателя из список авторов у читателя.
 
         Parameters
@@ -256,8 +289,6 @@ class AuthorService:
         -------
         SuccessSchema
             Pydantic-схема успешной операции
-        ErrorSchema
-            Pydantic-схема ошибки выполнения метода.
         """
         logger.info("удалим follower")
         reading_author = await self.service.get_author(api_key=api_key)
@@ -274,12 +305,22 @@ class AuthorService:
         if new_following.dict() in following:
             following.remove(new_following.dict())
 
-        return await self.service.update_follow(
+        result = await self.service.update_follow(
             reading_author=reading_author,
             writing_author=writing_author,
             followers=followers,
             following=following,
         )
+        logger.info(
+            event="удалён фоловер",
+            result=result,
+            new_follower=new_follower.dict(),
+            new_following=new_following.dict,
+            followers=followers,
+            following=following,
+        )
+
+        return result
 
     def generate_api_key(self, length: int) -> str:
         """Метод генерирует строку заданной длины случайных символов.
@@ -295,7 +336,9 @@ class AuthorService:
             api-key для фронтенда
         """
         char_set = string.ascii_letters + string.ascii_uppercase + string.digits
-        return "".join(random.sample(char_set, length))
+        key = "".join(random.sample(char_set, length))
+        logger.info(event="генерация нового ключа", key=key)
+        return key
 
     def _check_follower_authors(
         self,
@@ -313,8 +356,13 @@ class AuthorService:
         AuthorNotExistsException
             Операции с несуществующими авторами
         """
+        if reading_author:
+            logger.info(event="передан читающий автор", reading_author=reading_author.dict())
+        if writing_author:
+            logger.info(event="передан пишущий автор", writing_author=writing_author.dict())
         if reading_author is None or writing_author is None:
+            logger.error(event="нет читающего или пишущего автора")
             raise BackendException(**ErrorsList.recursive_follow)
         if reading_author.id == writing_author.id:
-            logger.error("автор (%s) follow-ит сам себя ", {reading_author.id})
+            logger.error(event="автор follow-ит сам себя")
             raise BackendException(**ErrorsList.recursive_follow)
