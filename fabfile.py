@@ -26,7 +26,7 @@ def test(ctx):
             connect_kwargs={"key_filename": os.getenv('DEV_PRIVATE_KEY')}
     ) as c:
         with c.cd("/home/svv/projects/py/advanced_diploma"):
-            c.run("ll")
+            c.run("ls")
             c.run("docker-compose -f docker-compose.test.yml down")
             c.run("docker-compose -f docker-compose.deploy.yml down")
             c.run("git stash clear")
