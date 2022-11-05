@@ -14,7 +14,7 @@ test_job:
     - fab test
     - echo "тестовые контейнеры развёрнуты"
 
-deploy-job:
+deploy_job:
   stage: deploy
   #only: main
   script:
