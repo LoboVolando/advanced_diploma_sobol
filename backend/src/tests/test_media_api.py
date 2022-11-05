@@ -60,3 +60,8 @@ async def test_create_media(faker, get_app):
     assert response_dict.get("result") is True
     assert isinstance(response_dict.get("media_id"), int)
     assert response_dict.get("media_id") > 0
+
+@pytest.mark.api
+@pytest.mark.asyncio
+async def test_create_media(faker, get_app):
+    assert 1 == 2
