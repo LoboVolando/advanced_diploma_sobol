@@ -104,4 +104,5 @@ async def create_many_medias(count: int):
         file = RandomColorRectangle().random_rectangle((50, 70), (100, 250)).as_upload_file()
         medias.append(await media_service.get_or_create_media(file))
     assert len(medias) == count
+    medias = await media_service.get_many_media([m.media_id for m in medias])
     return medias

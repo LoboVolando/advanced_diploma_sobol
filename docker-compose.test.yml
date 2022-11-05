@@ -1,0 +1,49 @@
+version: "3.7"
+
+services:
+  backend:
+    working_dir: /backend
+    container_name: test-backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend/src:/backend
+      - ./.env:/backend/.env
+      - ${SERVER_MEDIA_ROOT}:${DOCKER_MEDIA_ROOT}
+    command: bash -c "alembic -c ${ALEMBIC} upgrade head && pytest ."
+    ports:
+      - "7202:80"
+    networks:
+      - skynet
+    environment:
+      POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
+      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: 5432
+      DEBUG: ${DEBUG}
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: test-postgres
+    image: postgres:14.3
+    ports:
+      - "5002:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_ROOT_USER}
+      POSTGRES_DB: ${POSTGRES_ROOT_DB}
+    networks:
+      - skynet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_ROOT_USER} -d ${POSTGRES_ROOT_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  skynet:
+    driver: bridge
+    name: home-net

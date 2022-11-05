@@ -4,13 +4,15 @@ before_script:
   - pip install fabric
 
 stages:
-#  - tests
+  - tests
   - deploy
 
-#test_job:
-#  stage: tests
-#  script:
-#    - echo "все тесты отработали успешно. Красавчег"
+test_job:
+  stage: tests
+  script:
+    - echo "начинаем тестирование приложения"
+    - fab test
+    - echo "тестовые контейнеры развёрнуты"
 
 deploy-job:
   stage: deploy

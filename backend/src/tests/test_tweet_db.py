@@ -14,7 +14,7 @@ async def test_create_tweet(get_authors_id_list, author_service, tweet_db_servic
     new_tweet = TweetInSchema(tweet_data=faker.text(100))
     for user_id in user_ids:
         attachments = await create_many_medias(count=2)
-        attachments = [attach.media_id for attach in attachments]
+        # attachments = [attach. for attach in attachments]
         logger.warning(f"attachements: {attachments}")
         tweet = await tweet_db_service.create_tweet(new_tweet=new_tweet, author_id=user_id, attachments=attachments)
         logger.info(f"== {attachments == tweet.attachments}")
