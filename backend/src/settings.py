@@ -1,4 +1,4 @@
-from loguru import logger
+import os
 from pydantic import BaseSettings
 
 
@@ -24,5 +24,9 @@ class Settings(BaseSettings):
     # jwt_expiration: int = 3600
 
 
-settings = Settings(_env_file="./.env", _env_file_encoding="UTF-8")
-# logger.info(settings.dict())
+if os.path.exists("./.env"):
+    settings = Settings(_env_file="./.env", _env_file_encoding="UTF-8")
+    print(settings.postgres_port)
+else:
+    settings = Settings()
+    print("create")
