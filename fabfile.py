@@ -32,5 +32,5 @@ def test(ctx):
             c.run("git pull origin dev --rebase")
             c.run("docker-compose -f docker-compose.test.yml stop postgres")
             c.run("docker-compose -f docker-compose.test.yml rm postgres")
-            c.run("python -V")
-            c.run('python -c "import sys; print(sys.executable)"')
+            c.run("python3 -V")
+            c.run('python3 -c "import sys; print(sys.executable)"')
