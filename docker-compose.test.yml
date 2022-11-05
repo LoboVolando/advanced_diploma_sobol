@@ -5,7 +5,7 @@ services:
     container_name: test-postgres
     image: postgres:14.3
     ports:
-      - "5022:5432"
+      - "5002:5432"
     environment:
       POSTGRES_PASSWORD: PostgresPassword
       POSTGRES_USER: postgres
@@ -13,7 +13,7 @@ services:
     networks:
       - skynet
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_ROOT_USER} -d ${POSTGRES_ROOT_DB}" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
