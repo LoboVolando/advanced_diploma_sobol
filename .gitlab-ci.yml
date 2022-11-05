@@ -1,7 +1,7 @@
 before_script:
   - python3 -m venv venv
   - source ./venv/bin/activate
-  - pip install fabric
+  - pip install -r requirements.txt
 
 stages:
   - tests
@@ -11,8 +11,8 @@ test_job:
   stage: tests
   script:
     - echo "начинаем тестирование приложения"
-    - fab test
-    - echo "тестовые контейнеры развёрнуты"
+    - PYTHONPATH=./backend/src pytest test
+    - echo "тест alles"
 
 deploy_job:
   stage: deploy
