@@ -11,6 +11,9 @@ test_job:
   stage: tests
   script:
     - echo "начинаем тестирование приложения"
+    - docker-compose -f docker-compose.test.yml stop postgres
+    - docker-compose -f docker-compose.test.yml rm postgres
+    - docker-compose -f docker-compose.test.yml up -d postgres
     - PYTHONPATH=./backend/src pytest test
     - echo "тест alles"
 
