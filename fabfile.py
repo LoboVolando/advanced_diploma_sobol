@@ -34,5 +34,5 @@ def test(ctx):
             # c.run("docker-compose -f docker-compose.test.yml rm postgres")
             c.run("python3 -m venv new_venv")
             c.run("source ./new_venv/bin/activate")
-            c.run('python -c "import sys; print(sys.executable)"')
+            c.run('python -V')
             c.run("echo activated")
