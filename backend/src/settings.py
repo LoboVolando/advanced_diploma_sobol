@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     debug: bool = True
     postgres_root_user: str = "postgres"
     postgres_root_password: str = "PostgresPassword"
-    postgres_host: str = "localhost"
+    postgres_host: str = "127.0.0.1"
     postgres_port: int = 5002
     web_db: str = "postgres"
     redis_host: str = "localhost"
