@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     web_db: str = "postgres"
     redis_host: str = "localhost"
     redis_port: str = 5479
-    docker_media_root: str = "/home/svv/data/test-diploma/media"
+    docker_media_root: str = "/tmp/test-diploma/media"
     media_url: str = "/static/media"
 
 
