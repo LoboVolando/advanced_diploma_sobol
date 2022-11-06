@@ -15,7 +15,7 @@ test_job:
     - git stash clear
     - git stash -m 'to drop'
     - git pull origin dev --rebase
-    - docker-compose -f docker-compose.test.yml up -d -t 10
+    - docker-compose -f docker-compose.test.yml up -d -t 30
     - cd ./backend/src
     - alembic -c alembic_test.ini upgrade head
 #    - pytest .
