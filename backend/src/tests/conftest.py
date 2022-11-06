@@ -5,6 +5,7 @@ conftest.py
 Модуль содержит фикстуры для фреймворка тестирования pytest
 """
 import asyncio
+from typing import List, Tuple
 
 import pytest
 from faker import Factory
@@ -17,11 +18,11 @@ from app import verify_api_key
 from app_media import router as app_media_router
 from app_tweets import router as app_tweets_router
 from app_tweets.db_services import TweetDbService
-from app_tweets.schemas import *
+from app_tweets.schemas import TweetInSchema, TweetModelSchema
 from app_tweets.services import TweetService
 from app_users import router as app_users_router
 from app_users.db_services import AuthorDbService
-from app_users.schemas import *
+from app_users.schemas import AuthorModelSchema
 from app_users.services import AuthorService
 from db import Base
 from settings import settings
@@ -205,12 +206,11 @@ def faker():
     Factory
         Генератор фейков.
     """
-    fake = Factory.create("ru-RU")
-    return fake
+    return Factory.create("ru-RU")
 
 
 @pytest.fixture
-async def get_authors_id_list(faker, author_db_service) -> t.List[int]:
+async def get_authors_id_list(faker, author_db_service) -> List[int]:
     """
     Фикстура добавляет в субд некоторое количество авторов.
 
@@ -236,7 +236,7 @@ async def get_authors_id_list(faker, author_db_service) -> t.List[int]:
 
 
 @pytest.fixture
-async def get_authors_api_key_list(faker, author_db_service) -> t.List[str]:
+async def get_authors_api_key_list(faker, author_db_service) -> List[str]:
     """
     Фикстура добавляет в субд некоторое количество авторов.
 
@@ -262,7 +262,7 @@ async def get_authors_api_key_list(faker, author_db_service) -> t.List[str]:
 
 
 @pytest.fixture
-async def get_authors_schemas_list(faker, author_db_service) -> t.List[AuthorModelSchema]:
+async def get_authors_schemas_list(faker, author_db_service) -> List[AuthorModelSchema]:
     """
     Фикстура добавляет в субд некоторое количество авторов.
 
@@ -290,7 +290,7 @@ async def get_authors_schemas_list(faker, author_db_service) -> t.List[AuthorMod
 @pytest.fixture
 async def get_tweet_schemas_list(
     faker, get_authors_schemas_list, tweet_db_service
-) -> t.Tuple[t.List[AuthorModelSchema], t.List[TweetModelSchema]]:
+) -> Tuple[List[AuthorModelSchema], List[TweetModelSchema]]:
     """
     Фикстура добавляет в субд некоторое количество авторов и твитов.
 

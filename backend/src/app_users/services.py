@@ -9,6 +9,7 @@ pwd_context: CryptContext
 """
 import random
 import string
+from typing import Optional
 
 import structlog
 from fastapi.requests import Request
@@ -17,9 +18,14 @@ from passlib.context import CryptContext
 from pydantic import ValidationError
 
 from app_users.db_services import AuthorDbService as AuthorTransportService
-from app_users.schemas import *
+from app_users.schemas import (
+    AuthorBaseSchema,
+    AuthorModelSchema,
+    AuthorProfileApiSchema,
+    AuthorProfileSchema,
+)
 from exceptions import AuthException, BackendException, ErrorsList
-from schemas import ErrorSchema, SuccessSchema
+from schemas import SuccessSchema
 
 logger = structlog.get_logger()
 
@@ -50,7 +56,7 @@ class PermissionService:
         else:
             logger.warning(event="не найден api_key в заголовке запроса")
 
-    async def get_api_key(self) -> t.Optional[str]:
+    async def get_api_key(self) -> Optional[str]:
         """Метод возвращает api-key для фронтенда, если он существует.
 
         Returns
@@ -177,8 +183,6 @@ class AuthorService:
         -------
         ProfileAuthorOutSchema
             Pydantic-схема профиля пользователя.
-        ErrorSchema
-            Pydantic-схема ошибки выполнения метода.
         """
         if user := await self.service.get_author(api_key=api_key):
             try:
@@ -242,8 +246,6 @@ class AuthorService:
         -------
         SuccessSchema
             Pydantic-схема успешной операции
-        ErrorSchema
-            Pydantic-схема ошибки выполнения метода.
         """
         logger.info("добавим follower")
         reading_author = await self.service.get_author(api_key=api_key)
@@ -342,8 +344,8 @@ class AuthorService:
 
     def _check_follower_authors(
         self,
-        reading_author: t.Optional[AuthorModelSchema],
-        writing_author: t.Optional[AuthorModelSchema],
+        reading_author: Optional[AuthorModelSchema],
+        writing_author: Optional[AuthorModelSchema],
     ):
         """
         Внутренний метод проверки авторов перед установлением связей.

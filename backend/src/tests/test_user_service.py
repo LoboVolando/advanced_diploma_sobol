@@ -3,7 +3,7 @@ from loguru import logger
 from pydantic import ValidationError
 from sqlalchemy.exc import ProgrammingError
 
-from app_users.schemas import *
+from app_users.schemas import AuthorBaseSchema, AuthorProfileApiSchema
 from exceptions import BackendException
 from schemas import SuccessSchema
 

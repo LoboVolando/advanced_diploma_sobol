@@ -3,7 +3,8 @@ from fastapi import status
 from httpx import AsyncClient
 from loguru import logger
 
-from app_tweets.schemas import *
+from app_tweets.schemas import TweetListOutSchema
+from app_users.schemas import AuthorLikeSchema
 from exceptions import BackendException
 
 

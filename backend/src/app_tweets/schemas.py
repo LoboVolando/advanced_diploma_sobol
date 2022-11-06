@@ -8,10 +8,11 @@ Note
 -----
     Большинство схем поддерживают загрузку из орм-моделей.
 """
+from typing import List, Optional
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 
-from app_users.schemas import *
+from app_users.schemas import AuthorBaseSchema, AuthorLikeSchema, AuthorModelSchema
 
 
 class TweetModelSchema(BaseModel):
@@ -29,7 +30,7 @@ class TweetModelSchema(BaseModel):
         Флаг удаления твита.
     likes: List[LikeAuthorSchema], optional
         Список авторов, отлайкавших этот твит.
-    attachments: t.List[int]
+    attachments: List[int]
         Список идентификаторов медиа-ресурсов.
     author: AuthorModelSchema.
         Схема ОРМ модели Автора твита.
@@ -39,8 +40,8 @@ class TweetModelSchema(BaseModel):
     content: str
     author_id: int
     soft_delete: bool
-    likes: t.List[dict] = None
-    attachments: t.List[str] = None
+    likes: List[dict] = None
+    attachments: List[str] = None
     author: AuthorModelSchema = None
 
     class Config:
@@ -56,7 +57,7 @@ class TweetSchema(BaseModel):
         Идентификатор твита в СУБД.
     content: str
         Умная мысль. Не обязательно умная. Не обязательно мысль.
-    attachments: [t.List[str], optional
+    attachments: [List[str], optional
         Список ссылок на картинки.
     author: AuthorOutSchema
         Автор твита.
@@ -66,9 +67,9 @@ class TweetSchema(BaseModel):
 
     id: int
     content: str = Field(example="запомните этот твит")
-    attachments: t.Optional[t.List[str]]
+    attachments: Optional[List[str]]
     author: AuthorBaseSchema
-    likes: t.Optional[t.List[AuthorLikeSchema]]
+    likes: Optional[List[AuthorLikeSchema]]
 
     class Config:
         orm_mode = True
@@ -100,13 +101,13 @@ class TweetListOutSchema(BaseModel):
     ----------
     result: bool
         Флаг успешного выполнения.
-    tweets: t.List[TweetSchema], optional
+    tweets: List[TweetSchema], optional
         Список твитов автора.
 
     """
 
     result: bool = True
-    tweets: t.Optional[t.List[TweetSchema]]
+    tweets: Optional[List[TweetSchema]]
 
     class Config:
         orm_mode = True
@@ -126,8 +127,8 @@ class TweetInSchema(BaseModel):
     """
 
     tweet_data: str
-    tweet_media_ids: t.Optional[t.List[int]]
-    attachments: t.Optional[t.List[str]]
+    tweet_media_ids: Optional[List[int]]
+    attachments: Optional[List[str]]
 
     class Config:
         orm_mode = True

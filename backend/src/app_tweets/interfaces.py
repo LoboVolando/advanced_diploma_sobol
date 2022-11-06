@@ -7,7 +7,7 @@ interfaces.py
 import typing as t
 from abc import ABC, abstractmethod
 
-from app_tweets.schemas import TweetInSchema, TweetModelSchema, TweetSchema
+from app_tweets.schemas import TweetInSchema, TweetModelSchema
 from schemas import SuccessSchema
 
 
@@ -75,7 +75,7 @@ class AbstractTweetService(ABC):
 
         Returns
         -------
-        TweetSchema
+        TweetModelSchema
             Pydantic-схема твита.
         """
         ...

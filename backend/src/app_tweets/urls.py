@@ -11,11 +11,10 @@ from app_tweets.schemas import (
     TweetListOutSchema,
     TweetModelOutSchema,
     TweetOutSchema,
-    TweetSchema,
 )
 from app_tweets.services import TweetService
 from app_users.services import PermissionService
-from log_fab import UrlVariables, get_logger
+from log_fab import get_logger, make_context
 from schemas import SuccessSchema
 
 router = APIRouter()
@@ -43,7 +42,7 @@ async def get_tweets_list(
     logger.debug("begin endpoint")
     api_key = await permission.get_api_key()
     result = await tweet.get_list(api_key)
-    logger.info(f"вызов эндпоинта завершен успешно")
+    logger.info("вызов эндпоинта завершен успешно")
     return result
 
 
@@ -70,7 +69,7 @@ async def create_tweet(
     TweetOutSchema
         Pydantic-схема для фронтенда вновь созданного твита
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     api_key = await permission.get_api_key()
     result = await tweet.create_tweet(new_tweet, api_key)
     logger.info(event="вызов эндпоинта завершен успешно")
@@ -96,10 +95,10 @@ async def get_tweet(
 
     Returns
     -------
-    TweetSchema
+    TweetModelOutSchema
         Pydantic-схема для фронтенда твита.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     result = await tweet.get_tweet(tweet_id=tweet_id)
     logger.info(event="вызов эндпоинта завершен успешно")
     return result
@@ -128,7 +127,7 @@ async def delete_tweet(
     SuccessSchema
         Pydantic-схема успешного выполнения.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     api_key = await permission.get_api_key()
     result = await tweet.delete_tweet(tweet_id=tweet_id, api_key=api_key)
     logger.info(event="вызов эндпоинта завершен успешно")
@@ -160,7 +159,7 @@ async def add_like_to_tweet(
     SuccessSchema
         Pydantic-схема успешного выполнения.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     api_key = await permission.get_api_key()
     result = await tweet.add_like_to_tweet(tweet_id=tweet_id, api_key=api_key)
     logger.info(event="вызов эндпоинта завершен успешно")
@@ -192,7 +191,7 @@ async def remove_like_from_tweet(
     SuccessSchema
         Pydantic-схема успешного выполнения.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     api_key = await permission.get_api_key()
     result = await tweet.remove_like_from_tweet(tweet_id=tweet_id, api_key=api_key)
     logger.info(event="вызов эндпоинта завершен успешно")

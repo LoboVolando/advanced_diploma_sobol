@@ -7,9 +7,9 @@ urls.py
 import structlog
 from fastapi import APIRouter, Depends, Request, status
 
-from app_users.schemas import *
+from app_users.schemas import AuthorProfileApiSchema, AuthorRegisterSchema
 from app_users.services import AuthorService, PermissionService
-from log_fab import UrlVariables
+from log_fab import make_context
 from schemas import SuccessSchema
 
 router = APIRouter()
@@ -43,7 +43,7 @@ async def register(request: Request, author: AuthorRegisterSchema, service: Auth
     ----
     Не предусмотрен документацией проекта.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     api_key, created = await service.get_or_create_user(name=author.name, password=author.password)
     result = {"result": True, "api-key": api_key, "created": created}
     logger.info("эндпоинт завершен", result=result)
@@ -71,7 +71,7 @@ async def me(
     ProfileAuthorOutSchema
         pydantic-схема профиля пользователя.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     api_key = await permission.get_api_key()
     result = await user.me(api_key)
     logger.info("эндпоинт завершен", result=result.dict())
@@ -104,7 +104,7 @@ async def get_author_by_id(
         pydantic-схема профиля пользователя.
 
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     await permission.get_api_key()
     result = await user.get_author(author_id=author_id)
     logger.info("эндпоинт завершен", result=result.dict())
@@ -140,7 +140,7 @@ async def follow_author(
     ----
     Идентификатор читающего автора извлекается при помощи зависимости permission.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     api_key = await permission.get_api_key()
     result = await author.add_follow(writing_author_id=author_id, api_key=api_key)
     logger.info("эндпоинт завершен", result=result.dict())
@@ -176,7 +176,7 @@ async def unfollow_author(
     ----
     Идентификатор читающего автора извлекается при помощи зависимости permission.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     api_key = await permission.get_api_key()
     result = await author.remove_follow(writing_author_id=author_id, api_key=api_key)
     logger.info("эндпоинт завершен", result=result.dict())

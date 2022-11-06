@@ -94,6 +94,8 @@
 .. automodule:: tests.test_media_db
     :members:
 
+.. automodule:: tests.test_media_service
+    :members:
 
 Indices and tables
 ==================

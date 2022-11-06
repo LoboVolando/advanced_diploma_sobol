@@ -10,7 +10,7 @@ isort:
 black:
 	black --check --diff -v ./backend
 flake:
-	flake8 ./api
+	flake8 ./backend/src/
 mypy:
 	mypy ./api -v
 lint:

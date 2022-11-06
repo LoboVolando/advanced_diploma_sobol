@@ -3,7 +3,7 @@ from fastapi import status
 from httpx import AsyncClient
 from loguru import logger
 
-from app_users.schemas import *
+from app_users.schemas import AuthorProfileApiSchema
 from schemas import SuccessSchema
 
 

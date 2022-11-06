@@ -2,11 +2,9 @@ import pytest
 from faker import Faker
 from faker.providers import python
 from fastapi.testclient import TestClient
-from loguru import logger
-from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 from app import app
-from app_users.schemas import *
+from app_users.schemas import AuthorModelSchema
 from exceptions import BackendException
 from schemas import SuccessSchema
 

@@ -90,13 +90,13 @@ async def test_update_likes_for_tweet(get_tweet_schemas_list, tweet_db_service, 
     for tweet in tweet_list:
         selected_tweet = await tweet_db_service.get_tweet_by_id(tweet_id=tweet.id)
         assert selected_tweet.likes == likes
-    logger.info(f"verify likes in tweets")
+    logger.info("verify likes in tweets")
 
 
 @pytest.mark.dbtest
 @pytest.mark.asyncio
 async def test_delete_tweet(get_tweet_schemas_list, tweet_db_service):
-    logger.info(f"delete tweets...")
+    logger.info("delete tweets...")
     authors_list, tweet_list = await get_tweet_schemas_list
     for tweet in tweet_list:
         result = await tweet_db_service.delete_tweet(tweet_id=tweet.id, author_id=tweet.author_id)
@@ -105,4 +105,4 @@ async def test_delete_tweet(get_tweet_schemas_list, tweet_db_service):
         selected_tweet = await tweet_db_service.get_tweet_by_id(tweet_id=tweet.id)
         assert selected_tweet.id == tweet.id
         assert selected_tweet.soft_delete is True
-    logger.info(f"delete tweets")
+    logger.info("delete tweets")

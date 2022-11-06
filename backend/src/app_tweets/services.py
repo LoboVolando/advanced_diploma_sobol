@@ -12,10 +12,9 @@ from app_tweets.schemas import (
     TweetInSchema,
     TweetListOutSchema,
     TweetModelOutSchema,
-    TweetModelSchema,
     TweetOutSchema,
 )
-from app_users.schemas import *
+from app_users.schemas import AuthorLikeSchema
 from app_users.services import AuthorService
 from exceptions import BackendException, ErrorsList
 from log_fab import get_logger
@@ -81,7 +80,7 @@ class TweetService:
 
         Returns
         -------
-        TweetModelSchema
+        TweetModelOutSchema
             Pydantic-схема модели твита.
         """
         if tweet := await self.service.get_tweet_by_id(tweet_id):

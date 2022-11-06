@@ -51,7 +51,7 @@ from exceptions import (
     ErrorsList,
     InternalServerException,
 )
-from log_fab import UrlVariables
+from log_fab import make_context
 from settings import settings
 from tags import tags_metadata
 
@@ -99,10 +99,11 @@ async def verify_api_key(api_key: str = Header(), permission: PermissionService 
     return True
 
 
-# sentry_sdk.init(
-#     dsn="http://16fbc408e7d34d6386f70c3f1d5a3bcb@192.168.0.193:9000/3",
-#     traces_sample_rate=1.0,
-# )
+if not settings.debug:
+    sentry_sdk.init(
+        dsn="http://16fbc408e7d34d6386f70c3f1d5a3bcb@192.168.0.193:9000/3",
+        traces_sample_rate=1.0,
+    )
 
 app = FastAPI(
     title="CLI-ter",
@@ -117,14 +118,13 @@ app = FastAPI(
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    UrlVariables.make_context(request)
+    make_context(request)
     logger.info(
         event="обрабатываем запрос",
         peer=request.client.host,
         headers=request.headers,
     )
-    response = await call_next(request)
-    return response
+    return await call_next(request)
 
 
 @app.exception_handler(BackendException)

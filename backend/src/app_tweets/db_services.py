@@ -12,7 +12,7 @@ from sqlalchemy.orm import selectinload
 
 from app_tweets.interfaces import AbstractTweetService
 from app_tweets.models import Tweet
-from app_tweets.schemas import TweetInSchema, TweetModelSchema, TweetSchema
+from app_tweets.schemas import TweetInSchema, TweetModelSchema
 from db import session
 from exceptions import BackendException, ErrorsList, exc_handler
 from schemas import SuccessSchema
@@ -96,7 +96,7 @@ class TweetDbService(AbstractTweetService):
 
         Returns
         -------
-        TweetSchema
+        TweetModelSchema
             Pydantic-схема твита.
         """
         logger.info("запрос твитта по идентификатору СУБД.", tweet_id=tweet_id)
@@ -124,8 +124,8 @@ class TweetDbService(AbstractTweetService):
 
         Returns
         -------
-        TweetSchema
-            Pydantic-схема твита.
+        SuccessSchema
+            Pydantic-схема успешного выполнения.
 
         Note
         ----

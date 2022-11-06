@@ -1,7 +1,4 @@
-import typing as t
-
 import pytest
-from loguru import logger
 
 from app_tweets.schemas import (
     AuthorLikeSchema,
@@ -10,8 +7,6 @@ from app_tweets.schemas import (
     TweetOutSchema,
     TweetSchema,
 )
-from app_tweets.services import TweetService
-from app_users.services import AuthorService
 from exceptions import BackendException
 from schemas import SuccessSchema
 

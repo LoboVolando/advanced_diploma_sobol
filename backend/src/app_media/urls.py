@@ -9,7 +9,7 @@ from fastapi import APIRouter, Request, UploadFile, status
 from app_media.schemas import MediaOutSchema
 from app_media.services import MediaService
 from exceptions import BackendException, ErrorsList
-from log_fab import UrlVariables
+from log_fab import make_context
 
 router = APIRouter()
 
@@ -32,7 +32,7 @@ async def medias(request: Request, file: UploadFile) -> MediaOutSchema:
     MediaOutSchema
         Pydantic-схема медиа ресурса.
     """
-    UrlVariables.make_context(request)
+    make_context(request)
     if result := await MediaService.get_or_create_media(file):
         logger.info(event="создан или получен media-объект", result=result.dict())
         return result
@@ -43,6 +43,6 @@ async def medias(request: Request, file: UploadFile) -> MediaOutSchema:
 @router.get("/api/exception", tags=["media"])
 async def raise_exception(request: Request):
     """Недокументированный эндпоинт. Выдаёт исключение при обращении."""
-    UrlVariables.make_context(request)
+    make_context(request)
     logger.error(event="вызов ошибки")
     await MediaService.raise_exception()

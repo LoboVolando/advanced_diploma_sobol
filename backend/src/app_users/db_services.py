@@ -4,13 +4,14 @@ db_services.py
 
 Модуль реализует взаимодействие с базой данных приложения app_users.
 """
+from typing import Optional
 
 import structlog
 from sqlalchemy import select, update
 
 from app_users.interfaces import AbstractAuthorService
 from app_users.models import Author
-from app_users.schemas import *
+from app_users.schemas import AuthorModelSchema
 from db import session
 from exceptions import BackendException, ErrorsList, exc_handler
 from schemas import SuccessSchema
@@ -61,7 +62,7 @@ class AuthorDbService(AbstractAuthorService):
                     return result
 
     @exc_handler(ConnectionRefusedError)
-    async def create_author(self, name: str, api_key: str, password: str) -> t.Optional[AuthorModelSchema]:
+    async def create_author(self, name: str, api_key: str, password: str) -> Optional[AuthorModelSchema]:
         """Метод сохраняет нового автора в базе данных
 
         Parameters
