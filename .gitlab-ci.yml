@@ -12,6 +12,7 @@ test_job:
   script:
     - echo "начинаем тестирование приложения"
     - docker-compose -f docker-compose.test.yml stop
+    - docker-compose -f docker-compose.deploy.yml stop
     - git stash clear
     - git stash -m 'to drop'
     - git pull origin dev --rebase
