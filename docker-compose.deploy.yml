@@ -20,7 +20,7 @@ services:
       dockerfile: backend/Dockerfile
     volumes:
       - ./backend/src:/backend
-      - ./.env:/backend/.env
+#      - ./.env:/backend/.env
       - ${SERVER_MEDIA_ROOT}:${DOCKER_MEDIA_ROOT}
     command: bash -c "alembic -c ${ALEMBIC} upgrade head && gunicorn app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind backend:80"
     ports:
@@ -38,6 +38,10 @@ services:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: 5432
       DEBUG: ${DEBUG}
+      DOCKER_MEDIA_ROOT: ${DOCKER_MEDIA_ROOT}
+      MEDIA_URL: ${MEDIA_URL}
+      ALEMBIC: ${ALEMBIC}
+
     depends_on:
       - postgres
       - fluentd
