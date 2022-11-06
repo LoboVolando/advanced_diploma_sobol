@@ -76,8 +76,13 @@ class MediaService:
         """
         path = Path(settings.docker_media_root) / file.filename
         if not path.parent.exists():
-            path.parent.mkdir(parents=True)
-            logger.warning(event="создаем директорию для файла", folder=path.parent.absolute())
+            try:
+                path.parent.mkdir(parents=True)
+            except PermissionError as e:
+                logger.error(f"нет прав на создание директории: {path.parent}")
+                logger.exception(e)
+            else:
+                logger.warning(event="создали директорию для файла", folder=path.parent.absolute())
         with open(path, "wb") as fl:
             try:
                 file.file.seek(0)
