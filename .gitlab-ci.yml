@@ -11,7 +11,7 @@ test_job:
   stage: tests
   script:
     - echo "начинаем тестирование приложения"
-    - docker-compose -f docker-compose.test.yml down --remove-orphans
+    - docker-compose -f docker-compose.test.yml stop
     - git stash clear
     - git stash -m 'to drop'
     - git pull origin dev --rebase
