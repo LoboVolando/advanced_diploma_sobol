@@ -19,7 +19,7 @@ docker-compose -f docker-compose.deploy.yml up -d --build
 * http://127.0.0.1:7209 - prometheus
 * http://127.0.0.1:7215 - elasticsearch
 * http://127.0.0.1:7220 - kibana
-  
+
 # ci/cd
   * установить gitlab-runner на сервер и зарегистрировать его. В настройках гитлаб отключить использование теневых раннеров
   * подкинуть в папку /home/gitlab-runner/.ssh файлики:
@@ -41,3 +41,7 @@ sudo usermod -aG docker gitlab-runner
 
 # elasticsearch + kibana-mother
 Нужно зайти в кибану и настроить получение логов с fluentd проекта. add intergations - discover - add data source
+
+#grafana
+Добавить dashboards по вкусу. Рекомендую:
+* 

@@ -96,7 +96,7 @@ services:
       - skynet
 
   grafana:
-#    14282 12485 9512 9516
+#    14282 12485 1860 9516
     container_name: dip-grafana
     image: grafana/grafana:latest
     ports:
@@ -206,8 +206,8 @@ services:
       - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
       - ${DATA_ROOT}/elasticsearch:/usr/share/elasticsearch/data
     ports:
-      - "7215:9200"
-      - "7216:9300"
+      - "7216:9200"
+      - "7217:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
