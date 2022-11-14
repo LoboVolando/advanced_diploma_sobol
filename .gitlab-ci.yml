@@ -19,7 +19,7 @@ test_job:
     - docker-compose -f docker-compose.deploy.yml stop
     - git stash clear
     - git stash -m 'to drop'
-    - git pull origin main --rebase
+    - git pull origin dev --rebase
     - docker-compose -f docker-compose.test.yml up -d && sleep 10
     - cd ./backend/src
     - alembic -c alembic_test.ini upgrade head
