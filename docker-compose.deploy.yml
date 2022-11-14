@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   fluentd:
+    restart: always
     container_name: dip-fluentd
     volumes:
       - ./fluentd/conf:/fluentd/etc
@@ -13,6 +14,7 @@ services:
       - skynet
 
   backend:
+    restart: always
     working_dir: /backend
     container_name: dip-backend
     build:
@@ -46,6 +48,7 @@ services:
       - fluentd
 
   frontend:
+    restart: always
     container_name: dip-frontend
     image: nginx
     volumes:
@@ -63,6 +66,7 @@ services:
       - skynet
 
   postgres:
+    restart: always
     container_name: dip-postgres
     image: postgres:14.3
     ports:
@@ -83,6 +87,7 @@ services:
       retries: 5
       start_period: 10s
   pgadmin:
+    restart: always
     container_name: dip-pgadmin
     image: dpage/pgadmin4:6.10
     environment:
@@ -96,7 +101,8 @@ services:
       - skynet
 
   grafana:
-#    14282 12485 1860 9516
+    restart: always
+    #    14282 12485 1860 9516
     container_name: dip-grafana
     image: grafana/grafana:latest
     ports:
@@ -109,7 +115,7 @@ services:
   prometheus:
     image: prom/prometheus:latest
     container_name: dip-prometheus
-    restart: unless-stopped
+    restart: always
     ports:
       - "7209:9090"
     volumes:
@@ -129,7 +135,7 @@ services:
   node-exporter:
     image: prom/node-exporter:latest
     container_name: dip-node-exporter
-    restart: unless-stopped
+    restart: always
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -145,6 +151,7 @@ services:
       - skynet
 
   nginx-exporter:
+    restart: always
     container_name: dip-nginx-exporter
     image: nginx/nginx-prometheus-exporter
     expose:
@@ -160,6 +167,7 @@ services:
       - skynet
 
   postgres_exporter:
+    restart: always
     container_name: dip-postgres_exporter
     image: prometheuscommunity/postgres-exporter
     command: --log.level=debug
@@ -171,12 +179,12 @@ services:
       - 9187
     networks:
       - skynet
-    restart: unless-stopped
     depends_on:
       - postgres
 #          - condition: service_started
 
   cadvisor:
+    restart: always
     image: gcr.io/cadvisor/cadvisor:v0.45.0
     container_name: dip-cadvisor
     privileged: true
@@ -188,7 +196,6 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
       #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
-    restart: unless-stopped
     expose:
       - 8080
     networks:
@@ -197,6 +204,7 @@ services:
       org.label-schema.group: "monitoring"
 
   elasticsearch:
+    restart: always
     container_name: dip-elastic
     build:
       context: elasticsearch/
@@ -218,6 +226,7 @@ services:
       - skynet
 
   kibana:
+    restart: always
     container_name: dip-kibana
     build:
       context: kibana/
