@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  test-postgres:
+    container_name: test-postgres
+    image: postgres:14.3
+    ports:
+      - "5002:5432"
+    environment:
+      POSTGRES_PASSWORD: PostgresPassword
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - skynet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  skynet:
+    driver: bridge
+    name: home-net

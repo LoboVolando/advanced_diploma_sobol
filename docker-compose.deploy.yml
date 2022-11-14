@@ -1,0 +1,240 @@
+version: "3.7"
+
+services:
+  fluentd:
+    container_name: dip-fluentd
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    ports:
+      - "24224:24224"
+      - "24224:4224/udp"
+    build: ./fluentd
+    networks:
+      - skynet
+
+  backend:
+    working_dir: /backend
+    container_name: dip-backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend/src:/backend
+      - ${SERVER_MEDIA_ROOT}:${DOCKER_MEDIA_ROOT}
+    command: bash -c "alembic -c ${ALEMBIC} upgrade head && gunicorn app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind backend:80"
+    ports:
+      - "7202:80"
+    networks:
+      - skynet
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: docker.app
+    environment:
+      POSTGRES_ROOT_USER: ${POSTGRES_ROOT_USER}
+      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: 5432
+      DEBUG: ${DEBUG}
+      DOCKER_MEDIA_ROOT: ${DOCKER_MEDIA_ROOT}
+      MEDIA_URL: ${MEDIA_URL}
+      ALEMBIC: ${ALEMBIC}
+
+    depends_on:
+      - postgres
+      - fluentd
+
+  frontend:
+    container_name: dip-frontend
+    image: nginx
+    volumes:
+      - ${NGINX}:/etc/nginx/nginx.conf:ro
+      - ./frontend/src:/frontend
+      - ./frontend/logs:/frontend/logs
+      - ${SERVER_MEDIA_ROOT}:${DOCKER_MEDIA_ROOT}
+    depends_on:
+      - backend
+    expose:
+      - 5454
+    ports:
+      - "7200:80"
+    networks:
+      - skynet
+
+  postgres:
+    container_name: dip-postgres
+    image: postgres:14.3
+    ports:
+      - "5002:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_ROOT_USER}
+      POSTGRES_DB: ${POSTGRES_ROOT_DB}
+    volumes:
+      - ${DATA_ROOT}/postgres/data/:/var/lib/postgresql/data
+      - ${DATA_ROOT}/postgres/pginit/:/docker-entrypoint-initdb.d
+    networks:
+      - skynet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_ROOT_USER} -d ${POSTGRES_ROOT_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  pgadmin:
+    container_name: dip-pgadmin
+    image: dpage/pgadmin4:6.10
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "0507033@211.ru"
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "7204:80"
+    depends_on:
+      - postgres
+    networks:
+      - skynet
+
+  grafana:
+#    14282 12485 1860 9516
+    container_name: dip-grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - skynet
+    volumes:
+      - ${DATA_ROOT}/grafana/:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: dip-prometheus
+    restart: unless-stopped
+    ports:
+      - "7209:9090"
+    volumes:
+      - ${DATA_ROOT}/prometheus:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    expose:
+      - 9090
+    networks:
+      - skynet
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: dip-node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    expose:
+      - 9100
+    networks:
+      - skynet
+
+  nginx-exporter:
+    container_name: dip-nginx-exporter
+    image: nginx/nginx-prometheus-exporter
+    expose:
+      - 9113
+    environment:
+      - SCRAPE_URI=http://frontend/nginx_status
+      - TELEMETRY_PATH=/metrics
+      - NGINX_RETRIES=10
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - skynet
+
+  postgres_exporter:
+    container_name: dip-postgres_exporter
+    image: prometheuscommunity/postgres-exporter
+    command: --log.level=debug
+    environment:
+      DATA_SOURCE_URI: "postgres:5432/${POSTGRES_ROOT_DB}?sslmode=disable"
+      DATA_SOURCE_USER: ${POSTGRES_ROOT_USER}
+      DATA_SOURCE_PASS: ${POSTGRES_ROOT_PASSWORD}
+    expose:
+      - 9187
+    networks:
+      - skynet
+    restart: unless-stopped
+    depends_on:
+      - postgres
+#          - condition: service_started
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.45.0
+    container_name: dip-cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
+    restart: unless-stopped
+    expose:
+      - 8080
+    networks:
+      - skynet
+    labels:
+      org.label-schema.group: "monitoring"
+
+  elasticsearch:
+    container_name: dip-elastic
+    build:
+      context: elasticsearch/
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    volumes:
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ${DATA_ROOT}/elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - "7216:9200"
+      - "7217:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+    networks:
+      - skynet
+
+  kibana:
+    container_name: dip-kibana
+    build:
+      context: kibana/
+      args:
+        ELK_VERSION: ${ELK_VERSION}
+    volumes:
+      - type: bind
+        source: ./kibana/config/kibana.yml
+        target: /usr/share/kibana/config/kibana.yml
+        read_only: true
+    ports:
+      - "5601:5601"
+    networks:
+      - skynet
+    depends_on:
+      - elasticsearch
+
+networks:
+  skynet:
+    driver: bridge
