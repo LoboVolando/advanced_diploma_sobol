@@ -1,3 +1,7 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
 before_script:
   - python3 -m venv venv
   - source ./venv/bin/activate
@@ -15,11 +19,14 @@ test_job:
     - docker-compose -f docker-compose.deploy.yml stop
     - git stash clear
     - git stash -m 'to drop'
-    - git pull origin dev --rebase
+    - git pull origin main --rebase
     - docker-compose -f docker-compose.test.yml up -d && sleep 10
     - cd ./backend/src
     - alembic -c alembic_test.ini upgrade head
     - pytest .
+    - black --diff --check .
+    - isort --check-only --profile=black .
+    - flake8 .
     - echo "тест alles"
 
 deploy_job:
