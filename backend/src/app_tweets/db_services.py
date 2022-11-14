@@ -39,11 +39,12 @@ class TweetDbService(AbstractTweetService):
             Список pydantic-схем ORM модели твитов автора.
         """
 
-        query = (select(Tweet)
-                 .filter_by(author_id=author_id, soft_delete=False)
-                 .order_by(Tweet.id)
-                 .options(selectinload(Tweet.author))
-                 )
+        query = (
+            select(Tweet)
+            .filter_by(author_id=author_id, soft_delete=False)
+            .order_by(Tweet.id)
+            .options(selectinload(Tweet.author))
+        )
         async with session() as async_session:
             async with async_session.begin():
                 if query_set := await async_session.execute(query):
