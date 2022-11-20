@@ -111,6 +111,8 @@ services:
       - skynet
     volumes:
       - ${DATA_ROOT}/grafana/:/var/lib/grafana
+    depends_on:
+      - prometheus
 
   prometheus:
     image: prom/prometheus:latest
