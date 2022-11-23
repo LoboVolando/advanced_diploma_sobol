@@ -58,15 +58,15 @@ DEBUG=false
 ```sudo chown -R 777 .```
 
 
-##Запуск контейнеров:
+## Запуск контейнеров:
 ```shell
 docker-compose -f docker-compose.deploy.yml up -d --build
 ```
-##Остановка контейнеров:
+## Остановка контейнеров:
 ```shell
 docker-compose -f docker-compose.deploy.yml down
 ```
-##Просмотр логов контейнеров:
+## Просмотр логов контейнеров:
 ```shell
 docker-compose -f docker-compose.deploy.yml logs [имя сервиса]
 ```
@@ -99,5 +99,5 @@ sudo usermod -aG docker gitlab-runner
 # elasticsearch + kibana-mother
 В кибана следует настроить получение логов с fluentd проекта. add intergations - discover - add data source
 
-#grafana
+# grafana
 Добавить dashboards по вкусу.
