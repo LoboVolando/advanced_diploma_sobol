@@ -106,7 +106,7 @@ services:
     container_name: dip-grafana
     image: grafana/grafana:latest
     ports:
-      - "3000:3000"
+      - "7203:3000"
     networks:
       - skynet
     volumes:
@@ -240,7 +240,7 @@ services:
         target: /usr/share/kibana/config/kibana.yml
         read_only: true
     ports:
-      - "5601:5601"
+      - "7220:5601"
     networks:
       - skynet
     depends_on:
